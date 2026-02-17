@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.9.0</string>
+        <string>7.10.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -124,7 +124,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../Rozval/app/src/main/assets/atlas/loader.atlas</filename>
+                <filename>../../Idle Merge Cubes/app/src/main/assets/atlas/loader.atlas</filename>
             </struct>
         </map>
         <key>multiPackMode</key>
@@ -173,10 +173,7 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">builder-1.png</key>
-            <key type="filename">builder-2.png</key>
-            <key type="filename">builder-3.png</key>
-            <key type="filename">builder-4.png</key>
+            <key type="filename">cube.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -185,13 +182,13 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>85,85,170,170</rect>
+                <rect>186,193,371,385</rect>
                 <key>scale9Paddings</key>
-                <rect>85,85,170,170</rect>
+                <rect>186,193,371,385</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">loader.png</key>
+            <key type="filename">light_progress.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -200,9 +197,39 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>126,126,253,253</rect>
+                <rect>365,147,730,293</rect>
                 <key>scale9Paddings</key>
-                <rect>126,126,253,253</rect>
+                <rect>365,147,730,293</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">progress_frame.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>349,35,698,70</rect>
+                <key>scale9Paddings</key>
+                <rect>349,35,698,70</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">progress_line.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>320,18,639,37</rect>
+                <key>scale9Paddings</key>
+                <rect>320,18,639,37</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

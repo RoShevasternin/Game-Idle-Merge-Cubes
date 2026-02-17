@@ -5,23 +5,15 @@ plugins {
 }
 
 android {
-//    signingConfigs {
-//        create("release") {
-//            storeFile = file("D:\\Rozval\\Game Rozval\\release\\jksforrozval")
-//            keyAlias = "aaa"
-//            storePassword = "aaa"
-//            keyPassword = "aaa"
-//        }
-//    }
-    namespace = "com.lewydo.rozval"
+    namespace = "com.lewydo.idlemergecubes"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.lewydo.rozval"
+        applicationId = "com.lewydo.idlemergecubes"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,7 +28,6 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            //signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -69,7 +60,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.activity:activity-ktx:1.12.3")
+    implementation("androidx.activity:activity-ktx:1.12.4")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.7")
     implementation("androidx.datastore:datastore-preferences:1.2.0")
@@ -85,15 +76,10 @@ dependencies {
     natives("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a")
     natives("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86")
     natives("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64")
-    implementation("com.badlogicgames.gdx:gdx-box2d:$gdxVersion")
-    natives("com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a")
-    natives("com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a")
-    natives("com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86")
-    natives("com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64")
 
     implementation("space.earlygrey:shapedrawer:2.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 }
 
 tasks.register("copyAndroidNatives") {

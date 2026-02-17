@@ -1,0 +1,14 @@
+9_patch.png
+size: 484, 177
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+panel_coin
+  rotate: false
+  xy: 1, 1
+  size: 482, 175
+  orig: 482, 175
+  offset: 0, 0
+  index: -1
+  split: 273, 208, 74, 100
+  pad: -1, -1, -1, -1

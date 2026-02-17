@@ -1,40 +1,33 @@
 loader.png
-size: 509, 1143
+size: 1464, 1581
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
-builder-1
+cube
   rotate: false
   xy: 2, 2
-  size: 200, 315
-  orig: 200, 315
+  size: 742, 771
+  orig: 742, 771
   offset: 0, 0
   index: -1
-builder-2
+light_progress
   rotate: false
-  xy: 204, 2
-  size: 200, 315
-  orig: 200, 315
+  xy: 2, 775
+  size: 1460, 587
+  orig: 1460, 587
   offset: 0, 0
   index: -1
-builder-3
+progress_frame
   rotate: false
-  xy: 2, 319
-  size: 200, 315
-  orig: 200, 315
+  xy: 2, 1364
+  size: 1396, 140
+  orig: 1396, 140
   offset: 0, 0
   index: -1
-builder-4
+progress_line
   rotate: false
-  xy: 204, 319
-  size: 200, 315
-  orig: 200, 315
-  offset: 0, 0
-  index: -1
-loader
-  rotate: false
-  xy: 2, 636
-  size: 505, 505
-  orig: 505, 505
+  xy: 2, 1506
+  size: 1278, 73
+  orig: 1278, 73
   offset: 0, 0
   index: -1

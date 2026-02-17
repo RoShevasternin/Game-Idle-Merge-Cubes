@@ -6,7 +6,7 @@
 
     <fragment
             android:id="@+id/libGDXFragment"
-            android:name="com.lewydo.rozval.game.GDXFragment"
+            android:name="com.lewydo.idlemergecubes.game.GDXFragment"
             android:label="LibGDXFragment"/>
 
 </navigation>

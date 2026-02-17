@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Rozval"
+rootProject.name = "Idle Merge Cubes"
 include(":app")
  
