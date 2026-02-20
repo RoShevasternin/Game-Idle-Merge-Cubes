@@ -106,8 +106,8 @@ class PlayerModel(
         return (progress / needed).coerceIn(0f, 1f)
     }
 
-    fun progressPercent100(): Int {
-        return (progressPercent() * 100f).toInt()
+    fun progressPercent100(): Float {
+        return (progressPercent() * 100f)
     }
 
     // =====================================================

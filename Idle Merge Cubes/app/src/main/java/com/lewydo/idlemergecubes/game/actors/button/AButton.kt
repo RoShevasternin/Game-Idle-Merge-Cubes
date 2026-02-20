@@ -170,6 +170,11 @@ open class AButton(
             pressed = TextureRegionDrawable(gdxGame.assetsAll.settings_press),
             disabled = TextureRegionDrawable(gdxGame.assetsAll.settings_press),
         )
+        Type.Buy -> AButtonStyle(
+            default = TextureRegionDrawable(gdxGame.assetsAll.buy_def),
+            pressed = TextureRegionDrawable(gdxGame.assetsAll.buy_press),
+            disabled = TextureRegionDrawable(gdxGame.assetsAll.buy_press),
+        )
     }
 
     // ---------------------------------------------------
@@ -183,7 +188,7 @@ open class AButton(
     )
 
     enum class Type {
-        None, Settings,
+        None, Settings, Buy,
 
     }
 

@@ -12,8 +12,8 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
 abstract class DataStoreJsonUtil<T>(
-    private val serializer  : KSerializer<T>,
-    private val deserializer: DeserializationStrategy<T>
+    protected val serializer  : KSerializer<T>,
+    protected val deserializer: DeserializationStrategy<T>
 ) {
     val simpleName: String get() = this::class.java.simpleName
 
@@ -22,18 +22,65 @@ abstract class DataStoreJsonUtil<T>(
     abstract val dataStore: AbstractDataStore.DataStoreElement<String>
 
     open fun initialize() {
-        coroutine.launch(Dispatchers.IO) {
+        /*coroutine.launch(Dispatchers.IO) {
             dataStore.get()?.let { value -> flow.update { Json.decodeFromString(deserializer, value) } }
             log("Store $simpleName = ${flow.value}")
+        }*/
+
+        coroutine.launch(Dispatchers.IO) {
+
+            val raw = dataStore.get()
+
+            if (raw != null) {
+                val decoded = Json.decodeFromString(deserializer, raw)
+                flow.value = decoded
+                logInit(decoded)
+            } else {
+                log("[$simpleName] INIT → No saved data, using default")
+                logInit(flow.value)
+            }
         }
     }
 
     open fun update(block: (T) -> T) {
-        coroutine.launch(Dispatchers.IO) {
+        /*coroutine.launch(Dispatchers.IO) {
             flow.update { block(flow.value) }
 
             log("Store $simpleName update = ${flow.value}")
             dataStore.update { Json.encodeToString(serializer, flow.value) }
+        }*/
+
+        coroutine.launch(Dispatchers.IO) {
+
+            val oldValue = flow.value
+            val newValue = block(oldValue)
+
+            flow.value = newValue
+            dataStore.update { Json.encodeToString(serializer, newValue) }
+
+            logUpdate(oldValue, newValue)
         }
+    }
+
+    private fun logInit(data: T) {
+        log("""
+        
+        ╔══════════════════════════════╗
+        ║  STORE INIT → $simpleName
+        ╚══════════════════════════════╝
+        $data
+    """.trimIndent())
+    }
+
+    private fun logUpdate(old: T, new: T) {
+        log("""
+        
+        ╔══════════════════════════════╗
+        ║  STORE UPDATE → $simpleName
+        ╠══════════════════════════════╣
+        ║  OLD: $old
+        ║  NEW: $new
+        ╚══════════════════════════════╝
+    """.trimIndent())
     }
 }

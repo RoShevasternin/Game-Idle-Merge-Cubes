@@ -28,8 +28,8 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private val aLvLLbl      = Label("1", Label.LabelStyle(fontLvL, Color.WHITE))
     private val aLevelLbl    = Label("Level", Label.LabelStyle(fontLevel, Color.WHITE))
 
+    private val aCircleProgress = ACircleProgress(screen, -75f, 0f, 90f)
     private val aLvLPopup       = ALevelPopup(screen)
-    private val aCircleProgress = ACircleProgress(screen)
 
     // Field
     private var isVisiblePopup = false
@@ -38,13 +38,12 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
         addPanelLvLImg()
         addLvLLbl()
         addLevelLbl()
+        addCircleProgress()
 
         addLvLPopup()
 
         collectPlayerData()
         handleClick()
-
-        addAndFillActor(aCircleProgress)
     }
 
     // Actors ------------------------------------------------------------------------
@@ -76,6 +75,11 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
             setScale(0.8f)
             color.a = 0f
         }
+    }
+
+    private fun addCircleProgress() {
+        addActor(aCircleProgress)
+        aCircleProgress.setBounds(0f, 0f, 270f, 270f)
     }
 
     // Anim ------------------------------------------------------------------------
@@ -113,6 +117,7 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private fun collectPlayerData() {
         coroutine?.launch {
             launch { gdxGame.modelPlayer.levelFlow.collect { lvl -> runGDX { aLvLLbl.setText(lvl) } } }
+            launch { gdxGame.modelPlayer.xpFlow.collect { runGDX { aCircleProgress.progressPercent = gdxGame.modelPlayer.progressPercent100() } } }
         }
     }
 

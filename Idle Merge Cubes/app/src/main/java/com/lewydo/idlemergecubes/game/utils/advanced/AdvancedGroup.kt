@@ -41,7 +41,6 @@ abstract class AdvancedGroup : WidgetGroup(), Disposable {
 
     private val mapIsTransform = mutableMapOf<AdvancedGroup, Boolean>()
 
-
     abstract fun addActorsOnGroup()
 
     override fun draw(batch: Batch?, parentAlpha: Float) {

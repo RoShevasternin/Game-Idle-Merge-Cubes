@@ -173,6 +173,53 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">buy_def.png</key>
+            <key type="filename">buy_press.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>277,86,553,173</rect>
+                <key>scale9Paddings</key>
+                <rect>277,86,553,173</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">cell_def.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>98,98,196,197</rect>
+                <key>scale9Paddings</key>
+                <rect>98,98,196,197</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">cell_green.png</key>
+            <key type="filename">cell_red.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>123,124,246,247</rect>
+                <key>scale9Paddings</key>
+                <rect>123,124,246,247</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">coin.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -188,7 +235,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">dialog_lvl.png</key>
+            <key type="filename">cube.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -197,9 +244,69 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>175,80,349,160</rect>
+                <rect>95,95,191,191</rect>
                 <key>scale9Paddings</key>
-                <rect>175,80,349,160</rect>
+                <rect>95,95,191,191</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">glare_panel_game_1.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>34,16,69,31</rect>
+                <key>scale9Paddings</key>
+                <rect>34,16,69,31</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">glare_panel_game_2.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>14,4,28,9</rect>
+                <key>scale9Paddings</key>
+                <rect>14,4,28,9</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">glare_panel_game_3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>40,40,81,81</rect>
+                <key>scale9Paddings</key>
+                <rect>40,40,81,81</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">glare_panel_game_4.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>47,47,94,94</rect>
+                <key>scale9Paddings</key>
+                <rect>47,47,94,94</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -215,36 +322,6 @@
                 <rect>59,59,117,117</rect>
                 <key>scale9Paddings</key>
                 <rect>59,59,117,117</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">progress_dialog_lvl.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>130,8,259,16</rect>
-                <key>scale9Paddings</key>
-                <rect>130,8,259,16</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">progress_dialog_lvl_background.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>133,11,267,22</rect>
-                <key>scale9Paddings</key>
-                <rect>133,11,267,22</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

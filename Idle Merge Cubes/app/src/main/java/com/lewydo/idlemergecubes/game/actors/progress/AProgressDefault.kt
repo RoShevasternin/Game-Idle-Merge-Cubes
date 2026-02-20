@@ -25,10 +25,10 @@ class AProgressDefault(override val screen: AdvancedScreen): AdvancedGroup() {
 
     private val labelStyle80 = LabelStyle(font80, Color.valueOf("A82800"))
 
-    private val LENGTH = 698f
+    private val LENGTH = 1500f
 
     private val backgroundImage = Image(screen.drawerUtil.getRegion(Color.WHITE))
-    private val progressImage   = Image(screen.drawerUtil.getRegion(Color.valueOf("86B216")))
+    private val progressImage   = Image(screen.drawerUtil.getRegion(Color.BLACK))
     private val mask            = AOldMask(screen, alphaWidth = WIDTH_UI.toInt())
 
     private val label = Label("", labelStyle80)

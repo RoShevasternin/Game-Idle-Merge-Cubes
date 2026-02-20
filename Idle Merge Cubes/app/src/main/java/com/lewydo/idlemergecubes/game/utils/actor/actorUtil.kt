@@ -1,6 +1,8 @@
 package com.lewydo.idlemergecubes.game.utils.actor
 
+import android.graphics.Rect
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
@@ -72,8 +74,8 @@ fun List<Actor>.setFillParent() {
     }
 }
 
-fun Actor.setBounds(boundsData: BoundsData) {
-    with(boundsData) { setBounds(x, y, w, h) }
+fun Actor.setBounds(bounds: Rectangle) {
+    with(bounds) { setBounds(x, y, width, height) }
 }
 
 fun Actor.setBounds(position: Vector2, size: Vector2) {
@@ -121,10 +123,3 @@ fun Actor.animDelay(time: Float, block: () -> Unit = {}) {
         Acts.run { block.invoke() }
     ))
 }
-
-data class BoundsData(
-    val x: Float,
-    val y: Float,
-    val w: Float,
-    val h: Float,
-)

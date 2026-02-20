@@ -1,12 +1,11 @@
 package com.lewydo.idlemergecubes.game.actors.light
 
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.screens.LoaderScreen
 import com.lewydo.idlemergecubes.game.utils.Acts
-import com.lewydo.idlemergecubes.game.utils.actor.BoundsData
 import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.gdxGame
@@ -14,12 +13,12 @@ import com.lewydo.idlemergecubes.game.utils.gdxGame
 class ALightLoader(override val screen: LoaderScreen): AdvancedGroup() {
 
     private val listBoundsData = listOf(
-        BoundsData(0f, 0f, 2208f, 2425f),
-        BoundsData(121f, 260f, 1893f, 1893f),
-        BoundsData(430f, 578f, 1292f, 1292f),
-        BoundsData(614f, 833f, 1323f, 1197f),
-        BoundsData(935f, 1011f, 840f, 840f),
-        BoundsData(934f, 1044f, 708f, 708f),
+        Rectangle(0f, 0f, 2208f, 2425f),
+        Rectangle(121f, 260f, 1893f, 1893f),
+        Rectangle(430f, 578f, 1292f, 1292f),
+        Rectangle(614f, 833f, 1323f, 1197f),
+        Rectangle(935f, 1011f, 840f, 840f),
+        Rectangle(934f, 1044f, 708f, 708f),
     )
 
     private val listLightImg = List(listBoundsData.size) { Image(gdxGame.assetsLoader.listLight[it]) }

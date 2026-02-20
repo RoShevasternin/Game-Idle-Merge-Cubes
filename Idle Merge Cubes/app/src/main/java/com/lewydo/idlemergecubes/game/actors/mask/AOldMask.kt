@@ -21,6 +21,25 @@ class AOldMask(
     private var maskTexture: Texture? = null
 
     override fun addActorsOnGroup() {
+        updatePixmapAndTexture()
+    }
+
+    override fun dispose() {
+        alphaPixmap?.let { if (it.isDisposed.not()) it.dispose() }
+        blackPixmap?.let { if (it.isDisposed.not()) it.dispose() }
+
+        maskTexture?.dispose()
+        mask?.dispose()
+
+        super.dispose()
+    }
+
+    override fun sizeChanged() {
+        super.sizeChanged()
+        updatePixmapAndTexture()
+    }
+
+    private fun updatePixmapAndTexture() {
         alphaPixmap = Pixmap(width.toInt()+alphaWidth, height.toInt()+alphaHeight, Pixmap.Format.Alpha).apply {
             setColor(0f, 0f, 0f, 0f)
             fill()
@@ -33,16 +52,6 @@ class AOldMask(
             }
             Texture(alphaPixmap).combineByCenter(Texture(blackPixmap))
         }
-    }
-
-    override fun dispose() {
-        alphaPixmap?.let { if (it.isDisposed.not()) it.dispose() }
-        blackPixmap?.let { if (it.isDisposed.not()) it.dispose() }
-
-        maskTexture?.dispose()
-        mask?.dispose()
-
-        super.dispose()
     }
 
     // ---------------------------------------------------

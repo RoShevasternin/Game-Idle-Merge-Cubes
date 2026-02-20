@@ -34,23 +34,34 @@ class SpriteUtil {
 
         // atlas All ------------------------------------------------------------------------------
 
-        val coin                           = getAllRegion("coin")
-        val dialog_lvl                     = getAllRegion("dialog_lvl")
-        val panel_lvl                      = getAllRegion("panel_lvl")
-        val progress_dialog_lvl            = getAllRegion("progress_dialog_lvl")
-        val progress_dialog_lvl_background = getAllRegion("progress_dialog_lvl_background")
-        val settings_def                   = getAllRegion("settings_def")
-        val settings_press                 = getAllRegion("settings_press")
+        val coin            = getAllRegion("coin")
+        val panel_lvl       = getAllRegion("panel_lvl")
+        val settings_def    = getAllRegion("settings_def")
+        val settings_press  = getAllRegion("settings_press")
+        val buy_def         = getAllRegion("buy_def")
+        val buy_press       = getAllRegion("buy_press")
+
+        val cell_def   = getAllRegion("cell_def")
+        val cell_green = getAllRegion("cell_green")
+        val cell_red   = getAllRegion("cell_red")
+
+        val cube = getAllRegion("cube")
+
+        val listGlarePanelGame = List(4) { getAllRegion("glare_panel_game_${it.inc()}") }
 
         //val list = List(6) { getAllRegion("${it.inc()}") }
 
         // atlas 9_patch ------------------------------------------------------------------------------
 
-        val panel_coin = get9Patch("panel_coin")
+        val panel_coin                     = get9Patch("panel_coin")
+        val dialog_lvl                     = get9Patch("dialog_lvl")
+        val progress_dialog_lvl            = get9Patch("progress_dialog_lvl")
+        val progress_dialog_lvl_background = get9Patch("progress_dialog_lvl_background")
 
         // textures ------------------------------------------------------------------------------
         val MASK_DIALOG_PROGRESS_LVL = SpriteManager.EnumTexture.MASK_DIALOG_PROGRESS_LVL.data.texture
         val PANEL_TOP                = SpriteManager.EnumTexture.PANEL_TOP.data.texture
+        val PANEL_GAME               = SpriteManager.EnumTexture.PANEL_GAME.data.texture
 
     }
 

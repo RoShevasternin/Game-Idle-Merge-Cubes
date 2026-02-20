@@ -9,6 +9,7 @@
     import com.lewydo.idlemergecubes.game.utils.advanced.preRenderGroup.PreRenderMethods
     import com.lewydo.idlemergecubes.game.utils.advanced.preRenderGroup.PreRenderableGroup
     import com.lewydo.idlemergecubes.game.utils.disposeAll
+    import com.lewydo.idlemergecubes.game.utils.gdxGame
 
     class AMask(
         override val screen: AdvancedScreen,
@@ -16,15 +17,17 @@
     ): PreRenderableGroup() {
 
         companion object {
-            private var vertexShader   = Gdx.files.internal("shader/defaultVS.glsl").readString()
-            private var fragmentShader = Gdx.files.internal("shader/mask/maskFS.glsl").readString()
-        }
+            private val shaderProgram: ShaderProgram by lazy {
+                ShaderProgram.pedantic = false //краще винести в блок ініціалізації
 
-        private var shaderProgram: ShaderProgram? = null
+                val vertex = Gdx.files.internal("shader/defaultVS.glsl").readString()
+                val fragment = Gdx.files.internal("shader/mask/maskFS.glsl").readString()
 
-        override fun addActorsOnGroup() {
-            createShaders()
-            createFrameBuffer()
+                ShaderProgram(vertex, fragment).apply {
+                    if (!isCompiled) throw IllegalStateException("Shader failed: $log")
+                    gdxGame.disposableSet.add(this)
+                }
+            }
         }
 
         override fun getPreRenderMethods()= object : PreRenderMethods {
@@ -43,32 +46,11 @@
                     Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0)
                     textureGroup!!.texture.bind(0)
 
-                    shaderProgram!!.setUniformi("u_mask", 1)
-                    shaderProgram!!.setUniformi("u_texture", 0)
+                    shaderProgram.setUniformi("u_mask", 1)
+                    shaderProgram.setUniformi("u_texture", 0)
                 }
 
                 batch.draw(textureGroup, 0f, 0f, width, height)
-            }
-        }
-
-        override fun preRender(batch: Batch, parentAlpha: Float) {
-            if (shaderProgram == null) throw kotlin.Exception("Error preRender: ${this::class.simpleName}")
-            super.preRender(batch, parentAlpha)
-        }
-
-        override fun dispose() {
-            super.dispose()
-            disposeAll(shaderProgram)
-        }
-
-        // Logic ------------------------------------------------------------------------
-
-        private fun createShaders() {
-            ShaderProgram.pedantic = false
-            shaderProgram = ShaderProgram(vertexShader, fragmentShader)
-
-            if (shaderProgram?.isCompiled == false) {
-                throw IllegalStateException("shader compilation failed:\n" + shaderProgram?.log)
             }
         }
 

@@ -3,25 +3,29 @@ package com.lewydo.idlemergecubes.game.actors.progress
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.lewydo.idlemergecubes.game.actors.mask.AOldMask
 import com.lewydo.idlemergecubes.game.actors.shader.AMask
+import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
+import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class AProgressPopupXP(override val screen: AdvancedScreen): AdvancedGroup() {
 
-    private val LENGTH = 518f
+    private val padding = 13f
+    private var LENGTH  = 518f
 
     private val backgroundImage   = Image(gdxGame.assetsAll.progress_dialog_lvl_background)
     private val progressImage     = Image(gdxGame.assetsAll.progress_dialog_lvl)
     private val mask              = AMask(screen, gdxGame.assetsAll.MASK_DIALOG_PROGRESS_LVL)
 
-    private val onePercentX = LENGTH / 100f
+    private var onePercentX = LENGTH / 100f
 
     // 0 .. 100 %
     val progressPercentFlow = MutableStateFlow(0f)
@@ -32,14 +36,27 @@ class AProgressPopupXP(override val screen: AdvancedScreen): AdvancedGroup() {
         addMask()
 
         coroutine?.launch {
-            progressPercentFlow.collect { percent ->
-                runGDX {
-                    progressImage.x = (percent * onePercentX) - LENGTH
-                }
-            }
+            progressPercentFlow.collect { percent -> runGDX { updateProgressX(percent) } }
         }
 
         //addListener(inputListener())
+    }
+
+    override fun sizeChanged() {
+        super.sizeChanged()
+
+        LENGTH      = (width - padding)
+        onePercentX = (LENGTH / 100f)
+
+        backgroundImage.width = width
+        mask.width            = LENGTH
+        progressImage.width   = LENGTH
+
+        updateProgressX(progressPercentFlow.value)
+    }
+
+    private fun updateProgressX(percent: Float) {
+        progressImage.x = (percent * onePercentX) - LENGTH
     }
 
     // ---------------------------------------------------

@@ -56,7 +56,8 @@ class SpriteManager(var assetManager: AssetManager) {
         MASK_DIALOG_PROGRESS_LVL (TextureData("textures/all/mask_dialog_progress_lvl.png")),
 
         // All | panel
-        PANEL_TOP (TextureData("textures/all/panel/panel_top.png")),
+        PANEL_TOP  (TextureData("textures/all/panel/panel_top.png")),
+        PANEL_GAME (TextureData("textures/all/panel/panel_game.png")),
 
 
     }

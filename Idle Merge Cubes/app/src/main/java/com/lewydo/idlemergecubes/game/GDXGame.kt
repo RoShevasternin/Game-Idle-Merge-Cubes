@@ -14,6 +14,7 @@ import com.lewydo.idlemergecubes.game.manager.util.MusicUtil
 import com.lewydo.idlemergecubes.game.manager.util.ParticleEffectUtil
 import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.manager.util.SpriteUtil
+import com.lewydo.idlemergecubes.game.model.GridModel
 import com.lewydo.idlemergecubes.game.model.PlayerModel
 import com.lewydo.idlemergecubes.game.screens.LoaderScreen
 import com.lewydo.idlemergecubes.game.utils.GameColor
@@ -50,6 +51,7 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     val ds_Player = DS_Player(coroutine)
 
     val modelPlayer = PlayerModel(ds_Player, coroutine)
+    val modelGrid   = GridModel(ds_Player, coroutine)
 
     override fun create() {
         navigationManager = NavigationManager(this)
