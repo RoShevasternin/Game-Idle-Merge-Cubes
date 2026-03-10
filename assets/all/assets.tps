@@ -173,6 +173,21 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">bag_coins.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>50,50,100,100</rect>
+                <key>scale9Paddings</key>
+                <rect>50,50,100,100</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">buy_def.png</key>
             <key type="filename">buy_press.png</key>
             <struct type="IndividualSpriteSettings">
@@ -186,37 +201,6 @@
                 <rect>277,86,553,173</rect>
                 <key>scale9Paddings</key>
                 <rect>277,86,553,173</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">cell_def.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>98,98,196,197</rect>
-                <key>scale9Paddings</key>
-                <rect>98,98,196,197</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">cell_green.png</key>
-            <key type="filename">cell_red.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>123,124,246,247</rect>
-                <key>scale9Paddings</key>
-                <rect>123,124,246,247</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -235,7 +219,10 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">cube.png</key>
+            <key type="filename">collect_def.png</key>
+            <key type="filename">collect_press.png</key>
+            <key type="filename">collect_x2_def.png</key>
+            <key type="filename">collect_x2_press.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -244,9 +231,9 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>95,95,191,191</rect>
+                <rect>222,51,445,101</rect>
                 <key>scale9Paddings</key>
-                <rect>95,95,191,191</rect>
+                <rect>222,51,445,101</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -307,6 +294,36 @@
                 <rect>47,47,94,94</rect>
                 <key>scale9Paddings</key>
                 <rect>47,47,94,94</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">idle_progress.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>387,15,774,29</rect>
+                <key>scale9Paddings</key>
+                <rect>387,15,774,29</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">idle_progress_background.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>393,20,787,39</rect>
+                <key>scale9Paddings</key>
+                <rect>393,20,787,39</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

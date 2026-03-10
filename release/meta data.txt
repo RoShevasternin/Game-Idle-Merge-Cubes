@@ -1,5 +1,5 @@
-alias: 
-pass: 
+alias: passengerToren7sj
+pass:  ujsad7hASgdtegbqe
 
-policy: 
-terms: 
+policy: https://doc-hosting.flycricket.io/idle-merge-cubes-privacy-policy/f89f644b-b9c9-4c10-a120-ff811199695a/privacy
+terms: https://doc-hosting.flycricket.io/idle-merge-cubes-terms-of-use/e0cb7465-851e-4110-82db-cbf0cddc1507/terms

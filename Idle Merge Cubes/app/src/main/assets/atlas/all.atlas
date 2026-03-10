@@ -1,55 +1,62 @@
 all.png
-size: 1491, 1461
+size: 1781, 1475
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
+bag_coins
+  rotate: false
+  xy: 534, 1
+  size: 180, 117
+  orig: 180, 117
+  offset: 0, 0
+  index: -1
 buy_def
   rotate: false
-  xy: 1, 238
+  xy: 1, 644
   size: 1107, 345
   orig: 1107, 345
   offset: 0, 0
   index: -1
 buy_press
   rotate: false
-  xy: 1, 584
+  xy: 1, 990
   size: 1107, 345
   orig: 1107, 345
-  offset: 0, 0
-  index: -1
-cell_def
-  rotate: false
-  xy: 1, 966
-  size: 392, 393
-  orig: 392, 393
-  offset: 0, 0
-  index: -1
-cell_green
-  rotate: false
-  xy: 394, 966
-  size: 492, 494
-  orig: 492, 494
-  offset: 0, 0
-  index: -1
-cell_red
-  rotate: false
-  xy: 887, 966
-  size: 492, 494
-  orig: 492, 494
   offset: 0, 0
   index: -1
 coin
   rotate: false
   xy: 358, 1
-  size: 206, 175
-  orig: 206, 175
+  size: 175, 175
+  orig: 175, 175
   offset: 0, 0
   index: -1
-cube
+collect_def
   rotate: false
-  xy: 1109, 584
-  size: 381, 381
-  orig: 381, 381
+  xy: 1, 238
+  size: 889, 202
+  orig: 889, 202
+  offset: 0, 0
+  index: -1
+collect_press
+  rotate: false
+  xy: 891, 238
+  size: 889, 202
+  orig: 889, 202
+  offset: 0, 0
+  index: -1
+collect_x2_def
+  rotate: false
+  xy: 1, 441
+  size: 889, 202
+  orig: 889, 202
+  offset: 0, 0
+  index: -1
+collect_x2_press
+  rotate: false
+  xy: 891, 441
+  size: 889, 202
+  orig: 889, 202
   offset: 0, 0
   index: -1
 glare_panel_game_1
@@ -75,28 +82,42 @@ glare_panel_game_3
   index: -1
 glare_panel_game_4
   rotate: false
-  xy: 565, 1
+  xy: 715, 1
   size: 188, 188
   orig: 188, 188
   offset: 0, 0
   index: -1
+idle_progress
+  rotate: false
+  xy: 1, 1336
+  size: 1548, 59
+  orig: 1548, 59
+  offset: 0, 0
+  index: -1
+idle_progress_background
+  rotate: false
+  xy: 1, 1396
+  size: 1573, 78
+  orig: 1573, 78
+  offset: 0, 0
+  index: -1
 panel_lvl
   rotate: false
-  xy: 754, 1
+  xy: 904, 1
   size: 235, 235
   orig: 235, 235
   offset: 0, 0
   index: -1
 settings_def
   rotate: false
-  xy: 990, 1
+  xy: 1140, 1
   size: 236, 236
   orig: 236, 236
   offset: 0, 0
   index: -1
 settings_press
   rotate: false
-  xy: 1227, 1
+  xy: 1377, 1
   size: 236, 236
   orig: 236, 236
   offset: 0, 0

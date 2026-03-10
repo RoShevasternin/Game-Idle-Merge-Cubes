@@ -1,0 +1,54 @@
+grid.png
+size: 887, 1755
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+cell_def
+  rotate: false
+  xy: 1, 1
+  size: 392, 393
+  orig: 392, 393
+  offset: 0, 0
+  index: -1
+cell_green
+  rotate: false
+  xy: 394, 1
+  size: 492, 494
+  orig: 492, 494
+  offset: 0, 0
+  index: -1
+cell_red
+  rotate: false
+  xy: 1, 496
+  size: 492, 494
+  orig: 492, 494
+  offset: 0, 0
+  index: -1
+cell_tint
+  rotate: false
+  xy: 494, 496
+  size: 392, 392
+  orig: 392, 392
+  offset: 0, 0
+  index: -1
+cube1
+  rotate: false
+  xy: 1, 991
+  size: 381, 381
+  orig: 381, 381
+  offset: 0, 0
+  index: -1
+cube2
+  rotate: false
+  xy: 383, 991
+  size: 381, 381
+  orig: 381, 381
+  offset: 0, 0
+  index: -1
+cube3
+  rotate: false
+  xy: 1, 1373
+  size: 381, 381
+  orig: 381, 381
+  offset: 0, 0
+  index: -1

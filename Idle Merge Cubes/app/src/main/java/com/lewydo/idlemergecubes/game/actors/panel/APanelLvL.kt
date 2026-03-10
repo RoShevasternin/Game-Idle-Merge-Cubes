@@ -1,14 +1,13 @@
 package com.lewydo.idlemergecubes.game.actors.panel
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.popup.ALevelPopup
-import com.lewydo.idlemergecubes.game.actors.shader.ACircleProgress
-import com.lewydo.idlemergecubes.game.utils.Acts
+import com.lewydo.idlemergecubes.game.actors.progress.ACircleProgress
 import com.lewydo.idlemergecubes.game.utils.GameColor
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
@@ -28,7 +27,7 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private val aLvLLbl      = Label("1", Label.LabelStyle(fontLvL, Color.WHITE))
     private val aLevelLbl    = Label("Level", Label.LabelStyle(fontLevel, Color.WHITE))
 
-    private val aCircleProgress = ACircleProgress(screen, -75f, 0f, 90f)
+    private val aCircleProgress = ACircleProgress(screen, -0f, 0f, 90f)
     private val aLvLPopup       = ALevelPopup(screen)
 
     // Field
@@ -88,9 +87,9 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
         isVisiblePopup = true
         aLvLPopup.clearActions()
         aLvLPopup.addAction(
-            Acts.parallel(
-                Acts.fadeIn(0.25f),
-                Acts.scaleTo(1f, 1f, 0.25f)
+            Actions.parallel(
+                Actions.fadeIn(0.25f),
+                Actions.scaleTo(1f, 1f, 0.25f)
             )
         )
     }
@@ -99,9 +98,9 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
         isVisiblePopup = false
         aLvLPopup.clearActions()
         aLvLPopup.addAction(
-            Acts.parallel(
-                Acts.fadeOut(0.2f),
-                Acts.scaleTo(0.8f, 0.8f, 0.2f)
+            Actions.parallel(
+                Actions.fadeOut(0.2f),
+                Actions.scaleTo(0.8f, 0.8f, 0.2f)
             ),
         )
     }
@@ -117,7 +116,7 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private fun collectPlayerData() {
         coroutine?.launch {
             launch { gdxGame.modelPlayer.levelFlow.collect { lvl -> runGDX { aLvLLbl.setText(lvl) } } }
-            launch { gdxGame.modelPlayer.xpFlow.collect { runGDX { aCircleProgress.progressPercent = gdxGame.modelPlayer.progressPercent100() } } }
+            launch { gdxGame.modelPlayer.xpFlow.collect { runGDX { aCircleProgress.setProgress(-gdxGame.modelPlayer.progressPercent100()) } } }
         }
     }
 
