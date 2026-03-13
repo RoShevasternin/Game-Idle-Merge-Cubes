@@ -7,6 +7,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
 
 class DS_Player(override val coroutine: CoroutineScope): DataStoreJsonUtil<PlayerData>(
@@ -17,6 +19,10 @@ class DS_Player(override val coroutine: CoroutineScope): DataStoreJsonUtil<Playe
     override val dataStore = DataStoreManager.Player
 
     override val flow = MutableStateFlow(PlayerData())
+
+    // Mutex гарантує що update-и виконуються строго один за одним,
+    // навіть якщо їх викликають одночасно з кількох корутинів
+    private val mutex = Mutex()
 
     init { initialize() }
 
@@ -38,14 +44,15 @@ class DS_Player(override val coroutine: CoroutineScope): DataStoreJsonUtil<Playe
 
     override fun update(block: (PlayerData) -> PlayerData) {
         coroutine.launch(Dispatchers.IO) {
+            mutex.withLock {
+                val old = flow.value
+                val new = block(old)
 
-            val old = flow.value
-            val new = block(old)
+                flow.value = new
+                dataStore.update { Json.encodeToString(serializer, new) }
 
-            flow.value = new
-            dataStore.update { Json.encodeToString(serializer, new) }
-
-            logPlayerUpdate(old, new)
+                logPlayerUpdate(old, new)
+            }
         }
     }
 
@@ -80,7 +87,6 @@ class DS_Player(override val coroutine: CoroutineScope): DataStoreJsonUtil<Playe
         }
 
         val contentWidth = rows.maxOf { it.length }
-        val horizontal = "─".repeat(contentWidth)
 
         log("╔${"═".repeat(contentWidth)}╗")
         log("║${center(title, contentWidth)}║")

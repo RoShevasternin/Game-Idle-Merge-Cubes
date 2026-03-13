@@ -1,6 +1,5 @@
 package com.lewydo.idlemergecubes.game.actors.checkbox
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
@@ -123,12 +122,20 @@ open class ACheckBox(
 
     fun getStyleByType(type: Type) = when(type) {
         Type.MUSIC -> ACheckBoxStyle(
-            default = TextureRegionDrawable(gdxGame.assetsAll.panel_lvl),
-            checked = TextureRegionDrawable(gdxGame.assetsAll.panel_lvl),
+            default = TextureRegionDrawable(gdxGame.assetsAll.music_box_on),
+            checked = TextureRegionDrawable(gdxGame.assetsAll.box_off),
         )
         Type.SOUND -> ACheckBoxStyle(
-            default = TextureRegionDrawable(gdxGame.assetsAll.panel_lvl),
-            checked = TextureRegionDrawable(gdxGame.assetsAll.panel_lvl),
+            default = TextureRegionDrawable(gdxGame.assetsAll.sound_box_on),
+            checked = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+        )
+        Type.VIBRO -> ACheckBoxStyle(
+            default = TextureRegionDrawable(gdxGame.assetsAll.vibro_box_on),
+            checked = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+        )
+        Type.ALARM -> ACheckBoxStyle(
+            default = TextureRegionDrawable(gdxGame.assetsAll.alarm_box_on),
+            checked = TextureRegionDrawable(gdxGame.assetsAll.box_off),
         )
     }
 
@@ -142,7 +149,7 @@ open class ACheckBox(
     )
 
     enum class Type {
-        MUSIC, SOUND,
+        SOUND, MUSIC, VIBRO, ALARM
     }
 
 

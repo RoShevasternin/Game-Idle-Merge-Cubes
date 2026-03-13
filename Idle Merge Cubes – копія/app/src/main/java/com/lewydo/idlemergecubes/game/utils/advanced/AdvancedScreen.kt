@@ -64,6 +64,7 @@ abstract class AdvancedScreen(
         log("show AdvancedScreen: $currentClassName")
         val screenWidth  = Gdx.graphics.width
         val screenHeight = Gdx.graphics.height
+
         scalerUItoScreen.calculateScale(scalerVector.set(screenWidth.toFloat(), screenHeight.toFloat()))
 
         stageBack.update(screenWidth, screenHeight, true)

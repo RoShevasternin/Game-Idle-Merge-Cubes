@@ -27,7 +27,7 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private val aLvLLbl      = Label("1", Label.LabelStyle(fontLvL, Color.WHITE))
     private val aLevelLbl    = Label("Level", Label.LabelStyle(fontLevel, Color.WHITE))
 
-    private val aCircleProgress = ACircleProgress(screen, -75f, 0f, 90f)
+    private val aCircleProgress = ACircleProgress(screen, -0f, 0f, 90f)
     private val aLvLPopup       = ALevelPopup(screen)
 
     // Field

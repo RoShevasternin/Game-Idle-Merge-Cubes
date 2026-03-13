@@ -1,20 +1,27 @@
 package com.lewydo.idlemergecubes.game.screens
 
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
 import com.lewydo.idlemergecubes.game.actors.panelGrid.APanelGrid
 import com.lewydo.idlemergecubes.game.actors.panelIdle.APanelIdle
+import com.lewydo.idlemergecubes.game.actors.panelMenu.APanelMenu
 import com.lewydo.idlemergecubes.game.actors.progress.AProgressDefault
 import com.lewydo.idlemergecubes.game.utils.Block
+import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
+import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
 import com.lewydo.idlemergecubes.game.utils.actor.HAlign
 import com.lewydo.idlemergecubes.game.utils.actor.VAlign
 import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
+import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
+import com.lewydo.idlemergecubes.game.utils.actor.disable
+import com.lewydo.idlemergecubes.game.utils.actor.enable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
@@ -23,6 +30,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class GameScreen: AdvancedScreen() {
+
+    // ------------------------------------------------------------------------
+    // Actors
+    // ------------------------------------------------------------------------
     private val aProgressTest = AProgressDefault(this)
 
     private val aPanelTop  = APanelTop(this)
@@ -31,6 +42,17 @@ class GameScreen: AdvancedScreen() {
 
     private val aBuyBtn = ABuyButton(this)
 
+    private val aDimImg    = Image(drawerUtil.getTexture(GameColor.black_55))
+    private val aPanelMenu = APanelMenu(this)
+
+    // ------------------------------------------------------------------------
+    // State
+    // ------------------------------------------------------------------------
+//    private var isOpenMenu = false
+
+    // ------------------------------------------------------------------------
+    // Lifecycle
+    // ------------------------------------------------------------------------
     override fun show() {
         setBackBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
@@ -44,11 +66,17 @@ class GameScreen: AdvancedScreen() {
         addPanelIdle()
         addBuyBtn()
 
+        addDimImg()
+        addPanelMenu()
+
         //addProgressTest()
 
         animShowScreen()
     }
 
+    // ------------------------------------------------------------------------
+    // Screen Animations
+    // ------------------------------------------------------------------------
     override fun animHideScreen(blockEnd: Block) {
         stageUI.root.animHide(TIME_ANIM_SCREEN)
         stageUI.root.animDelay(TIME_ANIM_SCREEN) { blockEnd() }
@@ -59,20 +87,26 @@ class GameScreen: AdvancedScreen() {
         stageUI.root.animDelay(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
-    // Actors ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // Add Actors
+    // ------------------------------------------------------------------------
 
     private fun Group.addPanelTop() {
         aPanelTop.setSize(2160f, 467f)
         addActorAligned(aPanelTop, HAlign.CENTER, VAlign.TOP)
 
-        var isVisible = true
+        aPanelTop.onClickSettingsBtn = { animShowMenu() }
+
+
+
+        var isTestVisible = true
         aPanelTop.setOnClickListener {
-            if (isVisible) {
+            if (isTestVisible) {
                 animHideScreen()
             } else {
                 animShowScreen()
             }
-            isVisible = !isVisible
+            isTestVisible = !isTestVisible
         }
     }
 
@@ -112,6 +146,63 @@ class GameScreen: AdvancedScreen() {
             aPanelGrid.buyCube()
         }
     }
+
+    private fun Group.addPanelMenu() {
+        aPanelMenu.disable()
+        aPanelMenu.setSize(WIDTH_UI, 2738f)
+        addActorWithConstraints(aPanelMenu) {
+            startToStartOf   = this@addPanelMenu
+            endToEndOf       = this@addPanelMenu
+            bottomToBottomOf = this@addPanelMenu
+        }
+
+        aPanelMenu.y = -aPanelMenu.height
+    }
+
+    private fun Group.addDimImg() {
+        aDimImg.apply {
+            color.a = 0f
+            disable()
+        }
+
+        addAndFillActor(aDimImg)
+        aDimImg.setOnClickListener(null) { animHideMenu() }
+    }
+
+    // ------------------------------------------------------------------------
+    // Animations
+    // ------------------------------------------------------------------------
+
+    private fun animShowMenu() {
+        aDimImg.apply {
+            clearActions()
+            enable()
+            animShow(0.3f)
+        }
+        aPanelMenu.animShowMenu()
+    }
+
+    private fun animHideMenu() {
+        aDimImg.apply {
+            clearActions()
+            disable()
+            animHide(0.25f)
+        }
+        aPanelMenu.animHideMenu()
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private fun Group.addProgressTest() {
         aProgressTest.setSize(1500f, 580f)

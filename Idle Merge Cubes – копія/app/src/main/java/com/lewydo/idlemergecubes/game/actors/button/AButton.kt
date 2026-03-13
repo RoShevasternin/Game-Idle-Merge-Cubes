@@ -182,6 +182,22 @@ open class AButton(
             pressed = TextureRegionDrawable(gdxGame.assetsAll.collect_x2_press),
             disabled = TextureRegionDrawable(gdxGame.assetsAll.collect_x2_press),
         )
+
+        Type.MENU_ITEM -> AButtonStyle(
+            default = TextureRegionDrawable(gdxGame.assetsAll.menu_item_section_def),
+            pressed = TextureRegionDrawable(gdxGame.assetsAll.menu_item_section_press),
+            disabled = TextureRegionDrawable(gdxGame.assetsAll.menu_item_section_press),
+        )
+        Type.MENU_RESET_GAME -> AButtonStyle(
+            default = TextureRegionDrawable(gdxGame.assetsAll.reset_game_def),
+            pressed = TextureRegionDrawable(gdxGame.assetsAll.reset_game_press),
+            disabled = TextureRegionDrawable(gdxGame.assetsAll.reset_game_press),
+        )
+        Type.MENU_CLOSE -> AButtonStyle(
+            default = TextureRegionDrawable(gdxGame.assetsAll.close_def),
+            pressed = TextureRegionDrawable(gdxGame.assetsAll.close_press),
+            disabled = TextureRegionDrawable(gdxGame.assetsAll.close_press),
+        )
     }
 
     // ---------------------------------------------------
@@ -195,7 +211,9 @@ open class AButton(
     )
 
     enum class Type {
-        NONE, SETTINGS, BUY, COLLECT, COLLECT_X2
+        NONE, SETTINGS, BUY, COLLECT, COLLECT_X2,
+        MENU_ITEM, MENU_RESET_GAME, MENU_CLOSE,
+
 
     }
 

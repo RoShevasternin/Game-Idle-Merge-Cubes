@@ -9,11 +9,22 @@ import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class APanelTop(override val screen: AdvancedScreen): AdvancedGroup() {
 
+    // ------------------------------------------------------------------------
+    // Actors
+    // ------------------------------------------------------------------------
     private val aPanelTopImg      = Image(gdxGame.assetsAll.PANEL_TOP)
     private val aSettingsBtn      = AButton(screen, AButton.Type.SETTINGS)
     private val aPanelBalanceCoin = APanelBalanceCoin(screen)
     private val aPanelLvL         = APanelLvL(screen)
 
+    // ------------------------------------------------------------------------
+    // Callback
+    // ------------------------------------------------------------------------
+    var onClickSettingsBtn = {}
+
+    // ------------------------------------------------------------------------
+    // Lifecycle
+    // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
         addPanelTopImg()
         addSettingsBtn()
@@ -21,8 +32,9 @@ class APanelTop(override val screen: AdvancedScreen): AdvancedGroup() {
         addPanelLvL()
     }
 
-    // Actors ------------------------------------------------------------------------
-
+    // ------------------------------------------------------------------------
+    // Add Actors
+    // ------------------------------------------------------------------------
     private fun addPanelTopImg() {
         addAndFillActor(aPanelTopImg)
     }
@@ -30,9 +42,7 @@ class APanelTop(override val screen: AdvancedScreen): AdvancedGroup() {
     private fun addSettingsBtn() {
         addActor(aSettingsBtn)
         aSettingsBtn.setBounds(1796f, 87f, 236f, 236f)
-        aSettingsBtn.setOnClickListener {
-
-        }
+        aSettingsBtn.setOnClickListener { onClickSettingsBtn() }
     }
 
     private fun addPanelBalanceCoinGroup() {

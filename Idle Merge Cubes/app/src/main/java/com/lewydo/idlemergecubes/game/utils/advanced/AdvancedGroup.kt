@@ -10,8 +10,6 @@ import com.badlogic.gdx.utils.Disposable
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.util.cancelCoroutinesAll
-import com.lewydo.idlemergecubes.util.currentClassName
-import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.concurrent.atomic.AtomicBoolean
@@ -43,35 +41,32 @@ abstract class AdvancedGroup : WidgetGroup(), Disposable {
 
     abstract fun addActorsOnGroup()
 
+    // ── Draw ──────────────────────────────────────────────────────────────────
     override fun draw(batch: Batch?, parentAlpha: Float) {
         preDrawArray.forEach { it.draw(parentAlpha * color.a) }
         super.draw(batch, parentAlpha)
         postDrawArray.forEach { it.draw(parentAlpha * color.a) }
     }
 
+    // ── Stage / init ──────────────────────────────────────────────────────────
     override fun setStage(stage: Stage?) {
         super.setStage(stage)
         tryInitGroup()
-        // Якщо розмірів або stage немає, виконаємо це в `sizeChanged()`
     }
 
     override fun sizeChanged() {
         super.sizeChanged()
         tryInitGroup()
-        // Якщо розмірів або stage немає, виконаємо це в `setStage()`
     }
 
     private fun tryInitGroup() {
-        // Якщо є розміри і stage, то ініціалізацію виконуємо один раз.
-        // (Це абсолютно моє рішення, якщо ви знаєте краще використовуйте його)
         if (width > 0 && height > 0 && stage != null) {
             sizeScaler.calculateScale(Vector2(width, height))
             if (onceInit.getAndSet(false)) { addActorsOnGroup() }
-        } else {
-            //log("[no tryInitGroup] $currentClassName: {w = $width | h = $height | stage = ${stage != null}}")
         }
     }
 
+    // ── Dispose ───────────────────────────────────────────────────────────────
     override fun dispose() {
         if (isDisposed.not()) {
             preDrawArray.clear()

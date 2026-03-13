@@ -38,6 +38,7 @@ class SpriteManager(var assetManager: AssetManager) {
         LOADER  (AtlasData("atlas/loader.atlas")),
         ALL     (AtlasData("atlas/all.atlas")),
         GRID    (AtlasData("atlas/grid.atlas")),
+        MENU    (AtlasData("atlas/menu.atlas")),
 
         _9_PATCH(AtlasData("atlas/9_patch.atlas")),
     }
@@ -62,6 +63,7 @@ class SpriteManager(var assetManager: AssetManager) {
         PANEL_TOP  (TextureData("textures/all/panel/panel_top.png")),
         PANEL_GAME (TextureData("textures/all/panel/panel_game.png")),
         PANEL_IDLE (TextureData("textures/all/panel/panel_idle.png")),
+        PANEL_MENU (TextureData("textures/all/panel/panel_menu.png")),
 
     }
 

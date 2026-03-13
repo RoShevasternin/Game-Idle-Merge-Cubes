@@ -30,6 +30,7 @@ class SpriteUtil {
     class All {
         private fun getAllRegion(name: String): TextureRegion = SpriteManager.EnumAtlas.ALL.data.atlas.findRegion(name)
         private fun getGridRegion(name: String): TextureRegion = SpriteManager.EnumAtlas.GRID.data.atlas.findRegion(name)
+        private fun getMenuRegion(name: String): TextureRegion = SpriteManager.EnumAtlas.MENU.data.atlas.findRegion(name)
 
         private fun get9Patch(name: String): NinePatch = SpriteManager.EnumAtlas._9_PATCH.data.atlas.createPatch(name)
 
@@ -66,6 +67,31 @@ class SpriteUtil {
         val listCube = List(3) { getGridRegion("cube${it.inc()}") }
 
         // ------------------------------------------------------------------------------
+        // ATLAS MENU
+        // ------------------------------------------------------------------------------
+        val close_def               = getMenuRegion("close_def")
+        val close_press             = getMenuRegion("close_press")
+        val expand                  = getMenuRegion("expand")
+        val menu_icon_leaderboard   = getMenuRegion("menu_icon_leaderboard")
+        val menu_icon_settings      = getMenuRegion("menu_icon_settings")
+        val menu_item_section_def   = getMenuRegion("menu_item_section_def")
+        val menu_item_section_press = getMenuRegion("menu_item_section_press")
+        val reset_game_def          = getMenuRegion("reset_game_def")
+        val reset_game_press        = getMenuRegion("reset_game_press")
+        val settings_separator      = getMenuRegion("settings_separator")
+        val box_off                 = getMenuRegion("box_off")
+        val icons_alarm             = getMenuRegion("icons_alarm")
+        val icons_info              = getMenuRegion("icons_info")
+        val icons_music             = getMenuRegion("icons_music")
+        val icons_sound             = getMenuRegion("icons_sound")
+        val icons_vibro             = getMenuRegion("icons_vibro")
+        val settings_item           = getMenuRegion("settings_item")
+        val music_box_on            = getMenuRegion("music_box_on")
+        val sound_box_on            = getMenuRegion("sound_box_on")
+        val vibro_box_on            = getMenuRegion("vibro_box_on")
+        val alarm_box_on            = getMenuRegion("alarm_box_on")
+
+        // ------------------------------------------------------------------------------
         // ATLAS 9_PATCH
         // ------------------------------------------------------------------------------
 
@@ -73,6 +99,7 @@ class SpriteUtil {
         val dialog_lvl                     = get9Patch("dialog_lvl")
         val progress_dialog_lvl            = get9Patch("progress_dialog_lvl")
         val progress_dialog_lvl_background = get9Patch("progress_dialog_lvl_background")
+        val panel_settings                 = get9Patch("panel_settings")
 
         // ------------------------------------------------------------------------------
         // TEXTURES
@@ -83,6 +110,7 @@ class SpriteUtil {
         val PANEL_TOP                = SpriteManager.EnumTexture.PANEL_TOP.data.texture
         val PANEL_GAME               = SpriteManager.EnumTexture.PANEL_GAME.data.texture
         val PANEL_IDLE               = SpriteManager.EnumTexture.PANEL_IDLE.data.texture
+        val PANEL_MENU               = SpriteManager.EnumTexture.PANEL_MENU.data.texture
 
     }
 

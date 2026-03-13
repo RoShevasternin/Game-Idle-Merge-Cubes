@@ -15,8 +15,9 @@ class AVerticalGroup(
     val isWrap    : Boolean = false
 ) : AdvancedGroup() {
 
-    private var ny        = 0f
-    private var newHeight = 0f
+    private var ny         = 0f
+    private var newHeight  = 0f
+    private var initHeight = 0f
 
     override fun getPrefWidth(): Float {
         return width
@@ -30,7 +31,8 @@ class AVerticalGroup(
             newHeight -= gap
             newHeight += (startGap + endGap)
 
-            if (newHeight > height) height = newHeight else newHeight = height
+            if (newHeight < initHeight) newHeight = initHeight
+            height = newHeight
         } else {
             newHeight = height
         }
@@ -38,7 +40,9 @@ class AVerticalGroup(
         return newHeight
     }
 
-    override fun addActorsOnGroup() {}
+    override fun addActorsOnGroup() {
+        initHeight = height
+    }
 
     override fun childrenChanged() {
         super.childrenChanged()
@@ -89,8 +93,8 @@ class AVerticalGroup(
                 ny = height
 
                 when (direction) {
-                    AVerticalGroup.Static.Direction.UP -> children.reversed().onEach { a -> a.moveFromAUTO(gapHeight) }
-                    AVerticalGroup.Static.Direction.DOWN -> children.onEach { a -> a.moveFromAUTO(gapHeight) }
+                    Static.Direction.UP -> children.reversed().onEach { a -> a.moveFromAUTO(gapHeight) }
+                    Static.Direction.DOWN -> children.onEach { a -> a.moveFromAUTO(gapHeight) }
                 }
             }
         }

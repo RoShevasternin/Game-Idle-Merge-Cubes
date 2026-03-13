@@ -11,6 +11,7 @@ import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
 import com.lewydo.idlemergecubes.game.manager.SoundManager
 import com.lewydo.idlemergecubes.game.manager.SpriteManager
 import com.lewydo.idlemergecubes.game.utils.Block
+import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.HEIGHT_UI
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
@@ -45,7 +46,7 @@ class LoaderScreen : AdvancedScreen() {
 
     private val aMain by lazy { AMainLoader(this) }
 
-    private val brandingLbl  = Label(textBranding, Label.LabelStyle(font, Color.WHITE.cpy().apply { a = 0.55f }))
+    private val brandingLbl  = Label(textBranding, Label.LabelStyle(font, GameColor.white_55))
 
 
     override fun show() {

@@ -1,21 +1,21 @@
 package com.lewydo.idlemergecubes.game.screens
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.game.actors.AMainLoader
+import com.lewydo.idlemergecubes.game.actors.layout.AlignH
+import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.manager.MusicManager
 import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
 import com.lewydo.idlemergecubes.game.manager.SoundManager
 import com.lewydo.idlemergecubes.game.manager.SpriteManager
 import com.lewydo.idlemergecubes.game.utils.Block
+import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.HEIGHT_UI
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
-import com.lewydo.idlemergecubes.game.utils.actor.HAlign
-import com.lewydo.idlemergecubes.game.utils.actor.VAlign
 import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
@@ -45,7 +45,7 @@ class LoaderScreen : AdvancedScreen() {
 
     private val aMain by lazy { AMainLoader(this) }
 
-    private val brandingLbl  = Label(textBranding, Label.LabelStyle(font, Color.WHITE.cpy().apply { a = 0.55f }))
+    private val brandingLbl  = Label(textBranding, Label.LabelStyle(font, GameColor.white_55))
 
 
     override fun show() {
@@ -78,7 +78,7 @@ class LoaderScreen : AdvancedScreen() {
 
         //aMain.debug()
         aMain.setSize(WIDTH_UI, HEIGHT_UI)
-        addActorAligned(aMain, HAlign.CENTER, VAlign.CENTER)
+        addActorAligned(aMain, AlignH.CENTER, AlignV.CENTER)
 
         addBrandingLbl()
 
@@ -87,7 +87,7 @@ class LoaderScreen : AdvancedScreen() {
 
     private fun Group.addBrandingLbl() {
         brandingLbl.setSize(443f, 165f)
-        addActorAligned(brandingLbl, HAlign.CENTER)
+        addActorAligned(brandingLbl, AlignH.CENTER)
         brandingLbl.setAlignment(Align.center)
         brandingLbl.y = 120f
     }

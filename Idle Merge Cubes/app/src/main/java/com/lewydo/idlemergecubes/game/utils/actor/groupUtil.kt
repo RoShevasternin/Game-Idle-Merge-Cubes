@@ -2,50 +2,37 @@ package com.lewydo.idlemergecubes.game.utils.actor
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.lewydo.idlemergecubes.game.actors.layout.AlignH
+import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 
-enum class HAlign { START, CENTER, END }
-enum class VAlign { BOTTOM, CENTER, TOP }
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
 
 fun Group.addAndFillActor(actor: Actor) {
     addActor(actor)
     actor.setSize(width, height)
 }
 
-fun Group.addAndFillActors(actors: List<Actor>) {
-    actors.forEach { addAndFillActor(it) }
-}
+fun Group.addAndFillActors(actors: List<Actor>) { actors.forEach { addAndFillActor(it) } }
+fun Group.addAndFillActors(vararg actors: Actor) { actors.forEach { addAndFillActor(it) } }
+fun Group.addActors(vararg actors: Actor)        { actors.forEach { addActor(it) } }
+fun Group.addActors(actors: List<Actor>)         { actors.forEach { addActor(it) } }
 
-fun Group.addAndFillActors(vararg actors: Actor) {
-    actors.forEach { addAndFillActor(it) }
-}
-
-fun Group.addActors(vararg actors: Actor) {
-    actors.forEach { addActor(it) }
-}
-
-fun Group.addActors(actors: List<Actor>) {
-    actors.forEach { addActor(it) }
-}
-
-fun Group.addActorAligned(
-    actor: Actor,
-    h: HAlign = HAlign.START,
-    v: VAlign = VAlign.BOTTOM,
-) {
+fun Group.addActorAligned(actor: Actor, h: AlignH = AlignH.LEFT, v: AlignV = AlignV.BOTTOM) {
     addActor(actor)
-
     val x = when (h) {
-        HAlign.START  -> 0f
-        HAlign.CENTER -> (width - actor.width) / 2f
-        HAlign.END    -> width - actor.width
+        AlignH.LEFT   -> 0f
+        AlignH.CENTER -> (width - actor.width) / 2f
+        AlignH.RIGHT  -> width - actor.width
+        AlignH.SPREAD -> 0f
     }
-
     val y = when (v) {
-        VAlign.BOTTOM -> 0f
-        VAlign.CENTER -> (height - actor.height) / 2f
-        VAlign.TOP    -> height - actor.height
+        AlignV.BOTTOM -> 0f
+        AlignV.CENTER -> (height - actor.height) / 2f
+        AlignV.TOP    -> height - actor.height
+        AlignV.SPREAD -> 0f
     }
-
     actor.setPosition(x, y)
 }
 
