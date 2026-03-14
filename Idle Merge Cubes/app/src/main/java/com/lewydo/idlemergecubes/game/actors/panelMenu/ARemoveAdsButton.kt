@@ -24,14 +24,14 @@ open class ARemoveAdsButton(override val screen: AdvancedScreen) : AButton(scree
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters(textRemoveAds + REMOVE_ADS_PRICE)
+    private val parameter = FontParameter().setCharacters("$textRemoveAds $REMOVE_ADS_PRICE $")
     private val font = screen.fontGenerator_Nunito_Bold.generateFont(parameter.setSize(80))
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
     private val aTitleLbl = Label(textRemoveAds, Label.LabelStyle(font, Color.WHITE))
-    private val aPriceLbl = Label(REMOVE_ADS_PRICE.toString(), Label.LabelStyle(font, GameColor.green_98FF68))
+    private val aPriceLbl = Label("$$REMOVE_ADS_PRICE", Label.LabelStyle(font, GameColor.green_98FF68))
 
     // ------------------------------------------------------------------------
     // Lifecycle

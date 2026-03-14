@@ -1,10 +1,16 @@
 package com.lewydo.idlemergecubes.game.actors.panelMenu
 
 import com.lewydo.idlemergecubes.game.actors.button.AButton
+import com.lewydo.idlemergecubes.game.actors.layout.linear.AVerticalGroup
+import com.lewydo.idlemergecubes.game.actors.panelMenu.settings.ASettingsSection
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 
-class APanelContentMenu(override val screen: AdvancedScreen): AdvancedGroup() {
+class APanelContentMenu(override val screen: AdvancedScreen): AVerticalGroup(
+    screen,
+    gap = 48f,
+    wrap = true
+) {
 
     // ------------------------------------------------------------------------
     // Actors
@@ -21,15 +27,16 @@ class APanelContentMenu(override val screen: AdvancedScreen): AdvancedGroup() {
     // ------------------------------------------------------------------------
 
     override fun addActorsOnGroup() {
-        //addPanelMenuImg()
+        addLeaderboardBtn()
     }
 
     // ------------------------------------------------------------------------
     // Add Actors
     // ------------------------------------------------------------------------
 
-   // private fun addPanelMenuImg() {
-   //     addAndFillActor(aPanelMenuImg)
-   // }
+    private fun addLeaderboardBtn() {
+        aLeaderboardBtn.setSize(1916f, 276f)
+        addActor(aLeaderboardBtn)
+    }
 
 }

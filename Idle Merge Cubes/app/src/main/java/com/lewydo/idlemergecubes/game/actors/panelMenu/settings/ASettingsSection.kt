@@ -47,16 +47,20 @@ class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(
     // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
         debug()
-        addAndFillActor(aBgImg)
+        addBgImg()
         addIconImg()
         addTitleLbl()
         addExpandImg()
-        addContent()
+        //addContent()
     }
 
     // ------------------------------------------------------------------------
     // Add Actors
     // ------------------------------------------------------------------------
+
+    private fun addBgImg() {
+        add(aBgImg) { fillParent() }
+    }
 
     private fun addIconImg() {
         aIconImg.setSize(130f, 130f)

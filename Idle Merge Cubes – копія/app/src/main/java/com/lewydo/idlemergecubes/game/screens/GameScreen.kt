@@ -3,6 +3,8 @@ package com.lewydo.idlemergecubes.game.screens
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
+import com.lewydo.idlemergecubes.game.actors.layout.AlignH
+import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
 import com.lewydo.idlemergecubes.game.actors.panelGrid.APanelGrid
 import com.lewydo.idlemergecubes.game.actors.panelIdle.APanelIdle
@@ -12,8 +14,6 @@ import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
-import com.lewydo.idlemergecubes.game.utils.actor.HAlign
-import com.lewydo.idlemergecubes.game.utils.actor.VAlign
 import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
@@ -93,7 +93,7 @@ class GameScreen: AdvancedScreen() {
 
     private fun Group.addPanelTop() {
         aPanelTop.setSize(2160f, 467f)
-        addActorAligned(aPanelTop, HAlign.CENTER, VAlign.TOP)
+        addActorAligned(aPanelTop, AlignH.CENTER, AlignV.TOP)
 
         aPanelTop.onClickSettingsBtn = { animShowMenu() }
 
@@ -206,7 +206,7 @@ class GameScreen: AdvancedScreen() {
 
     private fun Group.addProgressTest() {
         aProgressTest.setSize(1500f, 580f)
-        addActorAligned(aProgressTest, HAlign.CENTER, VAlign.CENTER)
+        addActorAligned(aProgressTest, AlignH.CENTER, AlignV.CENTER)
 
 
         val a = listOf(1, 100, 1000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000, 1_000_000_000_000, 10_000_000_000_000)

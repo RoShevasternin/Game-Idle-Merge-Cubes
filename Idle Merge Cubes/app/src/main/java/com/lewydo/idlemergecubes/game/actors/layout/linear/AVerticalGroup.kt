@@ -48,7 +48,7 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 //    group.addActor(aBtn2)     // стандартний addActor — нічого особливого
 // ═════════════════════════════════════════════════════════════════════════════
 
-class AVerticalGroup(
+open class AVerticalGroup(
     screen    : AdvancedScreen,
     gap       : Float      = 0f,
     alignV    : AlignV = AlignV.TOP,
@@ -62,6 +62,13 @@ class AVerticalGroup(
     var alignH    = alignH;    set(v) { field = v; relayout() }
     var direction = direction; set(v) { field = v; relayout() }
     var wrap      = wrap;      set(v) { field = v; relayout() }
+
+    // ── getPrefWidth / getPrefHeight — для ScrollPane ─────────────────────────
+    // ScrollPane визначає розмір контенту через ці методи, а не через width/height.
+    // Без них ScrollPane думає що контент має розмір 0 і скрол не працює.
+
+    override fun getPrefWidth()  = width
+    override fun getPrefHeight() = totalChildrenHeight() + paddingTop + paddingBottom
 
     // ── layout() ─────────────────────────────────────────────────────────────
 

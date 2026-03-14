@@ -54,6 +54,13 @@ class AHorizontalGroup(
     var wrapWidth  = wrapWidth;  set(v) { field = v; relayout() }
     var wrapHeight = wrapHeight; set(v) { field = v; relayout() }
 
+    // ── getPrefWidth / getPrefHeight — для ScrollPane ─────────────────────────
+    // ScrollPane визначає розмір контенту через ці методи, а не через width/height.
+    // Без них ScrollPane думає що контент має розмір 0 і скрол не працює.
+
+    override fun getPrefWidth()  = totalChildrenWidth() + paddingLeft + paddingRight
+    override fun getPrefHeight() = height
+
     // ── layout() ─────────────────────────────────────────────────────────────
 
     override fun layout() {

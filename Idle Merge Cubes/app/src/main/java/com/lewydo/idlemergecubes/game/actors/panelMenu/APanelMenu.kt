@@ -18,41 +18,31 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
 
     // ── Actors ────────────────────────────────────────────────────────────────
 
-    private val aPanelTopMenu = APanelTopMenu(screen)
-    private val aBgImg        = Image(screen.drawerUtil.getTexture(GameColor.purple_350080))
-    //private val aContent = APanelMenuContent(screen)
+    private val aPanelTopMenu     = APanelTopMenu(screen)
+    private val aBgImg            = Image(screen.drawerUtil.getTexture(GameColor.purple_350080))
+    private val aPanelContentMenu = APanelContentMenu(screen)
 
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
+        debug()
+
         addPanelTopMenu()
         addBgImg()
+        addPanelContentMenu()
 
+        aPanelTopMenu.toFront()
 
-        val aSettingsSection = ASettingsSection(screen)
-        aSettingsSection.setSize(1916f, 1529f)
+        setupHeightCallback()
 
-        add(aSettingsSection) { center() }
-
-//        addActorWithConstraints(aSettingsSection) {
-//            startToStartOf   = this@APanelMenu
-//            endToEndOf       = this@APanelMenu
-//            topToTopOf       = this@APanelMenu
-//            bottomToBottomOf = this@APanelMenu
-//        }
-
-        aSettingsSection.addAction(Actions.sequence(
-            Actions.delay(5f),
-            Actions.forever(Actions.sequence(
-                Actions.sizeBy(0f, 500f, 2f),
-                Actions.sizeBy(0f, -500f, 2f),
-            ))
-        ))
-
-        //aSettingsSection.animHeight(5000f)
-
-        //aContent.onContentResized = { growMenu() }
+//        addAction(Actions.sequence(
+//            Actions.delay(3f),
+//            Actions.forever(Actions.sequence(
+//                Actions.sizeBy(0f, 500f, 3f),
+//                Actions.sizeBy(0f, -500f, 3f),
+//            ))
+//        ))
     }
 
     // ------------------------------------------------------------------------
@@ -61,21 +51,57 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
 
     private fun addPanelTopMenu() {
         aPanelTopMenu.setSize(width, 289f)
-        aPanelTopMenu.y = height - aPanelTopMenu.height
-        addActor(aPanelTopMenu)
+        add(aPanelTopMenu) { topToTop() }
     }
 
     private fun addBgImg() {
-        val newHeight = (height - aPanelTopMenu.height)
-        aBgImg.setSize(width, newHeight)
-        addActor(aBgImg)
+        aBgImg.width = width
+        add(aBgImg) {
+            matchConstraint()
+            topToBottom(aPanelTopMenu)
+            startToStart()
+            endToEnd()
+            bottomToBottom()
+        }
+    }
+
+    private fun addPanelContentMenu() {
+        aPanelContentMenu.debug()
+
+        aPanelContentMenu.width = 1916f
+        add(aPanelContentMenu) {
+            matchHeight()
+            topToBottom(aPanelTopMenu, 78f)
+            startToStart(margin = 122f)
+            endToEnd(margin = 122f)
+            bottomToBottom(margin = 55f)
+        }
+    }
+
+    // ── Height callback ───────────────────────────────────────────────────────
+    //
+    // Ланцюжок:
+    //   aSettingsSection росте
+    //     → aScrollContent (wrap=true) росте
+    //     → APanelContentMenu.act() → onHeightChanged(totalH)
+    //     → тут рахуємо нову висоту APanelMenu з обмеженням maxMenuH
+    //     → height = newH  →  AConstraintLayout перерахує matchHeight/matchConstraint
+    //     → aBgImg і aPanelContentMenu автоматично підлаштовуються
+    //     → aScrollPane всередині aPanelContentMenu теж (matchHeight)
+    //     → якщо контент > aScrollPane → ScrollPane вмикає скрол ✓
+
+    private fun setupHeightCallback() {
+        aPanelContentMenu.onHeightChanged = { totalContentH ->
+            val desiredH = aPanelTopMenu.height + 78f + totalContentH + 55f
+            val newH     = desiredH.coerceAtMost(maxMenuH)
+            if (newH != height) height = newH
+        }
     }
 
     // ------------------------------------------------------------------------
     // Animations
     // ------------------------------------------------------------------------
     fun animShowMenu() {
-        log("d = $y")
         enable()
         clearActions()
         animMoveTo(
@@ -99,32 +125,4 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
         }
     }
 
-    // ── Ріст меню при розкритті секцій ───────────────────────────────────────
-
-//    private fun growMenu() {
-//        val desired = aContent.totalContentH() + topBarH
-//        val target  = desired.coerceIn(minMenuH, maxMenuH)
-//        if (target == curMenuH) return
-//        curMenuH = target
-//        animMenuHeight(target)
-//    }
-//
-//    private fun animMenuHeight(targetH: Float) {
-//        val startH = aBg.height
-//        clearActions()
-//        addAction(object : Action() {
-//            private var t = 0f
-//            override fun act(delta: Float): Boolean {
-//                t = (t + delta / 0.25f).coerceAtMost(1f)
-//                val h = Interpolation.sineOut.apply(startH, targetH, t)
-//
-//                aBg.height      = h
-//                aContent.height = h - topBarH
-//                aContent.relayout()
-//                aPanelTopMenu.setPosition(0f, h - topBarH)
-//
-//                return t >= 1f
-//            }
-//        })
-//    }
 }
