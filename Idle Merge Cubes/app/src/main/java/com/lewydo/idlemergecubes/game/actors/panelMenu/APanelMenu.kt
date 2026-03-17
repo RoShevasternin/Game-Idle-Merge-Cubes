@@ -23,6 +23,13 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
     private val aPanelContentMenu = APanelContentMenu(screen)
 
     // ------------------------------------------------------------------------
+    // Field
+    // ------------------------------------------------------------------------
+
+    private val contentTopMargin    = 78f
+    private val contentBottomMargin = 55f
+
+    // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
@@ -71,10 +78,10 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
         aPanelContentMenu.width = 1916f
         add(aPanelContentMenu) {
             matchHeight()
-            topToBottom(aPanelTopMenu, 78f)
+            topToBottom(aPanelTopMenu, contentTopMargin)
             startToStart(margin = 122f)
             endToEnd(margin = 122f)
-            bottomToBottom(margin = 55f)
+            bottomToBottom(margin = contentBottomMargin)
         }
     }
 
@@ -92,7 +99,7 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
 
     private fun setupHeightCallback() {
         aPanelContentMenu.onHeightChanged = { totalContentH ->
-            val desiredH = aPanelTopMenu.height + 78f + totalContentH + 55f
+            val desiredH = aPanelTopMenu.height + contentTopMargin + totalContentH + contentBottomMargin
             val newH     = desiredH.coerceAtMost(maxMenuH)
             if (newH != height) height = newH
         }
