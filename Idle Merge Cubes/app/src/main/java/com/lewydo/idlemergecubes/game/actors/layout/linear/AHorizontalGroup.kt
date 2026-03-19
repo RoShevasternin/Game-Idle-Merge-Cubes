@@ -58,7 +58,7 @@ class AHorizontalGroup(
     // ScrollPane визначає розмір контенту через ці методи, а не через width/height.
     // Без них ScrollPane думає що контент має розмір 0 і скрол не працює.
 
-    override fun getPrefWidth()  = totalChildrenWidth() + paddingLeft + paddingRight
+    override fun getPrefWidth()  = width
     override fun getPrefHeight() = height
 
     // ── layout() ─────────────────────────────────────────────────────────────
@@ -66,13 +66,15 @@ class AHorizontalGroup(
     override fun layout() {
         if (children.isEmpty) return
 
+        // Wrap: виставляємо розміри і одразу розміщуємо дітей в тому ж кадрі.
+        // НЕ робимо return — інакше один кадр діти на старих позиціях → дрижання.
         if (wrapWidth) {
             val needed = totalChildrenWidth() + paddingLeft + paddingRight
-            if (width != needed) { width = needed; return }
+            if (width != needed) { width = needed }
         }
         if (wrapHeight) {
             val needed = (children.maxOfOrNull { it.height } ?: 0f) + paddingTop + paddingBottom
-            if (height != needed) { height = needed; return }
+            if (height != needed) { height = needed }
         }
 
         val list = orderedChildren()

@@ -65,7 +65,7 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
         aBgImg.width = width
         add(aBgImg) {
             matchConstraint()
-            topToBottom(aPanelTopMenu)
+            topToBottom(aPanelTopMenu, -20f)
             startToStart()
             endToEnd()
             bottomToBottom()

@@ -66,9 +66,8 @@ open class AVerticalGroup(
     // ── getPrefWidth / getPrefHeight — для ScrollPane ─────────────────────────
     // ScrollPane визначає розмір контенту через ці методи, а не через width/height.
     // Без них ScrollPane думає що контент має розмір 0 і скрол не працює.
-
     override fun getPrefWidth()  = width
-    override fun getPrefHeight() = totalChildrenHeight() + paddingTop + paddingBottom
+    override fun getPrefHeight() = height
 
     // ── layout() ─────────────────────────────────────────────────────────────
 
@@ -76,12 +75,12 @@ open class AVerticalGroup(
         if (children.isEmpty) return
 
         // Wrap: виставляємо висоту групи під дітей
+        // Важливо: НЕ робимо return після зміни height —
+        // розміщуємо дітей одразу з новою висотою в тому ж кадрі.
+        // Без цього діти один кадр на старих позиціях → дрижання.
         if (wrap) {
             val needed = totalChildrenHeight() + paddingTop + paddingBottom
-            if (height != needed) {
-                height = needed   // → sizeChanged → invalidate → layout знову з правильним height
-                return
-            }
+            if (height != needed) height = needed
         }
 
         val list = orderedChildren()

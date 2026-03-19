@@ -50,6 +50,8 @@ open class ACheckBox(
         override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
             touchDragged(event, x, y, pointer)
             gdxGame.soundUtil.apply { play(click) }
+
+            event?.stop()
             return true
         }
 

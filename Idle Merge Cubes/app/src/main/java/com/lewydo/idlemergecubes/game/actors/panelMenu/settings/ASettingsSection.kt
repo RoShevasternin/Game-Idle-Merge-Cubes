@@ -4,16 +4,26 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Group
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
+import com.lewydo.idlemergecubes.game.actors.button.AButton
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.GameColor
+import com.lewydo.idlemergecubes.game.utils.actor.addActors
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
+import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
+import com.lewydo.idlemergecubes.game.utils.actor.animRotateTo
+import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
+import com.lewydo.idlemergecubes.game.utils.actor.enable
+import com.lewydo.idlemergecubes.game.utils.actor.setBounds
+import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
+import com.lewydo.idlemergecubes.game.utils.actor.setOrigin
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
@@ -31,6 +41,7 @@ class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(
     // Actors
     // ------------------------------------------------------------------------
     private val aBgImg     = Image(gdxGame.assetsAll.panel_settings)
+    private val aTopGroup  = ATmpGroup(screen)
     private val aIconImg   = Image(gdxGame.assetsAll.menu_icon_settings)
     private val aTitleLbl  = Label("Settings", Label.LabelStyle(font80, Color.WHITE))
     private val aExpandImg = Image(gdxGame.assetsAll.expand)
@@ -38,20 +49,24 @@ class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(
     private val aSettingsContent = ASettingsContent(screen)
 
     // ------------------------------------------------------------------------
-    // Callback
+    // State
     // ------------------------------------------------------------------------
-    var onHeightChanged: Block = {}
+    var isOpen = false
+
+    // ------------------------------------------------------------------------
+    // Field
+    // ------------------------------------------------------------------------
+    private val timeAnim = 0.25f
 
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
         debug()
+
         addBgImg()
-        addIconImg()
-        addTitleLbl()
-        addExpandImg()
-        //addContent()
+        addTopGroup()
+        addContent()
     }
 
     // ------------------------------------------------------------------------
@@ -62,59 +77,79 @@ class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(
         add(aBgImg) { fillParent() }
     }
 
-    private fun addIconImg() {
-        aIconImg.setSize(130f, 130f)
-        add(aIconImg) {
-            startToStart(margin = 80f)
-            topToTop(margin = 73f)
-        }
+    // ------------------------------------------------------------------------
+    // Add Actors - TopGroup
+    // ------------------------------------------------------------------------
+
+    private fun addTopGroup() {
+        aTopGroup.debug()
+
+        aTopGroup.setSize(width, height)
+        add(aTopGroup) { topToTop() }
+
+        aTopGroup.addActors(aIconImg, aTitleLbl, aExpandImg)
+        setUpIconImg(); setUpTitleLbl(); setUpExpandImg();
+
+        aTopGroup.setOnClickListener { toggle() }
+    }
+
+    private fun setUpIconImg() {
+        aIconImg.setBounds(80f, 72f, 130f, 130f)
         aIconImg.disable()
     }
 
-    private fun addTitleLbl() {
-        aTitleLbl.setSize(303f, 109f)
-        add(aTitleLbl) {
-            startToStart(margin = 234f)
-            topToTop(margin = 83f)
-        }
+    private fun setUpTitleLbl() {
+        aTitleLbl.setBounds(234f, 82f, 303f, 109f)
         aTitleLbl.disable()
     }
 
-    private fun addExpandImg() {
-        aExpandImg.setSize(82f, 82f)
-        add(aExpandImg) {
-            startToStart(margin = 1754f)
-            topToTop(margin = 96f)
-        }
+    private fun setUpExpandImg() {
+        aExpandImg.setBounds(1754f, 96f, 82f, 82f)
         aExpandImg.disable()
+        aExpandImg.setOrigin(Align.center)
     }
 
+    // ------------------------------------------------------------------------
+    // Add Actors - Content
+    // ------------------------------------------------------------------------
+
     private fun addContent() {
-        aSettingsContent.apply {
-            //color.a = 0f
-            disable()
-        }
+        aSettingsContent.animHideAndDisable()
 
         addActor(aSettingsContent)
         aSettingsContent.setBounds(76f, 64f, 1764f, 1218f)
     }
 
     // ------------------------------------------------------------------------
+    // Logic
+    // ------------------------------------------------------------------------
+    private fun toggle() {
+        if (isOpen) animClose() else animOpen()
+        isOpen = !isOpen
+    }
+
+    // ------------------------------------------------------------------------
     // Animations
     // ------------------------------------------------------------------------
 
-    private fun animHeight(to: Float) {
-        val from = height
+    private fun animOpen() {
         clearActions()
-        addAction(object : Action() {
-            private var t = 0f
-            override fun act(delta: Float): Boolean {
-                t      = (t + delta / 0.25f).coerceAtMost(1f)
-                height = Interpolation.sineOut.apply(from, to, t)
-                onHeightChanged.invoke()
-                return t >= 1f
-            }
-        })
+        addAction(Actions.sequence(
+            Actions.sizeTo(width, 1530f, timeAnim, Interpolation.sineOut),
+            Actions.run { aSettingsContent.animShowAndEnable(0.10f) }
+        ))
+
+        aExpandImg.animRotateTo(180f, timeAnim)
+    }
+
+    private fun animClose() {
+        clearActions()
+        addAction(Actions.sequence(
+            Actions.run { aSettingsContent.animHideAndDisable(0.10f) },
+            Actions.sizeTo(width, 275f, timeAnim, Interpolation.sineIn),
+        ))
+
+        aExpandImg.animRotateTo(0f, timeAnim)
     }
 
 }

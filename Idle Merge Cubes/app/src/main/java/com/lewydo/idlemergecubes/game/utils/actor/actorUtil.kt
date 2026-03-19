@@ -52,6 +52,10 @@ fun Actor.getTopParent(root: Group): Group {
     return top
 }
 
+// ------------------------------------------------------------------------
+// disable | enable
+// ------------------------------------------------------------------------
+
 fun Actor.disable() = when(this) {
     is AButton -> disable()
     else       -> touchable = Touchable.disabled
@@ -62,14 +66,9 @@ fun Actor.enable() = when(this) {
     else       -> touchable = Touchable.enabled
 }
 
-fun List<Actor>.setFillParent() {
-    onEach { actor ->
-        when (actor) {
-            is Widget      -> actor.setFillParent(true)
-            is WidgetGroup -> actor.setFillParent(true)
-        }
-    }
-}
+// ------------------------------------------------------------------------
+// Default Params
+// ------------------------------------------------------------------------
 
 fun Actor.setBounds(bounds: Rectangle) {
     with(bounds) { setBounds(x, y, width, height) }
@@ -87,19 +86,32 @@ fun Actor.setOrigin(vector: Vector2) {
     setOrigin(vector.x, vector.y)
 }
 
-fun Actor.animShow(time: Float=0f, block: () -> Unit = {}) {
+// ------------------------------------------------------------------------
+// Animations
+// ------------------------------------------------------------------------
+fun Actor.animShow(time: Float = 0f, block: () -> Unit = {}) {
     addAction(Actions.sequence(
         Actions.fadeIn(time),
         Actions.run(block)
     ))
 }
-fun Actor.animHide(time: Float=0f, block: () -> Unit = {}) {
+fun Actor.animHide(time: Float = 0f, block: () -> Unit = {}) {
     addAction(Actions.sequence(
         Actions.fadeOut(time),
         Actions.run(block)
     ))
 }
+fun Actor.animShowAndEnable(time: Float = 0f, block: () -> Unit = {}) {
+    animShow(time) {
+        enable()
+        block.invoke()
+    }
+}
 
+fun Actor.animHideAndDisable(time: Float = 0f, block: () -> Unit = {}) {
+    disable()
+    animHide(time) { block.invoke() }
+}
 fun Actor.animMoveTo(
     x: Float, y: Float,
     time: Float = 0f,
@@ -112,11 +124,20 @@ fun Actor.animMoveTo(
             Actions.run { block() }
         ))
 }
-
 fun Actor.animDelay(time: Float, block: () -> Unit = {}) {
     addAction(
         Actions.sequence(
         Actions.delay(time),
         Actions.run { block.invoke() }
+    ))
+}
+fun Actor.animRotateTo(
+    rotation: Float,
+    time: Float = 0f,
+    interpolation: Interpolation = Interpolation.linear,
+    block: () -> Unit = {}) {
+    addAction(Actions.sequence(
+        Actions.rotateTo(rotation, time, interpolation),
+        Actions.run(block)
     ))
 }

@@ -191,6 +191,18 @@ open class AConstraintLayout(override val screen: AdvancedScreen) : AdvancedGrou
 
     private fun resolveX(actor: Actor, p: CLParams): Float {
         val w = actor.width
+
+        // MATCH_CONSTRAINT: x = left_boundary
+        // Розмір вже = right_boundary - left_boundary, тому просто ставимо від лівого краю
+        if (p.widthMode == Dimension.MATCH_CONSTRAINT) {
+            return when {
+                p.startToStartActor != null -> edgeLeft(p.startToStartActor!!)  + p.marginStart
+                p.startToEndActor   != null -> edgeRight(p.startToEndActor!!)   + p.marginStart
+                else                        -> p.marginStart
+            }
+        }
+
+        // FIXED / MATCH_PARENT / PERCENT — стандартна логіка
         val startX: Float? = when {
             p.startToStartActor != null -> edgeLeft(p.startToStartActor!!)  + p.marginStart
             p.startToEndActor   != null -> edgeRight(p.startToEndActor!!)   + p.marginStart
@@ -203,14 +215,26 @@ open class AConstraintLayout(override val screen: AdvancedScreen) : AdvancedGrou
         }
         return when {
             startX != null && endX != null -> startX + (endX - startX) * p.horizontalBias
-            startX != null -> startX
-            endX   != null -> endX
-            else           -> actor.x
+            startX != null                 -> startX
+            endX   != null                 -> endX
+            else                           -> actor.x
         }
     }
 
     private fun resolveY(actor: Actor, p: CLParams): Float {
         val h = actor.height
+
+        // MATCH_CONSTRAINT: y = bottom_boundary
+        // Розмір вже = top_boundary - bottom_boundary, тому просто ставимо від нижнього краю
+        if (p.heightMode == Dimension.MATCH_CONSTRAINT) {
+            return when {
+                p.bottomToBottomActor != null -> edgeBottom(p.bottomToBottomActor!!) + p.marginBottom
+                p.bottomToTopActor    != null -> edgeTop(p.bottomToTopActor!!)       + p.marginBottom
+                else                          -> p.marginBottom
+            }
+        }
+
+        // FIXED / MATCH_PARENT / PERCENT — стандартна логіка
         val bottomY: Float? = when {
             p.bottomToBottomActor != null -> edgeBottom(p.bottomToBottomActor!!) + p.marginBottom
             p.bottomToTopActor    != null -> edgeTop(p.bottomToTopActor!!)       + p.marginBottom
@@ -223,9 +247,9 @@ open class AConstraintLayout(override val screen: AdvancedScreen) : AdvancedGrou
         }
         return when {
             bottomY != null && topY != null -> bottomY + (topY - bottomY) * p.verticalBias
-            bottomY != null -> bottomY
-            topY    != null -> topY
-            else            -> actor.y
+            bottomY != null                 -> bottomY
+            topY    != null                 -> topY
+            else                            -> actor.y
         }
     }
 

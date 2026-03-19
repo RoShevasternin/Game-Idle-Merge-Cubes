@@ -12,6 +12,7 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.util.log
 
 class ASettingsContent(override val screen: AdvancedScreen) : AdvancedGroup() {
 
@@ -86,7 +87,7 @@ class ASettingsContent(override val screen: AdvancedScreen) : AdvancedGroup() {
             item.setSize(1756f, 178f)
             aVerticalGroup.addActor(item)
 
-            if (index == 4) return // для aSettItemInfo немає лямбди з listBlock
+            if (index == 4) return@forEachIndexed // для aSettItemInfo немає лямбди з listBlock
             item.onCheckBlock = listBlock[index].get()
         }
 

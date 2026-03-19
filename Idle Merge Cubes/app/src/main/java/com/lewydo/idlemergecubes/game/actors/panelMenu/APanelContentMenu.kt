@@ -122,14 +122,13 @@ class APanelContentMenu(override val screen: AdvancedScreen) : AConstraintLayout
         aSettingsSection.setSize(width, itemHeight)
         addActor(aSettingsSection)
 
-        aSettingsSection.addAction(
-            Actions.sequence(
-            Actions.delay(3f),
-            Actions.forever(Actions.sequence(
-                Actions.sizeBy(0f, 4000f, 6f),
-                Actions.sizeBy(0f, -4000f, 6f),
-            ))
-        ))
+//        aSettingsSection.addAction(Actions.sequence(
+//            Actions.delay(3f),
+//            Actions.forever(Actions.sequence(
+//                Actions.sizeBy(0f, 4000f, 3f),
+//                Actions.sizeBy(0f, -4000f, 3f),
+//            ))
+//        ))
     }
 
     private fun AVerticalGroup.addRemoveAdsBtn() {
