@@ -1,4 +1,4 @@
-Loader_circle
+loader
 - Delay -
 active: false
 - Duration - 

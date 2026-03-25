@@ -8,6 +8,7 @@ object GameColor {
     val yellow_FFF858 :Color = Color.valueOf("FFF858")
     val purple_350080 :Color = Color.valueOf("350080")
     val brown_8D3800  :Color = Color.valueOf("8D3800")
+    val brown_683E03  :Color = Color.valueOf("683E03")
     val green_98FF68  :Color = Color.valueOf("98FF68")
 
     val progressStart :Color = Color.valueOf("EAFF00")

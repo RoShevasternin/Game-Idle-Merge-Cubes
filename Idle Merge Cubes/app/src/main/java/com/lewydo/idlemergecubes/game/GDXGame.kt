@@ -1,6 +1,5 @@
 package com.lewydo.idlemergecubes.game
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Disposable
@@ -18,6 +17,7 @@ import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.manager.util.SpriteUtil
 import com.lewydo.idlemergecubes.game.model.GridModel
 import com.lewydo.idlemergecubes.game.model.IdleModel
+import com.lewydo.idlemergecubes.game.model.OfflineRewardModel
 import com.lewydo.idlemergecubes.game.model.PlayerModel
 import com.lewydo.idlemergecubes.game.screens.LoaderScreen
 import com.lewydo.idlemergecubes.game.utils.GameColor
@@ -45,7 +45,8 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     val musicUtil by lazy { MusicUtil()    }
     val soundUtil by lazy { SoundUtil()    }
 
-    val particleEffectUtil by lazy { ParticleEffectUtil() }
+    val particleEffectLoader by lazy { ParticleEffectUtil.Loader() }
+    val particleEffectAll    by lazy { ParticleEffectUtil.All() }
 
     var backgroundColor = GameColor.background
     val disposableSet   = mutableSetOf<Disposable>()
@@ -54,9 +55,10 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
 
     val ds_Player = DS_Player(coroutine)
 
-    val modelPlayer = PlayerModel(ds_Player, coroutine)
-    val modelGrid   = GridModel(ds_Player, coroutine)
-    val modelIdle   = IdleModel(modelGrid, modelPlayer, coroutine)
+    val modelPlayer        = PlayerModel(ds_Player, coroutine)
+    val modelGrid          = GridModel(ds_Player, coroutine)
+    val modelIdle          = IdleModel(modelGrid, modelPlayer, coroutine)
+    val modelOfflineReward = OfflineRewardModel(modelPlayer)
 
     override fun create() {
         navigationManager = NavigationManager(this)
@@ -80,11 +82,19 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
         super.render()
     }
 
+    override fun pause() {
+        super.pause()
+        log("pause")
+        modelOfflineReward.saveLoginTime()
+    }
+
     override fun dispose() {
         try {
             coroutine.cancel()
             disposableSet.disposeAll()
             disposeAll(assetManager, musicUtil)
+
+            modelOfflineReward.saveLoginTime()
 
             log("dispose $currentClassName")
             super.dispose()

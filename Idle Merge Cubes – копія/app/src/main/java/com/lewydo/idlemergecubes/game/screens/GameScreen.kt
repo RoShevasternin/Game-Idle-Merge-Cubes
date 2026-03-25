@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
+import com.lewydo.idlemergecubes.game.actors.dialog.ADialogOfflineReward
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
@@ -33,7 +34,7 @@ class GameScreen: AdvancedScreen() {
     // Actors
     // ------------------------------------------------------------------------
 
-    private val aPanelTop = APanelTop(this)
+    private val aPanelTop  = APanelTop(this)
     private val aPanelGrid = APanelGrid(this)
     private val aPanelIdle = APanelIdle(this)
 
@@ -42,12 +43,19 @@ class GameScreen: AdvancedScreen() {
     private val aDimImg = Image(drawerUtil.getTexture(GameColor.black_55))
     private val aPanelMenu = APanelMenu(this)
 
-    private val aDialogClearGrid = ADialogClearGrid(this)
+    private val aDialogClearGrid     = ADialogClearGrid(this)
+    private val aDialogOfflineReward = ADialogOfflineReward(this)
 
     // ------------------------------------------------------------------------
     // State
     // ------------------------------------------------------------------------
     private var currentState = StateDim.NONE
+
+    // ------------------------------------------------------------------------
+    // Field
+    // ------------------------------------------------------------------------
+    private val timeShow = 0.3f
+    private val timeHide = 0.25f
 
     // ------------------------------------------------------------------------
     // Lifecycle
@@ -69,6 +77,7 @@ class GameScreen: AdvancedScreen() {
         addPanelMenu()
 
         addDialogClearGrid()
+        addDialogOfflineReward()
 
         animShowScreen()
     }
@@ -185,13 +194,32 @@ class GameScreen: AdvancedScreen() {
 
     }
 
+    private fun Group.addDialogOfflineReward() {
+        aDialogOfflineReward.animHideAndDisable()
+        aDialogOfflineReward.setSize(1908f, 2333f)
+        addActorAligned(aDialogOfflineReward, AlignH.CENTER, AlignV.CENTER)
+
+        aDialogOfflineReward.setReward(350)
+
+        aDialogOfflineReward.onCollect = {
+            setState(StateDim.NONE)
+        }
+        aDialogOfflineReward.onCollectX2 = {
+            setState(StateDim.NONE)
+        }
+
+        animDelay(0f) {
+            setState(StateDim.DIALOG_OFFLINE_REWARD)
+        }
+    }
+
     // ------------------------------------------------------------------------
     // Animations
     // ------------------------------------------------------------------------
 
-    private fun animShowDim() {
+    private fun animShowDim(isEnable: Boolean = true) {
         aDimImg.clearActions()
-        aDimImg.animShowAndEnable(0.3f)
+        if (isEnable) aDimImg.animShowAndEnable(timeShow) else aDimImg.animShow(timeShow)
     }
 
     private fun animHideDim() {
@@ -208,8 +236,9 @@ class GameScreen: AdvancedScreen() {
 
         // exit old state
         when (currentState) {
-            StateDim.MENU -> aPanelMenu.animHideMenu()
-            StateDim.DIALOG_CLEAR_GRID -> aDialogClearGrid.animHideAndDisable(0.25f)
+            StateDim.MENU                  -> aPanelMenu.animHideMenu(timeHide + 0.03f)
+            StateDim.DIALOG_CLEAR_GRID     -> aDialogClearGrid.animHideAndDisable(timeHide)
+            StateDim.DIALOG_OFFLINE_REWARD -> aDialogOfflineReward.animHideAndDisable(timeHide)
             StateDim.NONE -> {}
         }
 
@@ -217,11 +246,17 @@ class GameScreen: AdvancedScreen() {
 
         // enter new state
         when (newState) {
-            StateDim.MENU -> {
+            StateDim.MENU                  -> {
                 animShowDim()
-                aPanelMenu.animShowMenu()
+                aPanelMenu.animShowMenu(timeShow + 0.05f)
             }
-            StateDim.DIALOG_CLEAR_GRID -> aDialogClearGrid.animShowAndEnable(0.3f)
+            StateDim.DIALOG_CLEAR_GRID     -> aDialogClearGrid.animShowAndEnable(timeShow)
+            StateDim.DIALOG_OFFLINE_REWARD -> {
+                animShowDim(false)
+                aDialogOfflineReward.animShowAndEnable(timeShow) {
+                    aDialogOfflineReward.startEffect()
+                }
+            }
             StateDim.NONE -> animHideDim()
         }
     }
@@ -232,7 +267,8 @@ class GameScreen: AdvancedScreen() {
     private enum class StateDim {
         NONE,
         MENU,
-        DIALOG_CLEAR_GRID
+        DIALOG_CLEAR_GRID,
+        DIALOG_OFFLINE_REWARD,
     }
 
 }

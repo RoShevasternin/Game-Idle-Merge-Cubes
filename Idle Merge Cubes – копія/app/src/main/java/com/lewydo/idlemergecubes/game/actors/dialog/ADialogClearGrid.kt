@@ -2,14 +2,10 @@ package com.lewydo.idlemergecubes.game.actors.dialog
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.game.actors.button.AButton
-import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
-import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
-import com.lewydo.idlemergecubes.game.utils.runGDX
-import kotlinx.coroutines.launch
 
 class ADialogClearGrid(override val screen: AdvancedScreen): AdvancedGroup() {
 
@@ -31,7 +27,7 @@ class ADialogClearGrid(override val screen: AdvancedScreen): AdvancedGroup() {
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
-        addPopupImg()
+        addDialogImg()
         addYesBtn()
         addNoBtn()
     }
@@ -40,7 +36,7 @@ class ADialogClearGrid(override val screen: AdvancedScreen): AdvancedGroup() {
     // Add Actors
     // ------------------------------------------------------------------------
 
-    private fun addPopupImg() {
+    private fun addDialogImg() {
         addAndFillActor(aDialogImg)
     }
 
@@ -55,9 +51,5 @@ class ADialogClearGrid(override val screen: AdvancedScreen): AdvancedGroup() {
         aNoBtn.setBounds(740f, 56f, 573f, 276f)
         aNoBtn.setOnClickListener { blockNo() }
     }
-
-    // Logic ------------------------------------------------------------------------
-
-
 
 }

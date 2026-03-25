@@ -1,5 +1,5 @@
 particle.png
-size: 308, 104
+size: 236, 272
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
@@ -10,16 +10,51 @@ circle
   orig: 100, 100
   offset: 0, 0
   index: -1
-star_def
+confetti_1
   rotate: false
   xy: 104, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+confetti_2
+  rotate: false
+  xy: 170, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+confetti_3
+  rotate: false
+  xy: 2, 104
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+confetti_4
+  rotate: false
+  xy: 68, 104
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+confetti_5
+  rotate: false
+  xy: 134, 104
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+star_def
+  rotate: false
+  xy: 2, 170
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 star_yellow
   rotate: false
-  xy: 206, 2
+  xy: 104, 170
   size: 100, 100
   orig: 100, 100
   offset: 0, 0

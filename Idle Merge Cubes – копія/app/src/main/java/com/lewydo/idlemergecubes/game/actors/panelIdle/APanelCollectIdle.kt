@@ -1,17 +1,22 @@
 package com.lewydo.idlemergecubes.game.actors.panelIdle
 
-import com.lewydo.idlemergecubes.game.actors.button.AButton
+import com.lewydo.idlemergecubes.game.actors.button.ACollectButton
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import java.time.temporal.TemporalAmount
 
 class APanelCollectIdle(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aCollectBtn   = AButton(screen, AButton.Type.COLLECT)
-    private val aCollectX2Btn = AButton(screen, AButton.Type.COLLECT_X2)
+    private val aCollectBtn   = ACollectButton(screen, ACollectButton.Type.COLLECT)
+    private val aCollectX2Btn = ACollectButton(screen, ACollectButton.Type.COLLECT_X2)
+
+    // ------------------------------------------------------------------------
+    // Callback
+    // ------------------------------------------------------------------------
 
     var onCollect  : Block = {}
     var onCollectX2: Block = {}
@@ -31,18 +36,22 @@ class APanelCollectIdle(override val screen: AdvancedScreen) : AdvancedGroup() {
     private fun addCollect() {
         addActor(aCollectBtn)
         aCollectBtn.setBounds(48f, 56f, 889f, 202f)
-        aCollectBtn.setOnClickListener {
-            onCollect()
-        }
+        aCollectBtn.blockClick = { onCollect.invoke() }
     }
 
     private fun addCollectX2() {
         addActor(aCollectX2Btn)
         aCollectX2Btn.setBounds(968f, 56f, 889f, 202f)
-        aCollectX2Btn.setOnClickListener {
-            onCollectX2()
-        }
+        aCollectX2Btn.blockClick = { onCollectX2.invoke() }
     }
 
+    // ------------------------------------------------------------------------
+    // Logic
+    // ------------------------------------------------------------------------
+
+    fun setReward(amount: Int) {
+        aCollectBtn.setReward(amount)
+        aCollectX2Btn.setReward(amount * 2)
+    }
 
 }

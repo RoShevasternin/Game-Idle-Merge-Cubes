@@ -1,6 +1,5 @@
 package com.lewydo.idlemergecubes.game
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Disposable
@@ -45,7 +44,8 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     val musicUtil by lazy { MusicUtil()    }
     val soundUtil by lazy { SoundUtil()    }
 
-    val particleEffectUtil by lazy { ParticleEffectUtil() }
+    val particleEffectLoader by lazy { ParticleEffectUtil.Loader() }
+    val particleEffectAll    by lazy { ParticleEffectUtil.All() }
 
     var backgroundColor = GameColor.background
     val disposableSet   = mutableSetOf<Disposable>()

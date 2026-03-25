@@ -8,6 +8,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.animMoveTo
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.enable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import kotlin.time.Duration
 
 class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen) {
 
@@ -110,24 +111,24 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
     // ------------------------------------------------------------------------
     // Animations
     // ------------------------------------------------------------------------
-    fun animShowMenu() {
+    fun animShowMenu(time: Float) {
         enable()
         clearActions()
         animMoveTo(
             x             = x,
             y             = 0f,
-            time          = 0.35f,
+            time          = time,
             interpolation = Interpolation.sineOut
         )
     }
 
-    fun animHideMenu(onDone: () -> Unit = {}) {
+    fun animHideMenu(time: Float, onDone: () -> Unit = {}) {
         clearActions()
         disable()
         animMoveTo(
             x             = x,
             y             = -height,
-            time          = 0.28f,
+            time          = time,
             interpolation = Interpolation.sineIn
         ) {
             onDone()

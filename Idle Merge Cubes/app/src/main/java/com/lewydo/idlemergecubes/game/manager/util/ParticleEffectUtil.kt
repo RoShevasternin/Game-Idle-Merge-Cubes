@@ -4,7 +4,12 @@ import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
 
 class ParticleEffectUtil {
 
-    val Loader = ParticleEffectManager.EnumParticleEffect.Loader.data.effect
+    class Loader {
+        val Loader = ParticleEffectManager.EnumParticleEffect.Loader.data.effect
+    }
 
+    class All {
+        val Confetti = ParticleEffectManager.EnumParticleEffect.Confetti.data.effect
+    }
 }
 

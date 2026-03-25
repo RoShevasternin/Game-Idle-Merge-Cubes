@@ -38,25 +38,30 @@ class SpriteUtil {
         // ATLAS ALL
         // ------------------------------------------------------------------------------
 
-        val coin            = getAllRegion("coin")
-        val panel_lvl       = getAllRegion("panel_lvl")
-        val settings_def    = getAllRegion("settings_def")
-        val settings_press  = getAllRegion("settings_press")
-        val buy_def         = getAllRegion("buy_def")
-        val buy_press       = getAllRegion("buy_press")
-        val no_def          = getAllRegion("no_def")
-        val no_press        = getAllRegion("no_press")
-        val yes_def         = getAllRegion("yes_def")
-        val yes_press       = getAllRegion("yes_press")
+        val coin                  = getAllRegion("coin")
+        val panel_lvl             = getAllRegion("panel_lvl")
+        val settings_def          = getAllRegion("settings_def")
+        val settings_press        = getAllRegion("settings_press")
+        val buy_def               = getAllRegion("buy_def")
+        val buy_press             = getAllRegion("buy_press")
+        val no_def                = getAllRegion("no_def")
+        val no_press              = getAllRegion("no_press")
+        val yes_def               = getAllRegion("yes_def")
+        val yes_press             = getAllRegion("yes_press")
+        val glare_collect_left    = getAllRegion("glare_collect_left")
+        val glare_collect_right   = getAllRegion("glare_collect_right")
+        val x2                    = getAllRegion("x2")
+        val collect_center        = getAllRegion("collect_center")
+        val collect_center_x2     = getAllRegion("collect_center_x2")
+        val collect_frame_def     = getAllRegion("collect_frame_def")
+        val collect_frame_press   = getAllRegion("collect_frame_press")
+        val circle_fill           = getAllRegion("offline_circle_fill")
+        val circle_stroke         = getAllRegion("offline_circle_stroke")
 
         // Idle
         val bag_coins                = getAllRegion("bag_coins")
         val idle_progress            = getAllRegion("idle_progress")
         val idle_progress_background = getAllRegion("idle_progress_background")
-        val collect_def              = getAllRegion("collect_def")
-        val collect_press            = getAllRegion("collect_press")
-        val collect_x2_def           = getAllRegion("collect_x2_def")
-        val collect_x2_press         = getAllRegion("collect_x2_press")
 
         val listGlarePanelGame = List(4) { getAllRegion("glare_panel_game_${it.inc()}") }
 
@@ -111,14 +116,16 @@ class SpriteUtil {
 
         val MASK_DIALOG_PROGRESS_LVL = SpriteManager.EnumTexture.MASK_DIALOG_PROGRESS_LVL.data.texture
         val MASK_PROGRESS_IDLE       = SpriteManager.EnumTexture.MASK_PROGRESS_IDLE.data.texture
+        val MASK_DIALOG_OFFLINE      = SpriteManager.EnumTexture.MASK_DIALOG_OFFLINE.data.texture
         val PANEL_TOP                = SpriteManager.EnumTexture.PANEL_TOP.data.texture
         val PANEL_GAME               = SpriteManager.EnumTexture.PANEL_GAME.data.texture
         val PANEL_IDLE               = SpriteManager.EnumTexture.PANEL_IDLE.data.texture
         val PANEL_MENU               = SpriteManager.EnumTexture.PANEL_MENU.data.texture
+        val COIN_BIG                 = SpriteManager.EnumTexture.COIN_BIG.data.texture
 
         // DIALOG
         val DIALOG_CLEAR_GRID = SpriteManager.EnumTexture.DIALOG_CLEAR_GRID.data.texture
-
+        val DIALOG_OFFLINE    = SpriteManager.EnumTexture.DIALOG_OFFLINE.data.texture
     }
 
 }

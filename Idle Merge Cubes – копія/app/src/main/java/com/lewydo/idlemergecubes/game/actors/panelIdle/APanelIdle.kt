@@ -9,7 +9,9 @@ import com.lewydo.idlemergecubes.game.utils.IDLE_CYCLE_SECONDS
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
+import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
+import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
@@ -102,7 +104,7 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
     }
 
     private fun addPanelCollectIdle() {
-        aPanelCollectIdle.color.a = 0f
+        aPanelCollectIdle.animHideAndDisable()
         addAndFillActor(aPanelCollectIdle)
 
         aPanelCollectIdle.apply {
@@ -124,7 +126,10 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
     private fun collectIdleReward() {
         coroutine?.launch {
             gdxGame.modelIdle.rewardFlow.collect { reward ->
-                runGDX { aCoinLbl.setText(NumberFormatter.format(reward)) }
+                runGDX {
+                    aCoinLbl.setText(NumberFormatter.format(reward))
+                    aPanelCollectIdle.setReward(reward)
+                }
             }
         }
     }
@@ -145,14 +150,14 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
         when (state) {
             IdlePanelState.FILLING -> {
                 aPanelProgressIdle.animShow(0.25f)
-                aPanelCollectIdle.animHide(0.25f)
+                aPanelCollectIdle.animHideAndDisable(0.25f)
 
                 aPanelProgressIdle.startIdleCycle(IDLE_CYCLE_SECONDS)
             }
 
             IdlePanelState.READY -> {
                 aPanelProgressIdle.animHide(0.25f)
-                aPanelCollectIdle.animShow(0.25f)
+                aPanelCollectIdle.animShowAndEnable(0.25f)
             }
         }
     }

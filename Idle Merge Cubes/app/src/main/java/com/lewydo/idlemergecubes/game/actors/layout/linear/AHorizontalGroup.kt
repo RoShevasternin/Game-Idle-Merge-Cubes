@@ -113,6 +113,7 @@ class AHorizontalGroup(
                 }
             }
 
+            // Розмістить дітей по всій ширині
             AlignH.SPREAD -> {
                 when {
                     list.isEmpty() -> return

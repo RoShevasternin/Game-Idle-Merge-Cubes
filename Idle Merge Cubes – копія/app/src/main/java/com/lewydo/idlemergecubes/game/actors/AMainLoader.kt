@@ -12,7 +12,7 @@ import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class AMainLoader(override val screen: LoaderScreen): AdvancedGroup() {
 
-    private val aEffectLoader = AParticleEffectActor(ParticleEffect(gdxGame.particleEffectUtil.Loader))
+    private val aEffectLoader = AParticleEffectActor(ParticleEffect(gdxGame.particleEffectLoader.Loader))
 
     val aLightLoader = ALightLoader(screen)
     val cubeImg      = Image(gdxGame.assetsLoader.cube)

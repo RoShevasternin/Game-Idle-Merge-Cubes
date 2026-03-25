@@ -5,7 +5,7 @@ const val HEIGHT_UI = 3840f
 
 const val TIME_ANIM_SCREEN = 0.333f
 
-const val IDLE_CYCLE_SECONDS = 10f
+const val IDLE_CYCLE_SECONDS = 5f
 const val OFFLINE_MAX_HOURS = 8f
 
 const val REMOVE_ADS_PRICE = 1.99f

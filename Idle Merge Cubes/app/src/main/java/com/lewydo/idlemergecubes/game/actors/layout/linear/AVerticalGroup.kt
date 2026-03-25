@@ -124,6 +124,7 @@ open class AVerticalGroup(
                 }
             }
 
+            // Розмістить дітей по всій висоті
             AlignV.SPREAD -> {
                 when {
                     list.isEmpty() -> return

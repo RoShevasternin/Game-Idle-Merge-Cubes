@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.utils.TextureEmpty
@@ -173,14 +174,9 @@ open class AButton(
             disabled = TextureRegionDrawable(gdxGame.assetsAll.buy_press),
         )
         Type.COLLECT -> AButtonStyle(
-            default = TextureRegionDrawable(gdxGame.assetsAll.collect_def),
-            pressed = TextureRegionDrawable(gdxGame.assetsAll.collect_press),
-            disabled = TextureRegionDrawable(gdxGame.assetsAll.collect_press),
-        )
-        Type.COLLECT_X2 -> AButtonStyle(
-            default = TextureRegionDrawable(gdxGame.assetsAll.collect_x2_def),
-            pressed = TextureRegionDrawable(gdxGame.assetsAll.collect_x2_press),
-            disabled = TextureRegionDrawable(gdxGame.assetsAll.collect_x2_press),
+            default = TextureRegionDrawable(gdxGame.assetsAll.collect_frame_def),
+            pressed = TextureRegionDrawable(gdxGame.assetsAll.collect_frame_press),
+            disabled = TextureRegionDrawable(gdxGame.assetsAll.collect_frame_press),
         )
 
         Type.MENU_ITEM -> AButtonStyle(
@@ -221,7 +217,7 @@ open class AButton(
     )
 
     enum class Type {
-        NONE, SETTINGS, BUY, COLLECT, COLLECT_X2,
+        NONE, SETTINGS, BUY, COLLECT,
         MENU_ITEM, MENU_RESET_GAME, MENU_CLOSE,
         YES, NO,
 

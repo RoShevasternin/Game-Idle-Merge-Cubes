@@ -25,7 +25,8 @@ class ParticleEffectManager(var assetManager: AssetManager) {
     }
 
     enum class EnumParticleEffect(val data: ParticleEffectData) {
-        Loader(ParticleEffectData("particle/Loader.p")),
+        Loader  (ParticleEffectData("particle/loader.p")),
+        Confetti(ParticleEffectData("particle/confetti.p")),
     }
 
     data class ParticleEffectData(val path: String) {

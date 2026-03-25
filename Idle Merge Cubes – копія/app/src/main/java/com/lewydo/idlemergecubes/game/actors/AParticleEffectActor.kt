@@ -12,7 +12,7 @@ class AParticleEffectActor(
     private val resetOnStart: Boolean = false
 ) : Actor(), Disposable {
 
-    var isRunning = true
+    var isRunning = false
         private set
 
     // Кешуємо посилання на внутрішні масиви емітерів, щоб забути про рефлексію в циклі
@@ -97,10 +97,23 @@ class AParticleEffectActor(
     fun start() {
         if (resetOnStart) particleEffect.reset(false)
         particleEffect.start()
+        isRunning = true
     }
 
     fun pause() { isRunning = false }
     fun resume() { isRunning = true }
     fun allowCompletion() = particleEffect.allowCompletion()
     override fun dispose() = particleEffect.dispose()
+
+    fun fitToSize(
+        targetWidth : Float? = null,
+        targetHeight: Float? = null,
+        baseWidth   : Float = 1f, // базова ширина твого .p файлу
+        baseHeight  : Float = 1f, // базова висота твого .p файлу
+    ) {
+        val scaleX = targetWidth?.let  { it / baseWidth  } ?: 1f
+        val scaleY = targetHeight?.let { it / baseHeight } ?: scaleX // якщо висота не вказана — береш scaleX
+
+        setScale(scaleX, scaleY)
+    }
 }

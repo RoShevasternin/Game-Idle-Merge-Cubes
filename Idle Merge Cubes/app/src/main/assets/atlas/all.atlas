@@ -1,67 +1,81 @@
 all.png
-size: 1966, 476
+size: 1910, 1280
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
 bag_coins
   rotate: false
-  xy: 271, 1
+  xy: 185, 48
   size: 90, 59
   orig: 90, 59
   offset: 0, 0
   index: -1
 buy_def
   rotate: false
-  xy: 1, 282
+  xy: 1, 541
   size: 953, 193
   orig: 953, 193
   offset: 0, 0
   index: -1
 buy_press
   rotate: false
-  xy: 955, 282
+  xy: 955, 541
   size: 953, 193
   orig: 953, 193
   offset: 0, 0
   index: -1
 coin
   rotate: false
-  xy: 182, 1
+  xy: 358, 48
   size: 88, 88
   orig: 88, 88
   offset: 0, 0
   index: -1
-collect_def
+collect_center
   rotate: false
-  xy: 1, 140
-  size: 445, 101
-  orig: 445, 101
+  xy: 289, 187
+  size: 1241, 176
+  orig: 1241, 176
   offset: 0, 0
   index: -1
-collect_press
+collect_center_x2
   rotate: false
-  xy: 447, 140
-  size: 445, 101
-  orig: 445, 101
+  xy: 1, 364
+  size: 1241, 176
+  orig: 1241, 176
   offset: 0, 0
   index: -1
-collect_x2_def
+collect_frame_def
   rotate: false
-  xy: 893, 140
-  size: 445, 101
-  orig: 445, 101
+  xy: 1, 735
+  size: 1281, 208
+  orig: 1281, 208
   offset: 0, 0
   index: -1
-collect_x2_press
+collect_frame_press
   rotate: false
-  xy: 1339, 140
-  size: 445, 101
-  orig: 445, 101
+  xy: 1, 944
+  size: 1281, 208
+  orig: 1281, 208
+  offset: 0, 0
+  index: -1
+glare_collect_left
+  rotate: false
+  xy: 1, 48
+  size: 183, 56
+  orig: 183, 56
+  offset: 0, 0
+  index: -1
+glare_collect_right
+  rotate: false
+  xy: 1663, 1
+  size: 166, 46
+  orig: 166, 46
   offset: 0, 0
   index: -1
 glare_panel_game_1
   rotate: false
-  xy: 30, 1
+  xy: 805, 1
   size: 69, 31
   orig: 69, 31
   offset: 0, 0
@@ -75,77 +89,98 @@ glare_panel_game_2
   index: -1
 glare_panel_game_3
   rotate: false
-  xy: 100, 1
+  xy: 276, 48
   size: 81, 81
   orig: 81, 81
   offset: 0, 0
   index: -1
 glare_panel_game_4
   rotate: false
-  xy: 362, 1
+  xy: 447, 48
   size: 94, 94
   orig: 94, 94
   offset: 0, 0
   index: -1
 idle_progress
   rotate: false
-  xy: 1, 242
+  xy: 30, 1
   size: 774, 30
   orig: 774, 30
   offset: 0, 0
   index: -1
 idle_progress_background
   rotate: false
-  xy: 776, 242
+  xy: 875, 1
   size: 787, 39
   orig: 787, 39
   offset: 0, 0
   index: -1
 no_def
   rotate: false
-  xy: 814, 1
+  xy: 1015, 48
   size: 287, 138
   orig: 287, 138
   offset: 0, 0
   index: -1
 no_press
   rotate: false
-  xy: 1102, 1
+  xy: 1303, 48
   size: 287, 138
   orig: 287, 138
   offset: 0, 0
   index: -1
+offline_circle_fill
+  rotate: false
+  xy: 1283, 944
+  size: 290, 290
+  orig: 290, 290
+  offset: 0, 0
+  index: -1
+offline_circle_stroke
+  rotate: false
+  xy: 1574, 944
+  size: 335, 335
+  orig: 335, 335
+  offset: 0, 0
+  index: -1
 panel_lvl
   rotate: false
-  xy: 457, 1
+  xy: 658, 48
   size: 118, 118
   orig: 118, 118
   offset: 0, 0
   index: -1
 settings_def
   rotate: false
-  xy: 576, 1
+  xy: 777, 48
   size: 118, 118
   orig: 118, 118
   offset: 0, 0
   index: -1
 settings_press
   rotate: false
-  xy: 695, 1
+  xy: 896, 48
   size: 118, 118
   orig: 118, 118
   offset: 0, 0
   index: -1
+x2
+  rotate: false
+  xy: 542, 48
+  size: 115, 115
+  orig: 115, 115
+  offset: 0, 0
+  index: -1
 yes_def
   rotate: false
-  xy: 1390, 1
+  xy: 1591, 48
   size: 287, 138
   orig: 287, 138
   offset: 0, 0
   index: -1
 yes_press
   rotate: false
-  xy: 1678, 1
+  xy: 1, 187
   size: 287, 138
   orig: 287, 138
   offset: 0, 0

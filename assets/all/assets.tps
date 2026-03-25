@@ -219,10 +219,8 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">collect_def.png</key>
-            <key type="filename">collect_press.png</key>
-            <key type="filename">collect_x2_def.png</key>
-            <key type="filename">collect_x2_press.png</key>
+            <key type="filename">collect_center.png</key>
+            <key type="filename">collect_center_x2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -231,9 +229,55 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>222,51,445,101</rect>
+                <rect>310,44,621,88</rect>
                 <key>scale9Paddings</key>
-                <rect>222,51,445,101</rect>
+                <rect>310,44,621,88</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">collect_frame_def.png</key>
+            <key type="filename">collect_frame_press.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>320,52,641,104</rect>
+                <key>scale9Paddings</key>
+                <rect>320,52,641,104</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">glare_collect_left.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>46,14,91,28</rect>
+                <key>scale9Paddings</key>
+                <rect>46,14,91,28</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">glare_collect_right.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>42,12,83,23</rect>
+                <key>scale9Paddings</key>
+                <rect>42,12,83,23</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -345,6 +389,36 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">offline_circle_fill.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>73,73,145,145</rect>
+                <key>scale9Paddings</key>
+                <rect>73,73,145,145</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">offline_circle_stroke.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>84,84,167,167</rect>
+                <key>scale9Paddings</key>
+                <rect>84,84,167,167</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">panel_lvl.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -373,6 +447,21 @@
                 <rect>59,59,118,118</rect>
                 <key>scale9Paddings</key>
                 <rect>59,59,118,118</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">x2.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>29,29,57,57</rect>
+                <key>scale9Paddings</key>
+                <rect>29,29,57,57</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
