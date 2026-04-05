@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ACircleStrokeFill
-import com.lewydo.idlemergecubes.game.actors.AParticleEffectActor
+import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectActor
 import com.lewydo.idlemergecubes.game.actors.button.ACollectButton
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
@@ -47,7 +47,7 @@ class ADialogOfflineReward(override val screen: AdvancedScreen): AdvancedGroup()
     private val aSubTitleLbl      = Label(textSubTitle, Label.LabelStyle(fontSubTitle, Color.WHITE))
 
     private val aMask           = AMask(screen, gdxGame.assetsAll.MASK_DIALOG_OFFLINE)
-    private val aEffectConfetti = AParticleEffectActor(ParticleEffect(gdxGame.particleEffectAll.Confetti))
+    private val aEffectConfetti = AParticleEffectActor(ParticleEffect(gdxGame.particleEffectAll.CONFETTI))
 
     // ------------------------------------------------------------------------
     // Callback

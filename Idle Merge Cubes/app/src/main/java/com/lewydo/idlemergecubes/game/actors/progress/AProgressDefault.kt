@@ -7,8 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.game.actors.mask.AOldMask
-import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
+import com.lewydo.idlemergecubes.game.actors.shader.AMask
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
@@ -21,15 +20,15 @@ import kotlinx.coroutines.launch
 class AProgressDefault(override val screen: AdvancedScreen): AdvancedGroup() {
 
     private val parameter = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "%")
-    private val font80    = screen.fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(38))
+    private val font80    = screen.fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(260))
 
     private val labelStyle80 = LabelStyle(font80, Color.valueOf("A82800"))
 
-    private val LENGTH = 1500f
+    private val LENGTH = 1743f
 
     private val backgroundImage = Image(screen.drawerUtil.getRegion(Color.WHITE))
     private val progressImage   = Image(screen.drawerUtil.getRegion(Color.BLACK))
-    private val mask            = AOldMask(screen, alphaWidth = WIDTH_UI.toInt())
+    private val mask            = AMask(screen)
 
     private val label = Label("", labelStyle80)
 

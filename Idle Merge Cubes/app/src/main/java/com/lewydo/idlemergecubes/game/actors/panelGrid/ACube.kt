@@ -5,12 +5,15 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoFont
+import com.lewydo.idlemergecubes.game.actors.layout.AlignH
+import com.lewydo.idlemergecubes.game.actors.layout.AlignV
+import com.lewydo.idlemergecubes.game.actors.shader.AHslImage
 import com.lewydo.idlemergecubes.game.utils.CubeColorSystem
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
+import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActors
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -31,17 +34,23 @@ class ACube(
     // 2 — Fill (Tinted)
     // 3 — Highlight / Shine
 
-    private val aCube1Img     = Image(gdxGame.assetsAll.listCube[0])
-    private val aCube2Img     = Image(gdxGame.assetsAll.listCube[1])
-    private val aCube3Img     = Image(gdxGame.assetsAll.listCube[2])
+    //private val aCube3Img = AHslImage(screen, gdxGame.assetsAll.listCube[2])
+    //private val aCube1Img = AHslImage(screen, gdxGame.assetsAll.listCube[0])
 
-    private val aCubeLevelLbl = Label(lvl.toString(), labelStyle)
+    private val aCubeImg      = AHslImage(screen, gdxGame.assetsAll.cube)
+    private val aCubeLevelLbl = ALabelAutoFont(screen, lvl.toString(), labelStyle, fitMode = ALabelAutoFont.FitMode.MIN)
 
     // ------------------------------------------------------------------------
     // STATE
     // ------------------------------------------------------------------------
 
     private var currentState = State.DEFAULT
+
+    // ------------------------------------------------------------------------
+    // FIELD
+    // ------------------------------------------------------------------------
+
+    private var visualColor = Color.WHITE
 
     // ------------------------------------------------------------------------
     // DRAG CALLBACKS
@@ -70,13 +79,18 @@ class ACube(
     // ------------------------------------------------------------------------
 
     private fun addCubeImg() {
-        addAndFillActors(aCube1Img, aCube2Img, aCube3Img)
+        addAndFillActors(
+            //aCube1Img,
+            aCubeImg,
+            //aCube3Img
+        )
         updateColor()
     }
 
     private fun addCubeLevelLbl() {
-        addAndFillActor(aCubeLevelLbl)
-        aCubeLevelLbl.setAlignment(Align.center)
+        updateLblBounds()
+        addActor(aCubeLevelLbl)
+        aCubeLevelLbl.label.setAlignment(Align.center)
     }
 
     // ------------------------------------------------------------------------
@@ -86,18 +100,29 @@ class ACube(
     fun setLevel(newLevel: Int) {
         lvl = newLevel
         aCubeLevelLbl.setText(lvl.toString())
+        updateLblBounds()
 
         updateColor()
         animUpgrade()
     }
 
     fun updateColor() {
-        aCube1Img.color = CubeColorSystem.getFrameColor(lvl)
-        aCube2Img.color = CubeColorSystem.getCubeColor(lvl)
+        //aCube1Img.setColorShader(CubeColorSystem.getFrameColor(lvl))
+        visualColor = CubeColorSystem.getCubeColor(lvl)
+        aCubeImg.setColorShader(visualColor)
     }
 
     fun getVisualColor(): Color {
-        return aCube2Img.color
+        return visualColor
+    }
+
+    private fun updateLblBounds() {
+        val size = width * if (lvl < 10) 0.5f else 0.75f
+        aCubeLevelLbl.setSize(size, size)
+
+        val nx = width / 2f - size / 2f
+        val ny = height / 2f - size / 2f
+        aCubeLevelLbl.setPosition(nx, ny)
     }
 
     // ------------------------------------------------------------------------

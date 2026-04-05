@@ -1,5 +1,5 @@
 grid.png
-size: 887, 1755
+size: 887, 1373
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
@@ -31,23 +31,9 @@ cell_tint
   orig: 392, 392
   offset: 0, 0
   index: -1
-cube1
+cube
   rotate: false
   xy: 1, 991
-  size: 381, 381
-  orig: 381, 381
-  offset: 0, 0
-  index: -1
-cube2
-  rotate: false
-  xy: 383, 991
-  size: 381, 381
-  orig: 381, 381
-  offset: 0, 0
-  index: -1
-cube3
-  rotate: false
-  xy: 1, 1373
   size: 381, 381
   orig: 381, 381
   offset: 0, 0

@@ -7,9 +7,7 @@ import com.lewydo.idlemergecubes.game.actors.panelGrid.ACube
 import com.lewydo.idlemergecubes.game.actors.panelGrid.ACubeLayer
 import com.lewydo.idlemergecubes.game.model.GridModel
 import com.lewydo.idlemergecubes.game.model.PlayerModel
-import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 class GridController(
     private val coroutine  : CoroutineScope?,
@@ -178,12 +176,14 @@ class GridController(
         if (!gridModel.hasEmptyCell())        { done(); return }
         if (!playerModel.spendCoins(price))   { done(); return }
 
-        val index = gridModel.addCube(1) ?: run { done(); return }
+        val cubeLvL = 1
+
+        val index = gridModel.addCube(cubeLvL) ?: run { done(); return }
 
         // Спавнимо куб вручну — як раніше робила syncWithGrid
         val cell   = cellLayer.getCell(index) ?: run { done(); return }
         val bounds = Rectangle(cell.x, cell.y, cell.width, cell.height)
-        attachCube(cubeLayer.spawnCube(index, 1, bounds))
+        attachCube(cubeLayer.spawnCube(index, cubeLvL, bounds))
 
         done()
     }

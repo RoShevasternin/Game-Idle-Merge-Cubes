@@ -1,5 +1,5 @@
 all.png
-size: 1910, 1280
+size: 1975, 1280
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
@@ -17,7 +17,7 @@ buy_def
   orig: 953, 193
   offset: 0, 0
   index: -1
-buy_press
+buy_dis
   rotate: false
   xy: 955, 541
   size: 953, 193
@@ -31,9 +31,16 @@ coin
   orig: 88, 88
   offset: 0, 0
   index: -1
+coin_with_border
+  rotate: false
+  xy: 447, 48
+  size: 95, 90
+  orig: 95, 90
+  offset: 0, 0
+  index: -1
 collect_center
   rotate: false
-  xy: 289, 187
+  xy: 455, 187
   size: 1241, 176
   orig: 1241, 176
   offset: 0, 0
@@ -57,6 +64,13 @@ collect_frame_press
   xy: 1, 944
   size: 1281, 208
   orig: 1281, 208
+  offset: 0, 0
+  index: -1
+cube_buy
+  rotate: false
+  xy: 289, 187
+  size: 165, 165
+  orig: 165, 165
   offset: 0, 0
   index: -1
 glare_collect_left
@@ -96,7 +110,7 @@ glare_panel_game_3
   index: -1
 glare_panel_game_4
   rotate: false
-  xy: 447, 48
+  xy: 543, 48
   size: 94, 94
   orig: 94, 94
   offset: 0, 0
@@ -117,14 +131,14 @@ idle_progress_background
   index: -1
 no_def
   rotate: false
-  xy: 1015, 48
+  xy: 1111, 48
   size: 287, 138
   orig: 287, 138
   offset: 0, 0
   index: -1
 no_press
   rotate: false
-  xy: 1303, 48
+  xy: 1399, 48
   size: 287, 138
   orig: 287, 138
   offset: 0, 0
@@ -145,35 +159,35 @@ offline_circle_stroke
   index: -1
 panel_lvl
   rotate: false
-  xy: 658, 48
+  xy: 754, 48
   size: 118, 118
   orig: 118, 118
   offset: 0, 0
   index: -1
 settings_def
   rotate: false
-  xy: 777, 48
+  xy: 873, 48
   size: 118, 118
   orig: 118, 118
   offset: 0, 0
   index: -1
 settings_press
   rotate: false
-  xy: 896, 48
+  xy: 992, 48
   size: 118, 118
   orig: 118, 118
   offset: 0, 0
   index: -1
 x2
   rotate: false
-  xy: 542, 48
+  xy: 638, 48
   size: 115, 115
   orig: 115, 115
   offset: 0, 0
   index: -1
 yes_def
   rotate: false
-  xy: 1591, 48
+  xy: 1687, 48
   size: 287, 138
   orig: 287, 138
   offset: 0, 0

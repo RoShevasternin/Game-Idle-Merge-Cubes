@@ -5,7 +5,17 @@ const val HEIGHT_UI = 3840f
 
 const val TIME_ANIM_SCREEN = 0.333f
 
-const val IDLE_CYCLE_SECONDS = 5f
+const val IDLE_CYCLE_SECONDS = 2f
+
+// ------------------------------------------------------------------------
+// OFFLINE Idle Income
+// ------------------------------------------------------------------------
+const val OFFLINE_MIN_SEC   = 10f
 const val OFFLINE_MAX_HOURS = 8f
+const val OFFLINE_MAX_SEC   = OFFLINE_MAX_HOURS * 3600f
+
+// Ефективність офлайн-доходу — чим більше часу тим менший % від онлайну
+// 0.35 = 35% від онлайн-швидкості, щоб 8h не давало овер багато
+const val OFFLINE_EFFICIENCY = 0.35f
 
 const val REMOVE_ADS_PRICE = 1.99f

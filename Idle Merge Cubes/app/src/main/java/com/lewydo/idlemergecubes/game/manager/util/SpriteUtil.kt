@@ -39,11 +39,13 @@ class SpriteUtil {
         // ------------------------------------------------------------------------------
 
         val coin                  = getAllRegion("coin")
+        val coin_with_border      = getAllRegion("coin_with_border")
+        val cube_buy              = getAllRegion("cube_buy")
         val panel_lvl             = getAllRegion("panel_lvl")
         val settings_def          = getAllRegion("settings_def")
         val settings_press        = getAllRegion("settings_press")
         val buy_def               = getAllRegion("buy_def")
-        val buy_press             = getAllRegion("buy_press")
+        val buy_dis               = getAllRegion("buy_dis")
         val no_def                = getAllRegion("no_def")
         val no_press              = getAllRegion("no_press")
         val yes_def               = getAllRegion("yes_def")
@@ -73,7 +75,7 @@ class SpriteUtil {
         val cell_red   = getGridRegion("cell_red")
         val cell_tint  = getGridRegion("cell_tint")
 
-        val listCube = List(3) { getGridRegion("cube${it.inc()}") }
+        val cube = getGridRegion("cube")
 
         // ------------------------------------------------------------------------------
         // ATLAS MENU
@@ -113,6 +115,8 @@ class SpriteUtil {
         // ------------------------------------------------------------------------------
         // TEXTURES
         // ------------------------------------------------------------------------------
+
+        val bg_test = SpriteManager.EnumTexture.bg_test.data.texture
 
         val MASK_DIALOG_PROGRESS_LVL = SpriteManager.EnumTexture.MASK_DIALOG_PROGRESS_LVL.data.texture
         val MASK_PROGRESS_IDLE       = SpriteManager.EnumTexture.MASK_PROGRESS_IDLE.data.texture

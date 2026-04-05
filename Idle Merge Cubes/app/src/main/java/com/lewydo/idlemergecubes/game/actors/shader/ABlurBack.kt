@@ -31,8 +31,14 @@ class ABlurBack(
             field = value
         }
 
+    // -------------------------------------------------------------------------
+    // Новий прапор: чи вже зробили знімок для поточної "статичної" сесії
+    // -------------------------------------------------------------------------
+    private var isScreenshotCaptured = false
+
     var isStaticEffect = false
         set(value) {
+            if (!value) isScreenshotCaptured = false
             aBlur.isStaticEffect = value
             aMask.isStaticEffect = value
             field = value
@@ -56,14 +62,26 @@ class ABlurBack(
         if (aBlur.isBlurEnabled.not()) return
         if (batch == null) throw Exception("Error draw: ${this::class.simpleName}")
 
-        updateBoundsScreenShot()
-        captureScreenShot(
-            regionScreenShot,
-            boundsScreenShot.x.toInt(),
-            boundsScreenShot.y.toInt(),
-            boundsScreenShot.width.toInt(),
-            boundsScreenShot.height.toInt()
-        )
+        // ─────────────────────────────────────────────────────────────────────
+        // Захоплюємо знімок ТІЛЬКИ коли це потрібно:
+        //   • isStaticEffect = false → захоплюємо кожен кадр (динамічний фон)
+        //   • isStaticEffect = true  → захоплюємо ОДИН раз, потім freeze
+        // ─────────────────────────────────────────────────────────────────────
+        val needCapture = !isStaticEffect || !isScreenshotCaptured
+
+        if (needCapture) {
+            batch.flush()
+
+            updateBoundsScreenShot()
+            captureScreenShot(
+                regionScreenShot,
+                boundsScreenShot.x.toInt(),
+                boundsScreenShot.y.toInt(),
+                boundsScreenShot.width.toInt(),
+                boundsScreenShot.height.toInt()
+            )
+            if (isStaticEffect) isScreenshotCaptured = true
+        }
 
         super.draw(batch, parentAlpha)
     }
@@ -102,5 +120,23 @@ class ABlurBack(
     }
     override fun getScaleX(): Float = 1f
     override fun getScaleY(): Float = 1f
+
+    // -------------------------------------------------------------------------
+    // Logic
+    // -------------------------------------------------------------------------
+
+    fun captureOnce() {
+        // 1. Дозволяємо зробити новий знімок
+        isScreenshotCaptured = false
+
+        // 2. Скидаємо лічильник кадрів blur/mask — щоб вони відрендерились заново.
+        //    Toggle false→true скидає staticEffectRenderCounter до 0 всередині PreRenderableGroup.
+        aBlur.isStaticEffect = false
+        aMask.isStaticEffect = false
+        aBlur.isStaticEffect = true
+        aMask.isStaticEffect = true
+
+        // field залишається true — після staticEffectFrames кадрів все знову заморожується
+    }
 
 }

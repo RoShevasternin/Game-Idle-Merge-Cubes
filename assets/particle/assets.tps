@@ -175,7 +175,6 @@
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">circle.png</key>
             <key type="filename">star_def.png</key>
-            <key type="filename">star_yellow.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

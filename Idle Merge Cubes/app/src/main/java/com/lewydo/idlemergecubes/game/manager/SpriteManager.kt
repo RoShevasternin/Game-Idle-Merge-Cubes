@@ -44,6 +44,9 @@ class SpriteManager(var assetManager: AssetManager) {
     }
 
     enum class EnumTexture(val data: TextureData) {
+        bg_test(TextureData("textures/bg_test.png")),
+
+
         // Loader
         BACKGROUND(TextureData("textures/loader/background.png")),
         MASK      (TextureData("textures/loader/mask.png")),
@@ -72,7 +75,6 @@ class SpriteManager(var assetManager: AssetManager) {
         // All | dialog
         DIALOG_CLEAR_GRID   (TextureData("textures/all/dialog/dialog_clear_grid.png")),
         DIALOG_OFFLINE      (TextureData("textures/all/dialog/dialog_offline.png")),
-
     }
 
     data class AtlasData(val path: String) {

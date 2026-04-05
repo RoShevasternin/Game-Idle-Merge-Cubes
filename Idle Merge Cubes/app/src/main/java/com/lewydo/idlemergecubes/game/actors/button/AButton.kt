@@ -36,9 +36,10 @@ open class AButton(
     private var clickSound: SoundUtil.AdvancedSound? = null
     private var area: Actor? = null
 
-    private val animShowTime = 0.050f
-    private val animHideTime = 0.400f
+    private var animShowTime = 0.050f
+    private var animHideTime = 0.400f
 
+    var isAnimState = true
 
     override fun addActorsOnGroup() {
         addAndFillActors(getActors())
@@ -88,46 +89,68 @@ open class AButton(
     }
 
     fun press() {
-        defaultImage.clearActions()
-        pressedImage.clearActions()
+        if (isAnimState) {
+            defaultImage.clearActions()
+            pressedImage.clearActions()
 
-        defaultImage.animHide(animShowTime)
-        pressedImage.animShow(animShowTime)
+            defaultImage.animHide(animShowTime)
+            pressedImage.animShow(animShowTime)
+        } else {
+            defaultImage.color.a = 0f
+            pressedImage.color.a = 1f
+        }
     }
 
     fun unpress() {
-        defaultImage.clearActions()
-        pressedImage.clearActions()
+        if (isAnimState) {
+            defaultImage.clearActions()
+            pressedImage.clearActions()
 
-        defaultImage.animShow(animHideTime)
-        pressedImage.animHide(animHideTime)
+            defaultImage.animShow(animHideTime)
+            pressedImage.animHide(animHideTime)
+        } else {
+            defaultImage.color.a = 1f
+            pressedImage.color.a = 0f
+        }
     }
 
-    fun disable(useDisabledStyle: Boolean = true) {
+    open fun disable(useDisabledStyle: Boolean = true) {
         touchable = Touchable.disabled
 
         if (useDisabledStyle) {
-            defaultImage.clearActions()
-            pressedImage.clearActions()
-            disabledImage.clearActions()
+            if (isAnimState) {
+                defaultImage.clearActions()
+                pressedImage.clearActions()
+                disabledImage.clearActions()
 
-            defaultImage.animHide()
-            pressedImage.animHide()
-            disabledImage.animShow()
+                defaultImage.animHide()
+                pressedImage.animHide()
+                disabledImage.animShow()
+            } else {
+                defaultImage.color.a  = 0f
+                pressedImage.color.a  = 0f
+                disabledImage.color.a = 1f
+            }
         }
 
     }
 
-    fun enable() {
+    open fun enable() {
         touchable = Touchable.enabled
 
-        defaultImage.clearActions()
-        pressedImage.clearActions()
-        disabledImage.clearActions()
+        if (isAnimState) {
+            defaultImage.clearActions()
+            pressedImage.clearActions()
+            disabledImage.clearActions()
 
-        defaultImage.animShow()
-        pressedImage.animHide()
-        disabledImage.animHide()
+            defaultImage.animShow()
+            pressedImage.animHide()
+            disabledImage.animHide()
+        } else {
+            defaultImage.color.a  = 1f
+            pressedImage.color.a  = 0f
+            disabledImage.color.a = 0f
+        }
 
     }
 
@@ -170,8 +193,8 @@ open class AButton(
         )
         Type.BUY -> AButtonStyle(
             default = TextureRegionDrawable(gdxGame.assetsAll.buy_def),
-            pressed = TextureRegionDrawable(gdxGame.assetsAll.buy_press),
-            disabled = TextureRegionDrawable(gdxGame.assetsAll.buy_press),
+            pressed = TextureRegionDrawable(gdxGame.assetsAll.buy_def),
+            disabled = TextureRegionDrawable(gdxGame.assetsAll.buy_dis),
         )
         Type.COLLECT -> AButtonStyle(
             default = TextureRegionDrawable(gdxGame.assetsAll.collect_frame_def),

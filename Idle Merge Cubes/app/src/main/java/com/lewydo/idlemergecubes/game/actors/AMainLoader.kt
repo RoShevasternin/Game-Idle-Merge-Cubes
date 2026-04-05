@@ -6,13 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.light.ALightLoader
+import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectActor
 import com.lewydo.idlemergecubes.game.screens.LoaderScreen
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class AMainLoader(override val screen: LoaderScreen): AdvancedGroup() {
 
-    private val aEffectLoader = AParticleEffectActor(ParticleEffect(gdxGame.particleEffectLoader.Loader))
+    private val aEffectLoader =
+        AParticleEffectActor(ParticleEffect(gdxGame.particleEffectLoader.LOADER))
 
     val aLightLoader = ALightLoader(screen)
     val cubeImg      = Image(gdxGame.assetsLoader.cube)

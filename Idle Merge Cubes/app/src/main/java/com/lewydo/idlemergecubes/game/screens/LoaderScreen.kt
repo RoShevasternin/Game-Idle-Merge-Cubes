@@ -111,7 +111,7 @@ class LoaderScreen : AdvancedScreen() {
             loadTexture()
         }
         with(gdxGame.particleEffectManager) {
-            loadableParticleEffectList = mutableListOf(ParticleEffectManager.EnumParticleEffect.Loader.data)
+            loadableParticleEffectList = mutableListOf(ParticleEffectManager.EnumParticleEffect.LOADER.data)
             load()
         }
         gdxGame.assetManager.finishLoading()
@@ -190,7 +190,7 @@ class LoaderScreen : AdvancedScreen() {
 
             stageUI.root.animDelay(1f) {
                 aMain.aLightLoader.onLoaderFinish()
-                animHideScreen { gdxGame.navigationManager.navigate(GameScreen::class.java.name) }
+                animHideScreen { gdxGame.navigationManager.navigate(GameScreen::class.java.name) } //TestShaderScreen::class.java.name) }
             }
         }
     }

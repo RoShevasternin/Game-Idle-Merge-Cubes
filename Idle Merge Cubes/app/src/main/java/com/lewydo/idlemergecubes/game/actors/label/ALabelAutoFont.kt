@@ -10,8 +10,8 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 
 class ALabelAutoFont(
     override val screen   : AdvancedScreen,
-    private val labelStyle: LabelStyle,
     text: String = "",
+    private val labelStyle: LabelStyle,
     private val maxFontScale: Float = 5f,
     private val minFontScale: Float = 0.1f,
     private val fitMode: FitMode = FitMode.WIDTH,
@@ -84,6 +84,10 @@ class ALabelAutoFont(
         }
         if (fitSize <= 0f) return
 
+        // Зберігаємо оригінальний scale шрифту — не мутуємо назавжди
+        val savedScaleX = labelStyle.font.data.scaleX
+        val savedScaleY = labelStyle.font.data.scaleY
+
         var lo   = minFontScale
         var hi   = maxFontScale
         var best = minFontScale
@@ -102,10 +106,18 @@ class ALabelAutoFont(
             if (glyphSize <= fitSize) { best = mid; lo = mid } else hi = mid
         }
 
-        // Фінальний прохід з best — щоб glyphLayout містив правильні розміри
+        // Відновлюємо шарений шрифт — не залишаємо сліди
+        labelStyle.font.data.setScale(savedScaleX, savedScaleY)
+
+        // Застосовуємо scale тільки до цього label — не глобально
+        label.setFontScale(best)
+
+        // Міряємо фінальний розмір для isWrapWidth/isWrapHeight
         labelStyle.font.data.setScale(best)
         glyphLayout.setText(labelStyle.font, label.text)
-        label.invalidate()
+        computedTextWidth  = glyphLayout.width
+        computedTextHeight = glyphLayout.height
+        labelStyle.font.data.setScale(savedScaleX, savedScaleY)
     }
 
     // ------------------------------------------------------------------------

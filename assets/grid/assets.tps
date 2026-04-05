@@ -219,9 +219,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">cube1.png</key>
-            <key type="filename">cube2.png</key>
-            <key type="filename">cube3.png</key>
+            <key type="filename">cube.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

@@ -189,7 +189,6 @@
                 <false/>
             </struct>
             <key type="filename">buy_def.png</key>
-            <key type="filename">buy_press.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -201,6 +200,21 @@
                 <rect>277,86,553,173</rect>
                 <key>scale9Paddings</key>
                 <rect>277,86,553,173</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">buy_dis.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>238,48,477,97</rect>
+                <key>scale9Paddings</key>
+                <rect>238,48,477,97</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -216,6 +230,21 @@
                 <rect>52,44,103,87</rect>
                 <key>scale9Paddings</key>
                 <rect>52,44,103,87</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">coin_with_border.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>24,23,47,45</rect>
+                <key>scale9Paddings</key>
+                <rect>24,23,47,45</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -248,6 +277,21 @@
                 <rect>320,52,641,104</rect>
                 <key>scale9Paddings</key>
                 <rect>320,52,641,104</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">cube_buy.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>41,41,83,83</rect>
+                <key>scale9Paddings</key>
+                <rect>41,41,83,83</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

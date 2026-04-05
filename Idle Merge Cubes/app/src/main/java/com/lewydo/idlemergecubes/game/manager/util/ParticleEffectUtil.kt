@@ -5,11 +5,17 @@ import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
 class ParticleEffectUtil {
 
     class Loader {
-        val Loader = ParticleEffectManager.EnumParticleEffect.Loader.data.effect
+        val LOADER = ParticleEffectManager.EnumParticleEffect.LOADER.data.effect
     }
 
     class All {
-        val Confetti = ParticleEffectManager.EnumParticleEffect.Confetti.data.effect
+        val CONFETTI = ParticleEffectManager.EnumParticleEffect.CONFETTI.data.effect
+
+        val BUY  = ParticleEffectManager.EnumParticleEffect.BUY.data.effect
+        val STAR = ParticleEffectManager.EnumParticleEffect.STAR.data.effect
+
+        val IDLE_CONFETTI = ParticleEffectManager.EnumParticleEffect.IDLE_CONFETTI.data.effect
+        val IDLE_WAVE     = ParticleEffectManager.EnumParticleEffect.IDLE_WAVE.data.effect
     }
 }
 

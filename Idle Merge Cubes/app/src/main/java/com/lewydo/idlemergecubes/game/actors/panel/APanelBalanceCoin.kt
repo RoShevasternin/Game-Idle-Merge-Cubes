@@ -78,7 +78,7 @@ class APanelBalanceCoin(override val screen: AdvancedScreen): AdvancedGroup() {
             if (aCoinLbl.width >= 270f) {
 
                 val paddingLeft = 150f
-                val paddingRight = 55f
+                val paddingRight = 100f
 
                 val newPanelWidth = paddingLeft + aCoinLbl.width + paddingRight
                 aPanelCoinImg.setSize(newPanelWidth, aPanelCoinImg.height)

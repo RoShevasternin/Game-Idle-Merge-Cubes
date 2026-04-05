@@ -3,16 +3,12 @@ package com.lewydo.idlemergecubes.game.actors.progress
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.lewydo.idlemergecubes.game.actors.mask.AOldMask
 import com.lewydo.idlemergecubes.game.actors.shader.AMask
-import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
-import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
-import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 

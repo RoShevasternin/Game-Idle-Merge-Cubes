@@ -1,5 +1,8 @@
 package com.lewydo.idlemergecubes.game.model
 
+import com.lewydo.idlemergecubes.game.utils.OFFLINE_EFFICIENCY
+import com.lewydo.idlemergecubes.game.utils.OFFLINE_MAX_SEC
+import com.lewydo.idlemergecubes.game.utils.OFFLINE_MIN_SEC
 import kotlin.math.min
 
 class OfflineRewardModel(
@@ -7,8 +10,8 @@ class OfflineRewardModel(
 ) {
 
     companion object {
-        private const val MIN_OFFLINE_SEC  = 10f
-        private const val MAX_OFFLINE_SEC  = 10_800f  // 3 години
+        private const val MIN_OFFLINE_SEC = OFFLINE_MIN_SEC
+        private const val MAX_OFFLINE_SEC = OFFLINE_MAX_SEC
     }
 
     // =====================================================
@@ -22,7 +25,6 @@ class OfflineRewardModel(
         if (lastLogin == 0L) return OfflineResult.None
 
         val elapsedSec = (now - lastLogin) / 1000f
-
         if (elapsedSec < MIN_OFFLINE_SEC) return OfflineResult.None
 
         val clampedSec   = min(elapsedSec, MAX_OFFLINE_SEC)
@@ -30,12 +32,11 @@ class OfflineRewardModel(
         val level        = playerModel.currentLevel
         val buyPrice     = playerModel.currentBuyPrice
         val cubesPerHour = 3f + level * 0.3f
-        val offlineCubes = hours * cubesPerHour
-        val rawReward    = (offlineCubes * buyPrice).toLong()
 
-        // Мінімум на 5 кубів незалежно від часу
-        val minReward    = buyPrice * 5
-        val finalReward  = maxOf(rawReward, minReward)
+        // OFFLINE_EFFICIENCY обрізає щоб 8h ≈ стара 3h нагорода за максимум
+        val rawReward  = (hours * cubesPerHour * buyPrice * OFFLINE_EFFICIENCY).toLong()
+        val minReward  = buyPrice * 5
+        val finalReward = maxOf(rawReward, minReward)
 
         return OfflineResult.Reward(
             coins    = finalReward,
@@ -63,7 +64,7 @@ class OfflineRewardModel(
 
     fun saveLoginTime() {
         // ТЕСТ — закоментуй після перевірки
-        //val fiveHoursAgo = System.currentTimeMillis() - (30 * 1000L)
+        //val fiveHoursAgo = System.currentTimeMillis() - (30 * 1000L * 1000L)
         //playerModel.updateLastLoginTime(fiveHoursAgo)
 
         // РЕАЛЬНЕ — розкоментуй після тесту

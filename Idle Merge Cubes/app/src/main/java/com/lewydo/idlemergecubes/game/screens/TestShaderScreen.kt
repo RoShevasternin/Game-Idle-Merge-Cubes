@@ -18,6 +18,7 @@ import com.lewydo.idlemergecubes.game.actors.shader.AScreenShot
 import com.lewydo.idlemergecubes.game.actors.shader.ATestShader
 import com.lewydo.idlemergecubes.game.utils.*
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
+import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 class TestShaderScreen: AdvancedScreen() {
 
     private val parameter = FontParameter().setCharacters(FontParameter.CharType.ALL)
-    private val font60    = fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(60))
+    private val font60    = fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(260))
 
     private val progress = AProgressDefault(this)
     private val lblFPS   = Label("", LabelStyle(font60, Color.BLACK))
@@ -39,68 +40,68 @@ class TestShaderScreen: AdvancedScreen() {
     private val scroll   = ScrollPane(tmpGroup)
 
     override fun show() {
-        setBackBackground(gdxGame.assetsAll.panel_lvl)
+        setBackBackground(gdxGame.assetsAll.bg_test)
         //setBackBackground(drawerUtil.getRegion(Color.GRAY))
         //setUIBackground(game.assetsAll.LVL_1.region)
         super.show()
 
-        stageUI.root.addListener(object : InputListener() {
-            override fun touchDown(
-                event: InputEvent?,
-                x: Float,
-                y: Float,
-                pointer: Int,
-                button: Int
-            ): Boolean {
-                return true
-            }
-
-            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
-                super.touchDragged(event, x, y, pointer)
-                //movableActor?.setPosition(x, y)
-            }
-        })
+//        stageUI.root.addListener(object : InputListener() {
+//            override fun touchDown(
+//                event: InputEvent?,
+//                x: Float,
+//                y: Float,
+//                pointer: Int,
+//                button: Int
+//            ): Boolean {
+//                return true
+//            }
+//
+//            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+//                super.touchDragged(event, x, y, pointer)
+//                //movableActor?.setPosition(x, y)
+//            }
+//        })
     }
 
     override fun Group.addActorsOnStageUI() {
         addActor(progress)
-        progress.setBounds(420f, 946f, 1080f, 80f)
+        progress.setBounds(208f, 3302f, 1743f, 412f)
 
         addActor(lblFPS)
         lblFPS.apply {
-            setBounds(29f, 960f, 278f, 79f)
+            setBounds(642f, 0f, 876f, 360f)
             setAlignment(Align.center)
         }
 
-        val test = ATestShader(this@TestShaderScreen)
-        test.debug()
-        test.setBounds(57f, 566f, 200f, 315f)
-
-        test.setOrigin(Align.center)
-        test.addAction(Actions.forever(Actions.rotateBy(-360f, 5f)))
-
-        addTest()
-
+//        val test = ATestShader(this@TestShaderScreen)
+//        test.debug()
+//        test.setBounds(57f, 566f, 200f, 315f)
+//
+//        test.setOrigin(Align.center)
+//        test.addAction(Actions.forever(Actions.rotateBy(-360f, 5f)))
+//
+//        addTest()
+//
         val mainTEST = ABlurBack(this@TestShaderScreen)//,game.assetsLoader.builderList[2])
         mainTEST.debug()
-        mainTEST.setBounds(500f, 100f, 1000f, 600f)
+        mainTEST.setBounds(374f, 725f, 1413f, 1413f)
         addActor(mainTEST)
-
-        val testGroup = ATmpGroup(this@TestShaderScreen)
-        testGroup.debug()
-        testGroup.setBounds(1063f, 285f, 200f, 315f)
-        addActor(testGroup)
-
-        val ara = AScreenShot(this@TestShaderScreen)
-        ara.debug()
-        ara.setBounds(0f, 0f, 500f, 500f)
-        addActor(ara)
+//
+//        val testGroup = ATmpGroup(this@TestShaderScreen)
+//        testGroup.debug()
+//        testGroup.setBounds(1063f, 285f, 200f, 315f)
+//        addActor(testGroup)
+//
+//        val ara = AScreenShot(this@TestShaderScreen)
+//        ara.debug()
+//        ara.setBounds(0f, 0f, 500f, 500f)
+//        addActor(ara)
 
         coroutine?.launch {
             progress.progressPercentFlow.collect {
                 mainTEST.radiusBlur = it
-                mainTEST.x = it * 10
-                ara.x = it * 10
+                //mainTEST.x = it * 10
+               // ara.x = it * 10
 
                 if (it > 60) {
                     mainTEST.isStaticEffect = true
@@ -110,7 +111,7 @@ class TestShaderScreen: AdvancedScreen() {
             }
         }
 
-        addScroll()
+//        addScroll()
     }
 
     private fun Group.addTest() {

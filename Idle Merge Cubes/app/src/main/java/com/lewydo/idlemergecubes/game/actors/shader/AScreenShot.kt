@@ -30,6 +30,9 @@ class AScreenShot(override val screen: AdvancedScreen) : AdvancedGroup() {
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
+        if (batch == null) throw Exception("Error draw: ${this::class.simpleName}")
+
+        batch.flush()
         updateBoundsScreenShot()
         captureScreenShot(
             regionScreenShot,

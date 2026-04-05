@@ -3,7 +3,9 @@ package com.lewydo.idlemergecubes.game.actors.shader
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
@@ -20,6 +22,14 @@ open class ABlur(
 ): PreRenderableGroup() {
 
     companion object {
+        /** -----------------------------------------------------------------------
+        // Шейдер — СТАТИЧНИЙ, один на весь клас (lazy створення при першому use).
+        //
+        // ВАЖЛИВО: шейдер НЕ dispose-уємо в instance dispose() — він shared.
+        // Якщо dispose тут, після знищення першого ABlur всі наступні отримають
+        // мертвий шейдер (lazy не перезапускається) → GL error / crash.
+        // Dispose шейдера відбувається тільки при виході з гри через GDXGame.dispose().
+        // --------------------------------------------------------------------- */
         private val shaderProgram: ShaderProgram by lazy {
             createShader(
                 "shader/defaultVS.glsl",
@@ -28,13 +38,11 @@ open class ABlur(
         }
     }
 
-    private var shaderProgram: ShaderProgram? = null
-
     private var fboBlurH    : FrameBuffer?   = null
     private var fboBlurV    : FrameBuffer?   = null
 
-    private var textureBlurV : TextureRegion? = null
     private var textureBlurH : TextureRegion? = null
+    private var textureBlurV : TextureRegion? = null
 
     var isBlurEnabled = false
         private set
@@ -55,7 +63,7 @@ open class ABlur(
 
     override fun dispose() {
         super.dispose()
-        disposeAll(shaderProgram, fboBlurH, fboBlurV)
+        disposeAll(fboBlurH, fboBlurV)
     }
 
     // -------------------------------------------------------------------------
@@ -82,8 +90,8 @@ open class ABlur(
             batch.applyBlur(fboBlurH, textureGroup, 1f, 0f)
             batch.applyBlur(fboBlurV, textureBlurH, 0f, 1f)
 
-            batch.applyBlur(fboBlurH, textureBlurV, 0.707f, 0.707f)
-            batch.applyBlur(fboBlurV, textureBlurH, -0.707f, -0.707f)
+            //batch.applyBlur(fboBlurH, textureBlurV, 0.707f, 0.707f)
+            //batch.applyBlur(fboBlurV, textureBlurH, -0.707f, -0.707f)
 
             batch.applyBlur(fboBlurH, textureBlurV, 0.383f, 0.924f)
             batch.applyBlur(fboBlurV, textureBlurH, 0.924f, 0.383f)
@@ -103,7 +111,7 @@ open class ABlur(
     // ------------------------------------------------------------------------- */
 
     override fun preRender(batch: Batch, parentAlpha: Float) {
-        if (shaderProgram == null || fboBlurH == null || fboBlurV == null)
+        if (fboBlurH == null || fboBlurV == null)
             throw Exception("Error preRender: ${this::class.simpleName}")
 
         super.preRender(batch, parentAlpha)
@@ -146,10 +154,10 @@ open class ABlur(
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0)
         textureRegion.texture.bind(0)
 
-        shaderProgram!!.setUniformi("u_texture",    0)
-        shaderProgram!!.setUniformf("u_groupSize",  fbo.width.toFloat(), fbo.height.toFloat())
-        shaderProgram!!.setUniformf("u_blurAmount", radiusBlur)
-        shaderProgram!!.setUniformf("u_direction",  dH, dV)
+        shaderProgram.setUniformi("u_texture",    0)
+        shaderProgram.setUniformf("u_groupSize",  fbo.width.toFloat(), fbo.height.toFloat())
+        shaderProgram.setUniformf("u_blurAmount", radiusBlur)
+        shaderProgram.setUniformf("u_direction",  dH, dV)
 
         withMatrix(camera.combined, identityMatrix) {
             draw(textureRegion, 0f, 0f, fbo.width.toFloat(), fbo.height.toFloat())

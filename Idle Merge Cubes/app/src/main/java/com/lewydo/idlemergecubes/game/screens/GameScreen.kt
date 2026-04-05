@@ -1,5 +1,6 @@
 package com.lewydo.idlemergecubes.game.screens
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
@@ -41,7 +42,9 @@ class GameScreen: AdvancedScreen() {
 
     private val aBuyBtn = ABuyButton(this)
 
-    private val aDimImg = Image(drawerUtil.getTexture(GameColor.black_55))
+    private val aDimImg    = Image(drawerUtil.getTexture(GameColor.black_55))
+    //private val aBackBlur  = ABlurBack(this@GameScreen)
+
     private val aPanelMenu = APanelMenu(this)
 
     private val aDialogClearGrid     = ADialogClearGrid(this)
@@ -57,6 +60,8 @@ class GameScreen: AdvancedScreen() {
     // ------------------------------------------------------------------------
     private val timeShow = 0.3f
     private val timeHide = 0.25f
+
+    private var isClosableDim = true
 
     // ------------------------------------------------------------------------
     // Lifecycle
@@ -141,18 +146,20 @@ class GameScreen: AdvancedScreen() {
     }
 
     private fun Group.addBuyBtn() {
-        aBuyBtn.setSize(1107f, 345f)
+        aBuyBtn.setSize(1905f, 386f)
         addActorWithConstraints(aBuyBtn) {
-            startToStartOf = this@addBuyBtn
-            endToEndOf = this@addBuyBtn
+            startToStartOf   = this@addBuyBtn
+            endToEndOf       = this@addBuyBtn
             bottomToBottomOf = this@addBuyBtn
 
-            marginBottom = 206f
+            marginBottom = 200f
         }
 
-        aBuyBtn.setOnClickListener {
+        aBuyBtn.onClick = {
+            Gdx.input.vibrate(35)
             aPanelGrid.buyCube()
         }
+
     }
 
     private fun Group.addPanelMenu() {
@@ -171,13 +178,15 @@ class GameScreen: AdvancedScreen() {
     }
 
     private fun Group.addDimImg() {
-        aDimImg.apply {
-            color.a = 0f
-            disable()
-        }
+        //aBackBlur.animHideAndDisable()
+        //aBackBlur.isStaticEffect = true
+        //aBackBlur.radiusBlur     = 0f
+        //addAndFillActor(aBackBlur)
 
+        aDimImg.animHideAndDisable()
         addAndFillActor(aDimImg)
-        aDimImg.setOnClickListener(null) { setState(StateDim.NONE) }
+
+        aDimImg.setOnClickListener(null) { if (isClosableDim) setState(StateDim.NONE) }
     }
 
     private fun Group.addDialogClearGrid() {
@@ -207,14 +216,20 @@ class GameScreen: AdvancedScreen() {
     // Animations
     // ------------------------------------------------------------------------
 
-    private fun animShowDim(isEnable: Boolean = true) {
+    private fun animShowDim() {
         aDimImg.clearActions()
-        if (isEnable) aDimImg.animShowAndEnable(timeShow) else aDimImg.animShow(timeShow)
+        aDimImg.animShowAndEnable(timeShow)
+
+        //aBackBlur.radiusBlur = 7f
+        //aBackBlur.captureOnce()
+        //aBackBlur.animShow(timeShow)
     }
 
     private fun animHideDim() {
         aDimImg.clearActions()
-        aDimImg.animHideAndDisable(0.25f)
+        aDimImg.animHideAndDisable(timeHide)
+
+        //aBackBlur.animHide(timeHide)
     }
 
     // ------------------------------------------------------------------------
@@ -237,12 +252,14 @@ class GameScreen: AdvancedScreen() {
         // enter new state
         when (newState) {
             StateDim.MENU                  -> {
+                isClosableDim = true
                 animShowDim()
                 aPanelMenu.animShowMenu(timeShow + 0.05f)
             }
             StateDim.DIALOG_CLEAR_GRID     -> aDialogClearGrid.animShowAndEnable(timeShow)
             StateDim.DIALOG_OFFLINE_REWARD -> {
-                animShowDim(false)
+                isClosableDim = false
+                animShowDim()
                 aDialogOfflineReward.animShowAndEnable(timeShow) {
                     aDialogOfflineReward.startEffect()
                 }

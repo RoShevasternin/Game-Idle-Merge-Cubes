@@ -59,7 +59,7 @@ abstract class PreRenderableGroup: AdvancedGroup(), PreRenderable {
     // ------------------------------------------------------------------------- */
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
-        if (batch == null) throw Exception("Error draw: ${this::class.simpleName}")
+        /*if (batch == null) throw Exception("Error draw: ${this::class.simpleName}")
         if (textureResult == null) return
 
         val a = color.a * parentAlpha
@@ -88,7 +88,31 @@ abstract class PreRenderableGroup: AdvancedGroup(), PreRenderable {
 
         // Відновлюємо стандартний blend і колір
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
-        batch.setColor(Color.WHITE)
+        batch.setColor(Color.WHITE)*/
+
+        if (batch == null) throw Exception("Error draw: ${this::class.simpleName}")
+        if (textureResult == null) return
+
+        val a = color.a * parentAlpha
+
+        // Premultiplied alpha: множимо RGB на alpha
+        batch.setColor(color.r * a, color.g * a, color.b * a, a)
+
+        // setBlendFunction() автоматично flush-ить batch перед зміною режиму
+        batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)
+
+        batch.draw(
+            textureResult,
+            x, y,
+            originX, originY,
+            width, height,
+            scaleX, scaleY,
+            rotation,
+        )
+
+        // Відновлюємо стандартний blend і колір
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+        batch.color = Color.WHITE
     }
 
     /** -------------------------------------------------------------------------
@@ -139,7 +163,6 @@ abstract class PreRenderableGroup: AdvancedGroup(), PreRenderable {
         }
         fboResult!!.endAdvanced(batch)
 
-        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
         batch.color = savedColor
         batch.begin()
     }
@@ -233,10 +256,10 @@ abstract class PreRenderableGroup: AdvancedGroup(), PreRenderable {
         stage.viewport.apply()
         batch.projectionMatrix = stage.camera.combined
         batch.transformMatrix  = identityMatrix
+        batch.shader           = null
 
-        batch.shader = null
-
-        //batch.color = Color.WHITE
+        // Відновлюємо стандартний blend — щоб наступний рендер починав з чистого стану
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
     }
 
 }
