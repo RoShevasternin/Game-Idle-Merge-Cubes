@@ -2,16 +2,16 @@ star
 - Delay -
 active: false
 - Duration - 
-lowMin: 200.0
-lowMax: 200.0
+lowMin: 100.0
+lowMax: 100.0
 - Count - 
-min: 50
-max: 60
+min: 25
+max: 30
 - Emission - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 50.0
-highMax: 60.0
+highMin: 25.0
+highMax: 30.0
 relative: false
 scalingCount: 1
 scaling0: 1.0

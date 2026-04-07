@@ -45,7 +45,8 @@ class SpriteManager(var assetManager: AssetManager) {
 
     enum class EnumTexture(val data: TextureData) {
         bg_test(TextureData("textures/bg_test.png")),
-
+        green(TextureData("textures/green.png")),
+        red(TextureData("textures/red.png")),
 
         // Loader
         BACKGROUND(TextureData("textures/loader/background.png")),
@@ -60,21 +61,26 @@ class SpriteManager(var assetManager: AssetManager) {
 
         // All
         COIN_BIG (TextureData("textures/all/coin_big.png")),
+        CONFETTI(TextureData("textures/all/confetti.png")),
+
 
         // All | mask
         MASK_DIALOG_PROGRESS_LVL (TextureData("textures/all/mask/mask_dialog_progress_lvl.png")),
         MASK_PROGRESS_IDLE       (TextureData("textures/all/mask/mask_progress_idle.png")),
         MASK_DIALOG_OFFLINE      (TextureData("textures/all/mask/mask_dialog_offline.png")),
+        MASK_DIALOG_LEVEL_UP     (TextureData("textures/all/mask/mask_dialog_level_up.png")),
 
         // All | panel
-        PANEL_TOP  (TextureData("textures/all/panel/panel_top.png")),
-        PANEL_GAME (TextureData("textures/all/panel/panel_game.png")),
-        PANEL_IDLE (TextureData("textures/all/panel/panel_idle.png")),
-        PANEL_MENU (TextureData("textures/all/panel/panel_menu.png")),
+        PANEL_TOP           (TextureData("textures/all/panel/panel_top.png")),
+        PANEL_GAME          (TextureData("textures/all/panel/panel_game.png")),
+        PANEL_IDLE          (TextureData("textures/all/panel/panel_idle.png")),
+        PANEL_MENU          (TextureData("textures/all/panel/panel_menu.png")),
+        PANEL_LEVEL_UP_BONUS(TextureData("textures/all/panel/panel_level_up_bonus.png")),
 
         // All | dialog
         DIALOG_CLEAR_GRID   (TextureData("textures/all/dialog/dialog_clear_grid.png")),
         DIALOG_OFFLINE      (TextureData("textures/all/dialog/dialog_offline.png")),
+        DIALOG_LEVEL_UP     (TextureData("textures/all/dialog/dialog_level_up.png")),
     }
 
     data class AtlasData(val path: String) {

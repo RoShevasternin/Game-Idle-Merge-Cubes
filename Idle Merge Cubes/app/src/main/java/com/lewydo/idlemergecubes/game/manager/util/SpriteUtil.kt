@@ -116,20 +116,32 @@ class SpriteUtil {
         // TEXTURES
         // ------------------------------------------------------------------------------
 
+        // TEST
         val bg_test = SpriteManager.EnumTexture.bg_test.data.texture
+        val green   = SpriteManager.EnumTexture.green.data.texture
+        val red     = SpriteManager.EnumTexture.red.data.texture
 
+        // ALL
+        val COIN_BIG = SpriteManager.EnumTexture.COIN_BIG.data.texture
+        val CONFETTI = SpriteManager.EnumTexture.CONFETTI.data.texture
+
+        // MASK
         val MASK_DIALOG_PROGRESS_LVL = SpriteManager.EnumTexture.MASK_DIALOG_PROGRESS_LVL.data.texture
         val MASK_PROGRESS_IDLE       = SpriteManager.EnumTexture.MASK_PROGRESS_IDLE.data.texture
         val MASK_DIALOG_OFFLINE      = SpriteManager.EnumTexture.MASK_DIALOG_OFFLINE.data.texture
+        val MASK_DIALOG_LEVEL_UP     = SpriteManager.EnumTexture.MASK_DIALOG_LEVEL_UP.data.texture
+
+        // PANEL
         val PANEL_TOP                = SpriteManager.EnumTexture.PANEL_TOP.data.texture
         val PANEL_GAME               = SpriteManager.EnumTexture.PANEL_GAME.data.texture
         val PANEL_IDLE               = SpriteManager.EnumTexture.PANEL_IDLE.data.texture
         val PANEL_MENU               = SpriteManager.EnumTexture.PANEL_MENU.data.texture
-        val COIN_BIG                 = SpriteManager.EnumTexture.COIN_BIG.data.texture
+        val PANEL_LEVEL_UP_BONUS     = SpriteManager.EnumTexture.PANEL_LEVEL_UP_BONUS.data.texture
 
         // DIALOG
         val DIALOG_CLEAR_GRID = SpriteManager.EnumTexture.DIALOG_CLEAR_GRID.data.texture
         val DIALOG_OFFLINE    = SpriteManager.EnumTexture.DIALOG_OFFLINE.data.texture
+        val DIALOG_LEVEL_UP   = SpriteManager.EnumTexture.DIALOG_LEVEL_UP.data.texture
     }
 
 }

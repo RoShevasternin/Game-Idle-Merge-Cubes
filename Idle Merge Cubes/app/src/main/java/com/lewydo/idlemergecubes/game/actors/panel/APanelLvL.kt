@@ -1,6 +1,7 @@
 package com.lewydo.idlemergecubes.game.actors.panel
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -8,6 +9,8 @@ import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.popup.ALevelPopup
 import com.lewydo.idlemergecubes.game.actors.progress.ACircleProgress
 import com.lewydo.idlemergecubes.game.utils.GameColor
+import com.lewydo.idlemergecubes.game.utils.StageTargets
+import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
@@ -27,7 +30,7 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private val aLvLLbl      = Label("1", Label.LabelStyle(fontLvL, Color.WHITE))
     private val aLevelLbl    = Label("Level", Label.LabelStyle(fontLevel, Color.WHITE))
 
-    private val aCircleProgress = ACircleProgress(screen, -0f, 0f, 90f)
+    private val aCircleProgress = ACircleProgress(screen, 0f, 0f, 90f)
     private val aLvLPopup       = ALevelPopup(screen)
 
     // Field
@@ -50,6 +53,8 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private fun addPanelLvLImg() {
         addActor(aPanelLvLImg)
         aPanelLvLImg.setBounds(18f, 18f, 235f, 235f)
+
+        animDelay(1f) { registerCoordinates() }
     }
 
     private fun addLvLLbl() {
@@ -116,8 +121,15 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private fun collectPlayerData() {
         coroutine?.launch {
             launch { gdxGame.modelPlayer.levelFlow.collect { lvl -> runGDX { aLvLLbl.setText(lvl) } } }
-            launch { gdxGame.modelPlayer.xpFlow.collect { runGDX { aCircleProgress.setProgress(-gdxGame.modelPlayer.progressPercent100()) } } }
+            launch { gdxGame.modelPlayer.xpFlow.collect { runGDX { aCircleProgress.setProgress(gdxGame.modelPlayer.progressPercent100()) } } }
         }
+    }
+
+    private fun registerCoordinates() {
+        val v = aPanelLvLImg.localToStageCoordinates(
+            Vector2(aPanelLvLImg.width / 2f, aPanelLvLImg.height / 2f)
+        )
+        StageTargets.registerXpCenter(v.x, v.y)
     }
 
 }

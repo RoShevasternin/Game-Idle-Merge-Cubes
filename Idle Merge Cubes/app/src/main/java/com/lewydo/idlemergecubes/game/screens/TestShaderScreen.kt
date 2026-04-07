@@ -17,6 +17,7 @@ import com.lewydo.idlemergecubes.game.actors.shader.ABlurBack
 import com.lewydo.idlemergecubes.game.actors.shader.AScreenShot
 import com.lewydo.idlemergecubes.game.actors.shader.ATestShader
 import com.lewydo.idlemergecubes.game.utils.*
+import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
@@ -39,33 +40,38 @@ class TestShaderScreen: AdvancedScreen() {
     private val tmpGroup = ATmpGroup(this)
     private val scroll   = ScrollPane(tmpGroup)
 
+    private val aRedImg   = Image(gdxGame.assetsAll.red)
+    private val aGreenImg = Image(gdxGame.assetsAll.green)
+
     override fun show() {
         setBackBackground(gdxGame.assetsAll.bg_test)
         //setBackBackground(drawerUtil.getRegion(Color.GRAY))
         //setUIBackground(game.assetsAll.LVL_1.region)
         super.show()
 
-//        stageUI.root.addListener(object : InputListener() {
-//            override fun touchDown(
-//                event: InputEvent?,
-//                x: Float,
-//                y: Float,
-//                pointer: Int,
-//                button: Int
-//            ): Boolean {
-//                return true
-//            }
-//
-//            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
-//                super.touchDragged(event, x, y, pointer)
-//                //movableActor?.setPosition(x, y)
-//            }
-//        })
+        stageUI.root.addListener(object : InputListener() {
+            override fun touchDown(
+                event: InputEvent?,
+                x: Float,
+                y: Float,
+                pointer: Int,
+                button: Int
+            ): Boolean {
+                return true
+            }
+
+            override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+                super.touchDragged(event, x, y, pointer)
+                val halfW = movableActor?.let { it.width / 2f } ?: 0f
+                val halfH = movableActor?.let { it.height / 2f } ?: 0f
+                movableActor?.setPosition(x - halfW, y - halfH)
+            }
+        })
     }
 
     override fun Group.addActorsOnStageUI() {
         addActor(progress)
-        progress.setBounds(208f, 3302f, 1743f, 412f)
+        progress.setBounds(208f, 3500f, 1743f, 412f)
 
         addActor(lblFPS)
         lblFPS.apply {
@@ -81,11 +87,29 @@ class TestShaderScreen: AdvancedScreen() {
 //        test.addAction(Actions.forever(Actions.rotateBy(-360f, 5f)))
 //
 //        addTest()
-//
+
         val mainTEST = ABlurBack(this@TestShaderScreen)//,game.assetsLoader.builderList[2])
         mainTEST.debug()
         mainTEST.setBounds(374f, 725f, 1413f, 1413f)
         addActor(mainTEST)
+        movableActor = mainTEST
+
+
+        addActorWithConstraints(aRedImg) {
+            startToStartOf = mainTEST
+            bottomToTopOf  = mainTEST
+            marginStart    = 177f
+            marginBottom   = 95f
+        }
+        addActorWithConstraints(aGreenImg) {
+            endToEndOf     = mainTEST
+            bottomToTopOf  = mainTEST
+            marginEnd      = 177f
+            marginBottom   = 95f
+        }
+
+        aGreenImg.toBack()
+        aRedImg.toBack()
 //
 //        val testGroup = ATmpGroup(this@TestShaderScreen)
 //        testGroup.debug()

@@ -131,10 +131,8 @@ class ABlurBack(
 
         // 2. Скидаємо лічильник кадрів blur/mask — щоб вони відрендерились заново.
         //    Toggle false→true скидає staticEffectRenderCounter до 0 всередині PreRenderableGroup.
-        aBlur.isStaticEffect = false
-        aMask.isStaticEffect = false
-        aBlur.isStaticEffect = true
-        aMask.isStaticEffect = true
+        aBlur.rerenderStaticOnce()
+        aMask.rerenderStaticOnce()
 
         // field залишається true — після staticEffectFrames кадрів все знову заморожується
     }

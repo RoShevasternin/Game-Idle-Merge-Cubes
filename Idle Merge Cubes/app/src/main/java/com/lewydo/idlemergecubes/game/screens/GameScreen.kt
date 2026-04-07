@@ -1,10 +1,13 @@
 package com.lewydo.idlemergecubes.game.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
+import com.lewydo.idlemergecubes.game.actors.dialog.ADialogLevelUp
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogOfflineReward
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
@@ -12,6 +15,7 @@ import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
 import com.lewydo.idlemergecubes.game.actors.panelGrid.APanelGrid
 import com.lewydo.idlemergecubes.game.actors.panelIdle.APanelIdle
 import com.lewydo.idlemergecubes.game.actors.panelMenu.APanelMenu
+import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectActor
 import com.lewydo.idlemergecubes.game.model.OfflineRewardModel
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.GameColor
@@ -26,11 +30,19 @@ import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
+import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.game.utils.runGDX
+import kotlinx.coroutines.launch
 
 class GameScreen: AdvancedScreen() {
+
+    private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
+    private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
+
 
     // ------------------------------------------------------------------------
     // Actors
@@ -49,6 +61,7 @@ class GameScreen: AdvancedScreen() {
 
     private val aDialogClearGrid     = ADialogClearGrid(this)
     private val aDialogOfflineReward = ADialogOfflineReward(this)
+    private val aDialogLevelUp       = ADialogLevelUp(this)
 
     // ------------------------------------------------------------------------
     // State
@@ -69,6 +82,18 @@ class GameScreen: AdvancedScreen() {
     override fun show() {
         setBackBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
+
+        stageUI.root.addActorWithConstraints(label) {
+            topToTopOf = stageUI.root
+            endToEndOf = stageUI.root
+            marginTop  = 244f
+            marginEnd  = 550f
+        }
+    }
+
+    override fun render(delta: Float) {
+        super.render(delta)
+        label.setText("${Gdx.graphics.framesPerSecond} FPS")
     }
 
     override fun Group.addActorsOnStageUI() {
@@ -83,6 +108,7 @@ class GameScreen: AdvancedScreen() {
         addPanelMenu()
 
         addDialogClearGrid()
+        addDialogLevelUp()
         addDialogOfflineReward()
 
         animShowScreen()
@@ -212,6 +238,14 @@ class GameScreen: AdvancedScreen() {
         checkAvailableOfflineReward()
     }
 
+    private fun Group.addDialogLevelUp() {
+        aDialogLevelUp.animHideAndDisable()
+        aDialogLevelUp.setSize(1908f, 2333f)
+        addActorAligned(aDialogLevelUp, AlignH.CENTER, AlignV.CENTER)
+
+        collectLevelUp()
+    }
+
     // ------------------------------------------------------------------------
     // Animations
     // ------------------------------------------------------------------------
@@ -243,7 +277,16 @@ class GameScreen: AdvancedScreen() {
         when (currentState) {
             StateDim.MENU                  -> aPanelMenu.animHideMenu(timeHide + 0.03f)
             StateDim.DIALOG_CLEAR_GRID     -> aDialogClearGrid.animHideAndDisable(timeHide)
-            StateDim.DIALOG_OFFLINE_REWARD -> aDialogOfflineReward.animHideAndDisable(timeHide)
+            StateDim.DIALOG_OFFLINE_REWARD -> {
+                aDialogOfflineReward.animHideAndDisable(timeHide) {
+                    aDialogOfflineReward.stopEffect()
+                }
+            }
+            StateDim.DIALOG_LEVEL_UP       -> {
+                aDialogLevelUp.animHideAndDisable(timeHide) {
+                    aDialogLevelUp.stopEffect()
+                }
+            }
             StateDim.NONE -> {}
         }
 
@@ -264,14 +307,25 @@ class GameScreen: AdvancedScreen() {
                     aDialogOfflineReward.startEffect()
                 }
             }
+            StateDim.DIALOG_LEVEL_UP -> {
+                isClosableDim = false
+                animShowDim()
+                aDialogLevelUp.animShowAndEnable(timeShow) {
+                    aDialogLevelUp.startEffect()
+                }
+            }
             StateDim.NONE -> animHideDim()
         }
     }
 
+    // ------------------------------------------------------------------------
+    // checkAvailableOfflineReward
+    // ------------------------------------------------------------------------
+
     private fun checkAvailableOfflineReward() {
         val result = gdxGame.modelOfflineReward.calculate()
         if (result is OfflineRewardModel.OfflineResult.Reward) {
-            aDialogOfflineReward.setReward(result.coins.toInt())
+            aDialogOfflineReward.setReward(result.coins)
             aDialogOfflineReward.setDuration(result.duration.toDisplayString())
 
             aDialogOfflineReward.onCollect   = {
@@ -288,6 +342,40 @@ class GameScreen: AdvancedScreen() {
     }
 
     // ------------------------------------------------------------------------
+    // collectLevelUp
+    // ------------------------------------------------------------------------
+
+    private fun collectLevelUp() {
+        // Пропускаємо перший emit (початковий рівень при запуску)
+        var previousLevel = gdxGame.modelPlayer.currentLevel
+
+        coroutine?.launch {
+            gdxGame.modelPlayer.levelFlow.collect { newLevel ->
+                if (newLevel > previousLevel) {
+                    previousLevel = newLevel
+                    val reward = gdxGame.modelLevelUp.calculateReward(newLevel)
+
+                    runGDX {
+                        aDialogLevelUp.setLevel(newLevel)
+                        aDialogLevelUp.setReward(reward)
+
+                        aDialogLevelUp.onCollect = {
+                            gdxGame.modelLevelUp.collect(newLevel)
+                            setState(StateDim.NONE)
+                        }
+                        aDialogLevelUp.onCollectX2 = {
+                            gdxGame.modelLevelUp.collectX2(newLevel)
+                            setState(StateDim.NONE)
+                        }
+
+                        setState(StateDim.DIALOG_LEVEL_UP)
+                    }
+                }
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------------
     // enum State
     // ------------------------------------------------------------------------
     private enum class StateDim {
@@ -295,6 +383,7 @@ class GameScreen: AdvancedScreen() {
         MENU,
         DIALOG_CLEAR_GRID,
         DIALOG_OFFLINE_REWARD,
+        DIALOG_LEVEL_UP,
     }
 
 }

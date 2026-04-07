@@ -21,6 +21,8 @@ class ACircleProgress(
     var emptyPercent: Float = 0f, // 0..100
 ) : PreRenderableGroup() {
 
+    override val useFboGroup = false
+
     companion object {
         private val shaderProgram: ShaderProgram by lazy {
             createShader(
@@ -29,6 +31,8 @@ class ACircleProgress(
             )
         }
     }
+
+    private val textureWhite = screen.drawerUtil.getTexture()
 
     // ------------------------------------------------------------------------
     // State
@@ -69,7 +73,7 @@ class ACircleProgress(
             shaderProgram.setUniformf("u_colorStart", GameColor.progressStart)
             shaderProgram.setUniformf("u_colorEnd", GameColor.progressEnd)
 
-            batch.draw(textureGroup, 0f, 0f, width, height)
+            batch.draw(textureWhite, 0f, 0f, width, height)
 
         }
     }

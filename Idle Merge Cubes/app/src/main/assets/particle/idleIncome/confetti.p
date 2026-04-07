@@ -2,16 +2,16 @@ confetti
 - Delay -
 active: false
 - Duration - 
-lowMin: 200.0
-lowMax: 200.0
+lowMin: 100.0
+lowMax: 100.0
 - Count - 
-min: 45
-max: 50
+min: 15
+max: 17
 - Emission - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 45.0
-highMax: 50.0
+highMin: 15.0
+highMax: 17.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -20,8 +20,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1000.0
-highMax: 1500.0
+highMin: 900.0
+highMax: 1100.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -156,8 +156,8 @@ timeline0: 0.0
 timeline1: 1.0
 - Gravity - 
 active: true
-lowMin: 0.0
-lowMax: 0.0
+lowMin: 200.0
+lowMax: 200.0
 highMin: -1000.0
 highMax: -1000.0
 relative: false

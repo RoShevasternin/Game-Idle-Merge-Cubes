@@ -3,6 +3,7 @@ package com.lewydo.idlemergecubes.game.actors.particleEffect
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Disposable
@@ -116,6 +117,56 @@ open class AParticleEffectActor(
     }
 
     // ------------------------------------------------------------------------
+    // Tint color
+    // ------------------------------------------------------------------------
+
+    fun setTintColor(colorIndex: Int, color: Color) {
+        particleEffect.emitters.forEach { emitter ->
+            applyTint(emitter, colorIndex, color)
+        }
+    }
+
+    fun setTintColor(emitterName: String, colorIndex: Int, color: Color) {
+        particleEffect.emitters
+            .firstOrNull { it.name == emitterName }
+            ?.let { applyTint(it, colorIndex, color) }
+    }
+
+    fun setFirstTintColor(color: Color) {
+        setTintColor(0, color)
+    }
+
+    fun setFirstTintColor(emitterName: String, color: Color) {
+        setTintColor(emitterName, 0, color)
+    }
+
+    fun setLastTintColor(color: Color) {
+        particleEffect.emitters.forEach { emitter ->
+            val lastIndex = emitter.tint.colors.size / 3 - 1
+            applyTint(emitter, lastIndex, color)
+        }
+    }
+
+    fun setLastTintColor(emitterName: String, color: Color) {
+        particleEffect.emitters
+            .firstOrNull { it.name == emitterName }
+            ?.let { emitter ->
+                val lastIndex = emitter.tint.colors.size / 3 - 1
+                applyTint(emitter, lastIndex, color)
+            }
+    }
+
+    private fun applyTint(emitter: ParticleEmitter, colorIndex: Int, color: Color) {
+        val colors = emitter.tint.colors
+        val idx    = colorIndex * 3
+        if (idx + 2 < colors.size) {
+            colors[idx]     = color.r
+            colors[idx + 1] = color.g
+            colors[idx + 2] = color.b
+        }
+    }
+
+    // ------------------------------------------------------------------------
     // Transform
     // ------------------------------------------------------------------------
 
@@ -150,10 +201,10 @@ open class AParticleEffectActor(
         isRunning = true
     }
 
-    fun pause()           { isRunning = false }
-    fun resume()          { isRunning = true }
-    fun allowCompletion() = particleEffect.allowCompletion()
-    override fun dispose()= particleEffect.dispose()
+    fun pause()            { isRunning = false }
+    fun resume()           { isRunning = true }
+    fun allowCompletion()  = particleEffect.allowCompletion()
+    override fun dispose() = particleEffect.dispose()
 
     fun fitToSize(
         targetWidth : Float? = null,

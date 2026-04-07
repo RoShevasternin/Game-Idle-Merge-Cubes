@@ -52,6 +52,8 @@ class ACube(
 
     private var visualColor = Color.WHITE
 
+    var isDragEnabled = true
+
     // ------------------------------------------------------------------------
     // DRAG CALLBACKS
     // ------------------------------------------------------------------------
@@ -109,7 +111,9 @@ class ACube(
     fun updateColor() {
         //aCube1Img.setColorShader(CubeColorSystem.getFrameColor(lvl))
         visualColor = CubeColorSystem.getCubeColor(lvl)
+
         aCubeImg.setColorShader(visualColor)
+        aCubeImg.rerenderStaticOnce()
     }
 
     fun getVisualColor(): Color {
@@ -148,17 +152,17 @@ class ACube(
             }
 
             override fun drag(event: InputEvent, x: Float, y: Float, pointer: Int) {
+                if (!isDragEnabled) return  // ← не рухаємо якщо заблоковано
+
                 val stageX = event.stageX
                 val stageY = event.stageY
-
                 val parentCoords = parent.stageToLocalCoordinates(Vector2(stageX, stageY))
-
                 setPosition(parentCoords.x - dragOffsetX, parentCoords.y - dragOffsetY)
-
                 onMove.invoke(stageX, stageY)
             }
 
             override fun dragStop(event: InputEvent, x: Float, y: Float, pointer: Int) {
+                isDragEnabled = true  // ← завжди відновлюємо
                 onEnd.invoke()
             }
         })

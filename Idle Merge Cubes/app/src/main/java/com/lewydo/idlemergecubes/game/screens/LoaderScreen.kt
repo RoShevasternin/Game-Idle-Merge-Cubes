@@ -190,7 +190,7 @@ class LoaderScreen : AdvancedScreen() {
 
             stageUI.root.animDelay(1f) {
                 aMain.aLightLoader.onLoaderFinish()
-                animHideScreen { gdxGame.navigationManager.navigate(GameScreen::class.java.name) } //TestShaderScreen::class.java.name) }
+                animHideScreen { gdxGame.navigationManager.navigate(GameScreen::class.java.name) }// TestShaderScreen::class.java.name) }
             }
         }
     }

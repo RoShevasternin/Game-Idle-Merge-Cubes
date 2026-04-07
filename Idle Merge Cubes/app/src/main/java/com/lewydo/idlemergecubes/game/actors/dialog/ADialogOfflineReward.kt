@@ -27,6 +27,8 @@ class ADialogOfflineReward(override val screen: AdvancedScreen): AdvancedGroup()
     private val textTitle    = "YOU’VE BEEN AWAY FOR"
     private val textSubTitle = "WHILE YOU WERE RESTING, WE COLLECTED FOR YOU:"
 
+    private val BASE_WIDTH_EFFECT = 1908f
+
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
@@ -129,7 +131,7 @@ class ADialogOfflineReward(override val screen: AdvancedScreen): AdvancedGroup()
     private fun AMask.addEffectConfetti() {
         aEffectConfetti.fitToSize(
             targetWidth = width,
-            baseWidth   = 1908f,
+            baseWidth   = BASE_WIDTH_EFFECT,
         )
         addActorAligned(aEffectConfetti, AlignH.LEFT, AlignV.TOP)
     }
@@ -138,9 +140,9 @@ class ADialogOfflineReward(override val screen: AdvancedScreen): AdvancedGroup()
     // Logic
     // ------------------------------------------------------------------------
 
-    fun setReward(amount: Int) {
-        aCollectBtn.setReward(amount)
-        aCollectX2Btn.setReward(amount * 2)
+    fun setReward(amount: Long) {
+        aCollectBtn.setReward(amount.toInt())
+        aCollectX2Btn.setReward((amount * 2).toInt())
     }
 
     fun setDuration(duration: String) {
@@ -151,6 +153,8 @@ class ADialogOfflineReward(override val screen: AdvancedScreen): AdvancedGroup()
         aEffectConfetti.start()
     }
 
-
+    fun stopEffect() {
+        aEffectConfetti.pause()
+    }
 
 }

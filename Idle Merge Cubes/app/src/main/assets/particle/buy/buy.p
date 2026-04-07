@@ -2,10 +2,10 @@ buy
 - Delay -
 active: false
 - Duration - 
-lowMin: 500.0
-lowMax: 500.0
+lowMin: 100.0
+lowMax: 100.0
 - Count - 
-min: 5
+min: 7
 max: 10
 - Emission - 
 lowMin: 0.0
@@ -82,14 +82,16 @@ lowMax: -800.0
 highMin: 550.0
 highMax: 800.0
 relative: false
-scalingCount: 3
-scaling0: 1.0
-scaling1: 0.5027933
-scaling2: 0.0
-timelineCount: 3
+scalingCount: 4
+scaling0: 0.0
+scaling1: 1.0
+scaling2: 1.0
+scaling3: 0.0
+timelineCount: 4
 timeline0: 0.0
-timeline1: 0.7972576
-timeline2: 1.0
+timeline1: 0.098922625
+timeline2: 0.399608
+timeline3: 1.0
 - Angle - 
 active: true
 lowMin: 0.0
