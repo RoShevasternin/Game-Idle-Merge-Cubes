@@ -11,10 +11,12 @@ import com.lewydo.idlemergecubes.game.manager.NavigationManager
 import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
 import com.lewydo.idlemergecubes.game.manager.SoundManager
 import com.lewydo.idlemergecubes.game.manager.SpriteManager
+import com.lewydo.idlemergecubes.game.manager.TutorialManager
 import com.lewydo.idlemergecubes.game.manager.util.MusicUtil
 import com.lewydo.idlemergecubes.game.manager.util.ParticleEffectUtil
 import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.manager.util.SpriteUtil
+import com.lewydo.idlemergecubes.game.manager.util.VibroUtil
 import com.lewydo.idlemergecubes.game.model.GridModel
 import com.lewydo.idlemergecubes.game.model.IdleModel
 import com.lewydo.idlemergecubes.game.model.LevelUpRewardModel
@@ -22,6 +24,7 @@ import com.lewydo.idlemergecubes.game.model.OfflineRewardModel
 import com.lewydo.idlemergecubes.game.model.PlayerModel
 import com.lewydo.idlemergecubes.game.screens.LoaderScreen
 import com.lewydo.idlemergecubes.game.utils.GameColor
+import com.lewydo.idlemergecubes.game.utils.Settings
 import com.lewydo.idlemergecubes.game.utils.ShaderClock
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGame
 import com.lewydo.idlemergecubes.game.utils.disposeAll
@@ -43,11 +46,14 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     val assetsLoader by lazy { SpriteUtil.Loader() }
     val assetsAll    by lazy { SpriteUtil.All() }
 
-    val musicUtil by lazy { MusicUtil()    }
-    val soundUtil by lazy { SoundUtil()    }
+    val musicUtil by lazy { MusicUtil() }
+    val soundUtil by lazy { SoundUtil() }
+    val vibroUtil by lazy { VibroUtil() }
 
     val particleEffectLoader by lazy { ParticleEffectUtil.Loader() }
     val particleEffectAll    by lazy { ParticleEffectUtil.All() }
+
+    val settings by lazy { Settings() }
 
     var backgroundColor = GameColor.background
     val disposableSet   = mutableSetOf<Disposable>()
@@ -61,6 +67,8 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     val modelIdle          = IdleModel(modelGrid, modelPlayer, coroutine)
     val modelOfflineReward = OfflineRewardModel(modelPlayer)
     val modelLevelUp       = LevelUpRewardModel(modelPlayer)
+
+    val tutorialManager = TutorialManager(coroutine)
 
     override fun create() {
         navigationManager = NavigationManager(this)

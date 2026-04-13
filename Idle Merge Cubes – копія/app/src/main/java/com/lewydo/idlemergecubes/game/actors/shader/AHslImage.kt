@@ -57,6 +57,8 @@ class AHslImage(
     private val initialDrawable: Drawable? = null,
 ) : PreRenderableGroup() {
 
+    override val useFboGroup = false
+
     companion object {
         /**
          * Shared шейдер — один на весь клас.
@@ -134,7 +136,6 @@ class AHslImage(
     override fun getPreRenderMethods() = object : PreRenderMethods {
 
         override fun renderFboGroup(batch: Batch, parentAlpha: Float) {
-            drawChildrenWithoutTransform(batch, parentAlpha)
         }
 
         override fun applyEffect(batch: Batch, parentAlpha: Float) = Unit
@@ -150,7 +151,8 @@ class AHslImage(
             shader.setUniformf("u_saturation", saturation)
             shader.setUniformf("u_luminance",  luminance)
 
-            batch.draw(textureGroup, 0f, 0f, width, height)
+            //batch.draw(textureGroup, 0f, 0f, width, height)
+            drawChildrenWithoutTransform(batch, parentAlpha)
 
             batch.shader = null
         }

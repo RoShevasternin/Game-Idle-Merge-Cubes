@@ -5,6 +5,8 @@ import com.lewydo.idlemergecubes.game.actors.panelGrid.ACell
 import com.lewydo.idlemergecubes.game.actors.panelGrid.ACellLayer
 import com.lewydo.idlemergecubes.game.actors.panelGrid.ACube
 import com.lewydo.idlemergecubes.game.actors.panelGrid.ACubeLayer
+import com.lewydo.idlemergecubes.game.utils.currentTimeMinus
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class GridDragDelegate(
     private val controller: GridController,
@@ -19,6 +21,8 @@ class GridDragDelegate(
     private var fromIndex       = -1
     private var dragAccepted    = false  // ← чи прийнятий поточний drag
 
+    private var dragStartTime = 0L
+
     fun attach(cube: ACube) {
         cube.setDragCallbacks(
             onStart = { onStart(cube)        },
@@ -28,6 +32,8 @@ class GridDragDelegate(
     }
 
     private fun onStart(cube: ACube) {
+        dragStartTime = System.currentTimeMillis()
+
         lastCubeTouched = cube
 
         if (controller.isInteractionLocked()) {
@@ -39,6 +45,8 @@ class GridDragDelegate(
         dragAccepted    = true
         draggingCube    = cube
         fromIndex       = cube.index
+
+        gdxGame.soundUtil.apply { play(CUBE_TOUCH) }
 
         cubeLayer.liftCube(fromIndex)
         updateCellsState()
@@ -69,12 +77,26 @@ class GridDragDelegate(
         val cube   = draggingCube ?: run { resetState(); return }
         val target = targetIndex
 
+        var isMerge = false
+
         when {
-            target == null                          -> rollback()
-            controller.isEmpty(target)              -> controller.move(fromIndex, target)
-            controller.getLevel(target) == cube.lvl -> controller.merge(fromIndex, target)
-            else                                    -> rollback()
+            target == null -> {
+                rollback()
+            }
+
+            controller.isEmpty(target) -> {
+                controller.move(fromIndex, target)
+            }
+
+            controller.getLevel(target) == cube.lvl -> {
+                isMerge = true
+                controller.merge(fromIndex, target)
+            }
+
+            else -> rollback()
         }
+
+        if (!isMerge && currentTimeMinus(dragStartTime) > 200L) gdxGame.soundUtil.apply { play(CUBE_TOUCH) }
 
         resetVisuals()
         resetState()

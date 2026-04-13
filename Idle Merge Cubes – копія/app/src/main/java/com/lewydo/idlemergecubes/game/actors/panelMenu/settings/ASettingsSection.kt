@@ -2,29 +2,19 @@ package com.lewydo.idlemergecubes.game.actors.panelMenu.settings
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.Action
-import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
-import com.lewydo.idlemergecubes.game.actors.button.AButton
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
-import com.lewydo.idlemergecubes.game.utils.Block
-import com.lewydo.idlemergecubes.game.utils.GameColor
+import com.lewydo.idlemergecubes.game.screens.WhoScreen
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
 import com.lewydo.idlemergecubes.game.utils.actor.animRotateTo
 import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
-import com.lewydo.idlemergecubes.game.utils.actor.enable
-import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
-import com.lewydo.idlemergecubes.game.utils.actor.setOrigin
-import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
@@ -114,6 +104,15 @@ class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(
 
         addActor(aSettingsContent)
         aSettingsContent.setBounds(76f, 64f, 1764f, 1218f)
+
+        aSettingsContent.setInitStateBox(
+            sound = gdxGame.settings.IS_SOUND,
+            music = gdxGame.settings.IS_MUSIC,
+            vibro = gdxGame.settings.IS_VIBRO,
+            alarm = gdxGame.settings.IS_ALARM,
+        )
+
+        aSettingsContent.handleSettingsContent()
     }
 
     // ------------------------------------------------------------------------
@@ -146,6 +145,20 @@ class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(
         ))
 
         aExpandImg.animRotateTo(0f, timeAnim)
+    }
+
+    // ------------------------------------------------------------------------
+    // Handler Util
+    // ------------------------------------------------------------------------
+    private fun ASettingsContent.handleSettingsContent() {
+        onSoundBlock = { isOn -> gdxGame.settings.IS_SOUND = isOn }
+        onMusicBlock = { isOn -> gdxGame.settings.IS_MUSIC = isOn }
+        onVibroBlock = { isOn -> gdxGame.settings.IS_VIBRO = isOn }
+        onAlarmBlock = { isOn -> gdxGame.settings.IS_ALARM = isOn }
+
+        onInfoBlock = {
+            screen.animHideScreen { gdxGame.navigationManager.navigate(WhoScreen::class.java.name, screen::class.java.name) }
+        }
     }
 
 }

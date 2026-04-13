@@ -53,6 +53,8 @@ class ParticleEffectManager(var assetManager: AssetManager) {
 
         CUBE(ParticleEffectData("particle/cube/cube.p", "particle/cube", "particle/SHARED")),
 
+        COLLECT(ParticleEffectData("particle/collect/collect.p", "particle/collect")),
+
     }
 
     // ------------------------------------------------------------------------

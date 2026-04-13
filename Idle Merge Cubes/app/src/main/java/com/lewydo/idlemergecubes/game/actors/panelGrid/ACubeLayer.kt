@@ -9,15 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.label.AFlyingLabel
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
 import com.lewydo.idlemergecubes.game.utils.GameColor
-import com.lewydo.idlemergecubes.game.utils.StageTargets
+import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
+import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
-import com.lewydo.idlemergecubes.game.utils.runGDX
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
 
@@ -133,9 +131,26 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
 
         val finalPos = calculateFinalPos(targetCellPos)
 
+        val newLevel = target.lvl + 1
+
+        when {
+            newLevel % 10 == 0 -> {
+                gdxGame.vibroUtil.vibro(75)
+                gdxGame.soundUtil.apply { play(MERGE_3) }
+            }
+            newLevel % 2 == 0  -> {
+                gdxGame.vibroUtil.vibro(40)
+                gdxGame.soundUtil.apply { play(MERGE_2) }
+            }
+            else               -> {
+                gdxGame.vibroUtil.vibro(30)
+                gdxGame.soundUtil.apply { play(MERGE_1) }
+            }
+        }
+
         animMerge(source, target, finalPos) {
             removeCube(from)
-            target.setLevel(target.lvl + 1)
+            target.setLevel(newLevel)
 
             // спавнимо ефект в центрі target куба
             spawnMergeEffect(target, target.getVisualColor())
@@ -246,8 +261,9 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
                 screen = screen,
                 text   = "+$coins",
                 style  = style,
-                to     = StageTargets.coins.cpy(),
+                to     = GlobalStagePositions.get(GlobalStagePositions.Position.COIN),
                 side   = AFlyingLabel.Side.Left,
+                onEnd  = { GlobalEvents.emit(GlobalEvents.EventType.END_FLY_COIN) }
             ).also { it.setBounds(from, size) }
         )
 
@@ -256,8 +272,9 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
                 screen = screen,
                 text   = "+$xp XP",
                 style  = style,
-                to     = StageTargets.xp.cpy(),
+                to     = GlobalStagePositions.get(GlobalStagePositions.Position.XP),
                 side   = AFlyingLabel.Side.Right,
+                onEnd  = { GlobalEvents.emit(GlobalEvents.EventType.END_FLY_XP) }
             ).also { it.setBounds(from, size) }
         )
     }

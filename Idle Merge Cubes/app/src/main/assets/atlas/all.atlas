@@ -1,8 +1,22 @@
 all.png
-size: 1975, 1280
+size: 1975, 1281
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
+back_def
+  rotate: false
+  xy: 1243, 364
+  size: 177, 177
+  orig: 177, 177
+  offset: 0, 0
+  index: -1
+back_press
+  rotate: false
+  xy: 1421, 364
+  size: 177, 177
+  orig: 177, 177
+  offset: 0, 0
+  index: -1
 bag_coins
   rotate: false
   xy: 185, 48
@@ -12,14 +26,14 @@ bag_coins
   index: -1
 buy_def
   rotate: false
-  xy: 1, 541
+  xy: 1, 542
   size: 953, 193
   orig: 953, 193
   offset: 0, 0
   index: -1
 buy_dis
   rotate: false
-  xy: 955, 541
+  xy: 955, 542
   size: 953, 193
   orig: 953, 193
   offset: 0, 0
@@ -54,14 +68,14 @@ collect_center_x2
   index: -1
 collect_frame_def
   rotate: false
-  xy: 1, 735
+  xy: 1, 736
   size: 1281, 208
   orig: 1281, 208
   offset: 0, 0
   index: -1
 collect_frame_press
   rotate: false
-  xy: 1, 944
+  xy: 1, 945
   size: 1281, 208
   orig: 1281, 208
   offset: 0, 0
@@ -145,14 +159,14 @@ no_press
   index: -1
 offline_circle_fill
   rotate: false
-  xy: 1283, 944
+  xy: 1283, 945
   size: 290, 290
   orig: 290, 290
   offset: 0, 0
   index: -1
 offline_circle_stroke
   rotate: false
-  xy: 1574, 944
+  xy: 1574, 945
   size: 335, 335
   orig: 335, 335
   offset: 0, 0

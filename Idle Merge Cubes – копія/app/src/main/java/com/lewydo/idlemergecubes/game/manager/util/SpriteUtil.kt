@@ -59,6 +59,8 @@ class SpriteUtil {
         val collect_frame_press   = getAllRegion("collect_frame_press")
         val circle_fill           = getAllRegion("offline_circle_fill")
         val circle_stroke         = getAllRegion("offline_circle_stroke")
+        val back_def              = getAllRegion("back_def")
+        val back_press            = getAllRegion("back_press")
 
         // Idle
         val bag_coins                = getAllRegion("bag_coins")
@@ -111,17 +113,31 @@ class SpriteUtil {
         val progress_dialog_lvl            = get9Patch("progress_dialog_lvl")
         val progress_dialog_lvl_background = get9Patch("progress_dialog_lvl_background")
         val panel_settings                 = get9Patch("panel_settings")
+        val panel_who                      = get9Patch("panel_who")
+        val separator                      = get9Patch("separator")
+        val separator_2                    = get9Patch("separator_2")
 
         // ------------------------------------------------------------------------------
         // TEXTURES
         // ------------------------------------------------------------------------------
 
         // TEST
-        val bg_test = SpriteManager.EnumTexture.bg_test.data.texture
+        val bg_test    = SpriteManager.EnumTexture.bg_test.data.texture
+        val green      = SpriteManager.EnumTexture.green.data.texture
+        val red        = SpriteManager.EnumTexture.red.data.texture
+        val ComingSoon = SpriteManager.EnumTexture.ComingSoon.data.texture
 
         // ALL
+        val LIGHT    = SpriteManager.EnumTexture.LIGHT.data.texture
         val COIN_BIG = SpriteManager.EnumTexture.COIN_BIG.data.texture
         val CONFETTI = SpriteManager.EnumTexture.CONFETTI.data.texture
+
+        // BRAND
+        val BRAND       = SpriteManager.EnumTexture.BRAND.data.texture
+        val BRAND_BACK  = SpriteManager.EnumTexture.BRAND_BACK.data.texture
+        val BRAND_FRONT = SpriteManager.EnumTexture.BRAND_FRONT.data.texture
+        val LILY        = SpriteManager.EnumTexture.LILY.data.texture
+        val VELDAN      = SpriteManager.EnumTexture.VELDAN.data.texture
 
         // MASK
         val MASK_DIALOG_PROGRESS_LVL = SpriteManager.EnumTexture.MASK_DIALOG_PROGRESS_LVL.data.texture

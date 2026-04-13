@@ -1,10 +1,7 @@
 package com.lewydo.idlemergecubes.game.screens
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogLevelUp
@@ -15,7 +12,6 @@ import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
 import com.lewydo.idlemergecubes.game.actors.panelGrid.APanelGrid
 import com.lewydo.idlemergecubes.game.actors.panelIdle.APanelIdle
 import com.lewydo.idlemergecubes.game.actors.panelMenu.APanelMenu
-import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectActor
 import com.lewydo.idlemergecubes.game.model.OfflineRewardModel
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.GameColor
@@ -30,18 +26,20 @@ import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
-import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.launch
 
 class GameScreen: AdvancedScreen() {
 
-    private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
-    private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
+    companion object {
+        private var IS_CHECK_OFFLINE_REWARD = true
+    }
+
+    //private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
+    //private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
 
 
     // ------------------------------------------------------------------------
@@ -83,18 +81,18 @@ class GameScreen: AdvancedScreen() {
         setBackBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
 
-        stageUI.root.addActorWithConstraints(label) {
-            topToTopOf = stageUI.root
-            endToEndOf = stageUI.root
-            marginTop  = 244f
-            marginEnd  = 550f
-        }
+//        stageUI.root.addActorWithConstraints(label) {
+//            topToTopOf = stageUI.root
+//            endToEndOf = stageUI.root
+//            marginTop  = 244f
+//            marginEnd  = 550f
+//        }
     }
 
-    override fun render(delta: Float) {
-        super.render(delta)
-        label.setText("${Gdx.graphics.framesPerSecond} FPS")
-    }
+//    override fun render(delta: Float) {
+//        super.render(delta)
+//        label.setText("${Gdx.graphics.framesPerSecond} FPS")
+//    }
 
     override fun Group.addActorsOnStageUI() {
         color.a = 0f
@@ -103,6 +101,8 @@ class GameScreen: AdvancedScreen() {
         addPanelGame()
         addPanelIdle()
         addBuyBtn()
+
+        aPanelTop.toFront()
 
         addDimImg()
         addPanelMenu()
@@ -138,23 +138,23 @@ class GameScreen: AdvancedScreen() {
         aPanelTop.onClickSettingsBtn = { setState(StateDim.MENU) }
 
 
-        var isTestVisible = true
-        aPanelTop.setOnClickListener {
-            if (isTestVisible) {
-                animHideScreen()
-            } else {
-                animShowScreen()
-            }
-            isTestVisible = !isTestVisible
-        }
+//        var isTestVisible = true
+//        aPanelTop.setOnClickListener {
+//            if (isTestVisible) {
+//                animHideScreen()
+//            } else {
+//                animShowScreen()
+//            }
+//            isTestVisible = !isTestVisible
+//        }
     }
 
     private fun Group.addPanelGame() {
         aPanelGrid.setSize(1905f, 1905f)
         addActorWithConstraints(aPanelGrid) {
             startToStartOf = this@addPanelGame
-            endToEndOf = this@addPanelGame
-            topToBottomOf = aPanelTop
+            endToEndOf     = this@addPanelGame
+            topToBottomOf  = aPanelTop
 
             marginTop = 238f
         }
@@ -164,8 +164,8 @@ class GameScreen: AdvancedScreen() {
         aPanelIdle.setSize(1905f, 428f)
         addActorWithConstraints(aPanelIdle) {
             startToStartOf = this@addPanelIdle
-            endToEndOf = this@addPanelIdle
-            topToBottomOf = aPanelGrid
+            endToEndOf     = this@addPanelIdle
+            topToBottomOf  = aPanelGrid
 
             marginTop = 151f
         }
@@ -182,7 +182,6 @@ class GameScreen: AdvancedScreen() {
         }
 
         aBuyBtn.onClick = {
-            Gdx.input.vibrate(35)
             aPanelGrid.buyCube()
         }
 
@@ -192,8 +191,8 @@ class GameScreen: AdvancedScreen() {
         aPanelMenu.disable()
         aPanelMenu.setSize(WIDTH_UI, 2738f)
         addActorWithConstraints(aPanelMenu) {
-            startToStartOf = this@addPanelMenu
-            endToEndOf = this@addPanelMenu
+            startToStartOf   = this@addPanelMenu
+            endToEndOf       = this@addPanelMenu
             bottomToBottomOf = this@addPanelMenu
         }
 
@@ -235,7 +234,10 @@ class GameScreen: AdvancedScreen() {
         aDialogOfflineReward.setSize(1908f, 2333f)
         addActorAligned(aDialogOfflineReward, AlignH.CENTER, AlignV.CENTER)
 
-        checkAvailableOfflineReward()
+        if (IS_CHECK_OFFLINE_REWARD) {
+            IS_CHECK_OFFLINE_REWARD = false
+            checkAvailableOfflineReward()
+        }
     }
 
     private fun Group.addDialogLevelUp() {
@@ -277,8 +279,16 @@ class GameScreen: AdvancedScreen() {
         when (currentState) {
             StateDim.MENU                  -> aPanelMenu.animHideMenu(timeHide + 0.03f)
             StateDim.DIALOG_CLEAR_GRID     -> aDialogClearGrid.animHideAndDisable(timeHide)
-            StateDim.DIALOG_OFFLINE_REWARD -> aDialogOfflineReward.animHideAndDisable(timeHide)
-            StateDim.DIALOG_LEVEL_UP       -> aDialogLevelUp.animHideAndDisable(timeHide)
+            StateDim.DIALOG_OFFLINE_REWARD -> {
+                aDialogOfflineReward.animHideAndDisable(timeHide) {
+                    aDialogOfflineReward.stopEffect()
+                }
+            }
+            StateDim.DIALOG_LEVEL_UP       -> {
+                aDialogLevelUp.animHideAndDisable(timeHide) {
+                    aDialogLevelUp.stopEffect()
+                }
+            }
             StateDim.NONE -> {}
         }
 
@@ -302,6 +312,9 @@ class GameScreen: AdvancedScreen() {
             StateDim.DIALOG_LEVEL_UP -> {
                 isClosableDim = false
                 animShowDim()
+
+                gdxGame.soundUtil.apply { play(LEVEL_UP) }
+
                 aDialogLevelUp.animShowAndEnable(timeShow) {
                     aDialogLevelUp.startEffect()
                 }

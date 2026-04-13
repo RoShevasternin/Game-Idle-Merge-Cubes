@@ -71,6 +71,18 @@ class ASettingsItem(
         aBox.setOnCheckListener { onCheckBlock(it) }
     }
 
+    // ------------------------------------------------------------------------
+    // Logic
+    // ------------------------------------------------------------------------
+
+    fun initState(isOn: Boolean) {
+        if (isOn) aBox?.check(false) else aBox?.uncheck(false)
+    }
+
+    // ------------------------------------------------------------------------
+    // Class
+    // ------------------------------------------------------------------------
+
     data class ItemData(
         val icon    : TextureRegion?  = null,
         val title   : String          = "",

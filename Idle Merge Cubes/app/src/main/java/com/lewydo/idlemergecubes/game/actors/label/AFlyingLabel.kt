@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -15,6 +16,7 @@ class AFlyingLabel(
     val style : Label.LabelStyle,
     val to    : Vector2,
     val side  : Side,
+    val onEnd : Block,
 ) : AdvancedGroup() {
 
     // ------------------------------------------------------------------------
@@ -69,9 +71,12 @@ class AFlyingLabel(
                     Actions.scaleTo(1.1f, 1.1f, 0.15f, Interpolation.sine),
                     Actions.scaleTo(0.25f, 0.25f, 0.30f, Interpolation.sineIn),
                 ),
-                Actions.alpha(0.5f, 0.5f),
+                Actions.alpha(0.5f, 0.45f),
             ),
-            Actions.run { remove() }
+            Actions.run {
+                onEnd()
+                remove()
+            }
         ))
     }
 

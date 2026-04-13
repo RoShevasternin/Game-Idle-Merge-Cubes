@@ -17,9 +17,7 @@ class MusicUtil: Disposable {
 
     private val coroutine = CoroutineScope(Dispatchers.Default)
 
-    val game     = MusicManager.EnumMusic.game.data.music
-    val main     = MusicManager.EnumMusic.main.data.music
-    val roulette = MusicManager.EnumMusic.roulette.data.music
+    val MAIN = MusicManager.EnumMusic.MAIN.data.music
 
     // 0..100
     val volumeLevelFlow = MutableStateFlow(AudioManager.volumeLevelPercent)

@@ -4,7 +4,10 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.layout.AlignH
+import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.controller.GridController
+import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
@@ -20,6 +23,8 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
 //    private val aCoinLbl = Label("", Label.LabelStyle(font, GameColor.yellow_FFF858))
 
     // Actors
+    private val aLIGHTImg = Image(gdxGame.assetsAll.LIGHT)
+
     private val aPanelGameImg = Image(gdxGame.assetsAll.PANEL_GAME)
     private val aGlare1Img    = Image(gdxGame.assetsAll.listGlarePanelGame[0])
     private val aGlare2Img    = Image(gdxGame.assetsAll.listGlarePanelGame[1])
@@ -35,6 +40,7 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
 
 
     override fun addActorsOnGroup() {
+        addLIGHTImg()
         addPanelGameImg()
         addCellsLayer()
         addGlares()
@@ -45,6 +51,15 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
     }
 
     // Actors ------------------------------------------------------------------------
+
+    private fun addLIGHTImg() {
+        val size = width * 1.6f
+        aLIGHTImg.setSize(size, size)
+        addActorAligned(aLIGHTImg, AlignH.CENTER, AlignV.CENTER)
+        aLIGHTImg.setOrigin(Align.center)
+
+        animLIGHT()
+    }
 
     private fun addPanelGameImg() {
         addAndFillActor(aPanelGameImg)
@@ -112,6 +127,13 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
                 Actions.moveBy(-20f, -3f, 3.5f, Interpolation.sine),
                 Actions.scaleTo(1f, 1f, 6f, Interpolation.sine),
             )
+        )))
+    }
+
+    private fun animLIGHT() {
+        aLIGHTImg.addAction(Actions.forever(Actions.sequence(
+            Actions.scaleTo(0.8f, 0.8f, 2.5f, Interpolation.sine),
+            Actions.scaleTo(1f, 1f, 5f, Interpolation.sine),
         )))
     }
 

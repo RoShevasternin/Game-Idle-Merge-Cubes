@@ -18,6 +18,8 @@ class ParticleEffectUtil {
         val IDLE_WAVE     = ParticleEffectManager.EnumParticleEffect.IDLE_WAVE.data.effect
 
         val CUBE = ParticleEffectManager.EnumParticleEffect.CUBE.data.effect
+
+        val COLLECT = ParticleEffectManager.EnumParticleEffect.COLLECT.data.effect
     }
 }
 

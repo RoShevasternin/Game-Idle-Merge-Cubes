@@ -201,10 +201,10 @@ open class AParticleEffectActor(
         isRunning = true
     }
 
-    fun pause()           { isRunning = false }
-    fun resume()          { isRunning = true }
-    fun allowCompletion() = particleEffect.allowCompletion()
-    override fun dispose()= particleEffect.dispose()
+    fun pause()            { isRunning = false }
+    fun resume()           { isRunning = true }
+    fun allowCompletion()  = particleEffect.allowCompletion()
+    override fun dispose() = particleEffect.dispose()
 
     fun fitToSize(
         targetWidth : Float? = null,

@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.utils.TextureEmpty
@@ -170,7 +169,7 @@ open class AButton(
         disabledImage.drawable = style.disabled
     }
 
-    fun setOnClickListener(sound: SoundUtil.AdvancedSound? = gdxGame.soundUtil.click, block: () -> Unit) {
+    fun setOnClickListener(sound: SoundUtil.AdvancedSound? = gdxGame.soundUtil.CLICK, block: () -> Unit) {
         clickSound   = sound
         onClickBlock = block
     }
@@ -201,7 +200,11 @@ open class AButton(
             pressed = TextureRegionDrawable(gdxGame.assetsAll.collect_frame_press),
             disabled = TextureRegionDrawable(gdxGame.assetsAll.collect_frame_press),
         )
-
+        Type.BACK -> AButtonStyle(
+            default = TextureRegionDrawable(gdxGame.assetsAll.back_def),
+            pressed = TextureRegionDrawable(gdxGame.assetsAll.back_press),
+            disabled = TextureRegionDrawable(gdxGame.assetsAll.back_press),
+        )
         Type.MENU_ITEM -> AButtonStyle(
             default = TextureRegionDrawable(gdxGame.assetsAll.menu_item_section_def),
             pressed = TextureRegionDrawable(gdxGame.assetsAll.menu_item_section_press),
@@ -240,7 +243,7 @@ open class AButton(
     )
 
     enum class Type {
-        NONE, SETTINGS, BUY, COLLECT,
+        NONE, SETTINGS, BUY, COLLECT, BACK,
         MENU_ITEM, MENU_RESET_GAME, MENU_CLOSE,
         YES, NO,
 

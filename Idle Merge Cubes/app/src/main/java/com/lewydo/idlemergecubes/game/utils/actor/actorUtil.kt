@@ -9,13 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.ui.Widget
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.lewydo.idlemergecubes.game.actors.button.AButton
 import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
-fun Actor.setOnClickListener(sound: SoundUtil.AdvancedSound? = gdxGame.soundUtil.click, block: (Actor) -> Unit) {
+fun Actor.setOnClickListener(sound: SoundUtil.AdvancedSound? = gdxGame.soundUtil.CLICK, block: (Actor) -> Unit) {
     addListener(object : InputListener() {
         var isWithin = false
 
@@ -35,6 +33,32 @@ fun Actor.setOnClickListener(sound: SoundUtil.AdvancedSound? = gdxGame.soundUtil
             if (isWithin) {
                 isWithin = false
                 block(this@setOnClickListener)
+            }
+        }
+    })
+}
+
+fun Actor.setOnTouchListener(
+    sound : SoundUtil.AdvancedSound? = gdxGame.soundUtil.CLICK,
+    radius: Float = 10f,
+    block : (Actor) -> Unit
+) {
+    addListener(object : InputListener() {
+        private var startX = 0f
+        private var startY = 0f
+
+        override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            startX = x
+            startY = y
+            return true
+        }
+
+        override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+            val dx = x - startX
+            val dy = y - startY
+            if (dx * dx + dy * dy <= radius * radius) {
+                sound?.let { gdxGame.soundUtil.play(it) }
+                block(this@setOnTouchListener)
             }
         }
     })

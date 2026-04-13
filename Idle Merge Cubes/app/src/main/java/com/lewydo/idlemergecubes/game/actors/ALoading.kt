@@ -29,8 +29,6 @@ class ALoading(override val screen: AdvancedScreen): AdvancedGroup() {
         addLoadingLbl()
         addProgressFrameImg()
         addProgressLoaderGroup()
-
-        Align.center
     }
 
     // Actors ------------------------------------------------------------------------

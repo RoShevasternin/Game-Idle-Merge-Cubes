@@ -17,24 +17,19 @@ class SoundManager(var assetManager: AssetManager) {
     }
 
     enum class EnumSound(val data: SoundData) {
-        boom1(SoundData("sound/boom1.mp3")),
-        boom2(SoundData("sound/boom2.mp3")),
-        boom3(SoundData("sound/boom3.mp3")),
-        boom4(SoundData("sound/boom4.mp3")),
-        boom5(SoundData("sound/boom5.mp3")),
-        boom6(SoundData("sound/boom6.mp3")),
-        boom7(SoundData("sound/boom7.mp3")),
+        CLICK     (SoundData("sound/click.mp3")),
+        CHECK_BOX (SoundData("sound/check_box.mp3")),
 
-        touch(SoundData("sound/touch.mp3")),
+        BUY            (SoundData("sound/buy.mp3")),
+        COLLECT        (SoundData("sound/collect.mp3")),
+        SHOW_COLLECT   (SoundData("sound/show_collect.mp3")),
+        CUBE_TOUCH     (SoundData("sound/cube_touch.mp3")),
+        LEVEL_UP       (SoundData("sound/level_up.mp3")),
 
-        click(SoundData("sound/click.wav")),
 
-        heart          (SoundData("sound/thanks/heart.mp3")),
-        hide           (SoundData("sound/thanks/hide.mp3")),
-        show_lewydo_tm (SoundData("sound/thanks/show_lewydo_tm.mp3")),
-        show_libgdx    (SoundData("sound/thanks/show_libgdx.mp3")),
-        LibGDX         (SoundData("sound/thanks/LibGDX.mp3")),
-
+        MERGE_1(SoundData("sound/merge_1.mp3")),
+        MERGE_2(SoundData("sound/merge_2.mp3")),
+        MERGE_3(SoundData("sound/merge_3.mp3")),
     }
 
     data class SoundData(

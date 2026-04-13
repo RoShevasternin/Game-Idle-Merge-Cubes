@@ -45,6 +45,9 @@ class SpriteManager(var assetManager: AssetManager) {
 
     enum class EnumTexture(val data: TextureData) {
         bg_test(TextureData("textures/bg_test.png")),
+        green(TextureData("textures/green.png")),
+        red(TextureData("textures/red.png")),
+        ComingSoon(TextureData("textures/Coming Soon.png")),
 
 
         // Loader
@@ -59,9 +62,16 @@ class SpriteManager(var assetManager: AssetManager) {
         C6(TextureData("textures/loader/light/c6.png")),
 
         // All
+        LIGHT    (TextureData("textures/all/LIGHT.png")),
         COIN_BIG (TextureData("textures/all/coin_big.png")),
         CONFETTI(TextureData("textures/all/confetti.png")),
 
+        // All | brand
+        BRAND      (TextureData("textures/all/brand/brand.png")),
+        BRAND_BACK (TextureData("textures/all/brand/brand_back.png")),
+        BRAND_FRONT(TextureData("textures/all/brand/brand_front.png")),
+        LILY       (TextureData("textures/all/brand/lily.png")),
+        VELDAN     (TextureData("textures/all/brand/veldan.png")),
 
         // All | mask
         MASK_DIALOG_PROGRESS_LVL (TextureData("textures/all/mask/mask_dialog_progress_lvl.png")),

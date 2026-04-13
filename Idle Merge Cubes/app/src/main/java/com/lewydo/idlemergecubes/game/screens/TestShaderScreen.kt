@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
 import com.lewydo.idlemergecubes.game.actors.progress.AProgressDefault
+import com.lewydo.idlemergecubes.game.actors.shader.ABlur
 import com.lewydo.idlemergecubes.game.actors.shader.ABlurBack
 import com.lewydo.idlemergecubes.game.actors.shader.AScreenShot
 import com.lewydo.idlemergecubes.game.actors.shader.ATestShader
@@ -88,12 +89,14 @@ class TestShaderScreen: AdvancedScreen() {
 //
 //        addTest()
 
-        val mainTEST = ABlurBack(this@TestShaderScreen)//,game.assetsLoader.builderList[2])
+        val mainTEST = ABlur(this@TestShaderScreen) //ABlurBack(this@TestShaderScreen)//,game.assetsLoader.builderList[2])
         mainTEST.debug()
         mainTEST.setBounds(374f, 725f, 1413f, 1413f)
         addActor(mainTEST)
         movableActor = mainTEST
 
+        val imgCoin = Image(gdxGame.assetsAll.COIN_BIG)
+        mainTEST.addAndFillActor(imgCoin)
 
         addActorWithConstraints(aRedImg) {
             startToStartOf = mainTEST

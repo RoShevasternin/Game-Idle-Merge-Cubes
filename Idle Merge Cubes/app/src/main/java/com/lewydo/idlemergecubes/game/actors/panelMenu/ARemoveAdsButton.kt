@@ -9,6 +9,7 @@ import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.REMOVE_ADS_PRICE
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
+import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
@@ -41,6 +42,9 @@ open class ARemoveAdsButton(override val screen: AdvancedScreen) : AButton(scree
 
         addTitleLbl()
         addPriceLbl()
+
+        // todo: remove
+        addAndFillActor(Image(gdxGame.assetsAll.ComingSoon))
     }
 
     // ------------------------------------------------------------------------

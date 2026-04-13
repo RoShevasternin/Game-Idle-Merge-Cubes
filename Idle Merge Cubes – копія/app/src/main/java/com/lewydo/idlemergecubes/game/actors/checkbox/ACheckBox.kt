@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActors
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -29,6 +30,8 @@ open class ACheckBox(
 
     val checkFlow = MutableStateFlow(false)
 
+    private var checkSound: SoundUtil.AdvancedSound? = null
+
     override fun addActorsOnGroup() {
         addAndFillActors(getActors())
         addListener(getListener())
@@ -49,7 +52,8 @@ open class ACheckBox(
 
         override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
             touchDragged(event, x, y, pointer)
-            gdxGame.soundUtil.apply { play(click) }
+
+            checkSound?.let { gdxGame.soundUtil.play(it) }
 
             event?.stop()
             return true
@@ -118,26 +122,27 @@ open class ACheckBox(
         checkImage.drawable   = style.checked
     }
 
-    fun setOnCheckListener(block: (Boolean) -> Unit) {
+    fun setOnCheckListener(sound: SoundUtil.AdvancedSound? = gdxGame.soundUtil.CHECK_BOX, block: (Boolean) -> Unit) {
+        checkSound   = sound
         onCheckBlock = block
     }
 
     fun getStyleByType(type: Type) = when(type) {
         Type.MUSIC -> ACheckBoxStyle(
-            default = TextureRegionDrawable(gdxGame.assetsAll.music_box_on),
-            checked = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+            default = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+            checked = TextureRegionDrawable(gdxGame.assetsAll.music_box_on),
         )
         Type.SOUND -> ACheckBoxStyle(
-            default = TextureRegionDrawable(gdxGame.assetsAll.sound_box_on),
-            checked = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+            default = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+            checked = TextureRegionDrawable(gdxGame.assetsAll.sound_box_on),
         )
         Type.VIBRO -> ACheckBoxStyle(
-            default = TextureRegionDrawable(gdxGame.assetsAll.vibro_box_on),
-            checked = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+            default = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+            checked = TextureRegionDrawable(gdxGame.assetsAll.vibro_box_on),
         )
         Type.ALARM -> ACheckBoxStyle(
-            default = TextureRegionDrawable(gdxGame.assetsAll.alarm_box_on),
-            checked = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+            default = TextureRegionDrawable(gdxGame.assetsAll.box_off),
+            checked = TextureRegionDrawable(gdxGame.assetsAll.alarm_box_on),
         )
     }
 

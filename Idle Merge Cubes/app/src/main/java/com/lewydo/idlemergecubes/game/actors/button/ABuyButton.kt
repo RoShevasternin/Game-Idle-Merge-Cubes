@@ -1,5 +1,6 @@
 package com.lewydo.idlemergecubes.game.actors.button
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -120,7 +121,10 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
 
         }
 
-        aBuyBtn.setOnClickListener { onClick() }
+        aBuyBtn.setOnClickListener(gdxGame.soundUtil.BUY) {
+            gdxGame.vibroUtil.vibro(35)
+            onClick()
+        }
     }
 
     private fun AdvancedGroup.addCubeGroup() {

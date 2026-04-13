@@ -1,7 +1,10 @@
 package com.lewydo.idlemergecubes
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -67,6 +70,49 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
     private fun initialize() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
+
+    // ------------------------------------------------------------------------
+    // Helpers
+    // ------------------------------------------------------------------------
+
+    fun openEmail(to: String, subject: String = "") {
+        runOnUiThread {
+            val uri = "mailto:$to?subject=${Uri.encode(subject)}".toUri()
+
+            val intent = Intent(Intent.ACTION_SENDTO, uri)
+            startActivity(Intent.createChooser(intent, "Send email"))
+        }
+    }
+
+    fun openInstagram(username: String) {
+        runOnUiThread {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, "instagram://user?username=$username".toUri()).setPackage("com.instagram.android"))
+            } catch (e: Exception) {
+                startActivity(Intent(Intent.ACTION_VIEW, "https://www.instagram.com/$username".toUri()))
+            }
+        }
+    }
+
+    fun openTelegram(username: String) {
+        runOnUiThread {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, "tg://resolve?domain=$username".toUri()).setPackage("org.telegram.messenger"))
+            } catch (e: Exception) {
+                startActivity(Intent(Intent.ACTION_VIEW, "https://t.me/$username".toUri()))
+            }
+        }
+    }
+
+    fun openPlayMarket() {
+        runOnUiThread {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, "market://dev?id=5953840215091948966".toUri()).setPackage("com.android.vending"))
+            } catch (e: Exception) {
+                startActivity(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/dev?id=5953840215091948966".toUri()))
+            }
+        }
     }
 
 }

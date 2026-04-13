@@ -17,6 +17,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActors
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.currentTimeMinus
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ACube(
@@ -51,6 +52,8 @@ class ACube(
     // ------------------------------------------------------------------------
 
     private var visualColor = Color.WHITE
+
+    var isDragEnabled = true
 
     // ------------------------------------------------------------------------
     // DRAG CALLBACKS
@@ -110,9 +113,8 @@ class ACube(
         //aCube1Img.setColorShader(CubeColorSystem.getFrameColor(lvl))
         visualColor = CubeColorSystem.getCubeColor(lvl)
 
-        aCubeImg.isStaticEffect = false
         aCubeImg.setColorShader(visualColor)
-        aCubeImg.isStaticEffect = true
+        aCubeImg.rerenderStaticOnce()
     }
 
     fun getVisualColor(): Color {
@@ -151,17 +153,17 @@ class ACube(
             }
 
             override fun drag(event: InputEvent, x: Float, y: Float, pointer: Int) {
+                if (!isDragEnabled) return  // ← не рухаємо якщо заблоковано
+
                 val stageX = event.stageX
                 val stageY = event.stageY
-
                 val parentCoords = parent.stageToLocalCoordinates(Vector2(stageX, stageY))
-
                 setPosition(parentCoords.x - dragOffsetX, parentCoords.y - dragOffsetY)
-
                 onMove.invoke(stageX, stageY)
             }
 
             override fun dragStop(event: InputEvent, x: Float, y: Float, pointer: Int) {
+                isDragEnabled = true  // ← завжди відновлюємо
                 onEnd.invoke()
             }
         })

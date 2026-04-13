@@ -88,7 +88,7 @@ class ASettingsContent(override val screen: AdvancedScreen) : AdvancedGroup() {
             aVerticalGroup.addActor(item)
 
             if (index == 4) return@forEachIndexed // для aSettItemInfo немає лямбди з listBlock
-            item.onCheckBlock = listBlock[index].get()
+            item.onCheckBlock = { listBlock[index].get().invoke(it) }
         }
 
         aSettItemInfo.setOnClickListener { onInfoBlock.invoke() }
@@ -98,6 +98,22 @@ class ASettingsContent(override val screen: AdvancedScreen) : AdvancedGroup() {
         addActor(aVersionLbl)
         aVersionLbl.setBounds(554f, 0f, 657f, 98f)
         aVersionLbl.setAlignment(Align.center)
+    }
+
+    // ------------------------------------------------------------------------
+    // Logic
+    // ------------------------------------------------------------------------
+
+    fun setInitStateBox(
+        sound: Boolean,
+        music: Boolean,
+        vibro: Boolean,
+        alarm: Boolean,
+    ) {
+        aSettItemSound.initState(sound)
+        aSettItemMusic.initState(music)
+        aSettItemVibro.initState(vibro)
+        aSettItemAlarm.initState(alarm)
     }
 
 }

@@ -2,6 +2,7 @@ package com.lewydo.idlemergecubes.game.actors.button
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoFont
@@ -9,6 +10,7 @@ import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.layout.linear.AHorizontalGroup
+import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
@@ -27,6 +29,8 @@ class ACollectButton(
     private var currentDataType = type.toData()
 
     private var reward = "(0)"
+
+    private val BASE_WIDTH_EFFECT = 819f
 
     // ------------------------------------------------------------------------
     // Font
@@ -68,6 +72,8 @@ class ACollectButton(
         isWrapWidth  = true
     )
 
+    private val collectEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.COLLECT)
+
     // ------------------------------------------------------------------------
     // Collect
     // ------------------------------------------------------------------------
@@ -89,7 +95,15 @@ class ACollectButton(
 
     private fun addBtn() {
         add(aBtn) { fillParent() }
-        aBtn.setOnClickListener { blockClick.invoke() }
+        aBtn.setOnClickListener(gdxGame.soundUtil.COLLECT) { blockClick.invoke() }
+
+        val tmpPos = Vector2(x, y)
+        aBtn.touchDownBlock = { x, y ->
+            aBtn.localToStageCoordinates(tmpPos.set(x, y))
+            collectEffectPool.spawn(parent = screen.stageUI.root, x = tmpPos.x, y = tmpPos.y) {
+                fitToSize(targetWidth = aBtn.width, baseWidth = BASE_WIDTH_EFFECT)
+            }
+        }
     }
 
     private fun addCenterImg() {

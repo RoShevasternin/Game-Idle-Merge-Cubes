@@ -168,6 +168,10 @@ class ADialogLevelUp(override val screen: AdvancedScreen): AdvancedGroup() {
         aEffectConfetti.start()
     }
 
+    fun stopEffect() {
+        aEffectConfetti.pause()
+    }
+
 
 
 }

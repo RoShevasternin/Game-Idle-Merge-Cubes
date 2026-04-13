@@ -1,11 +1,8 @@
 package com.lewydo.idlemergecubes.game.actors.shader
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
@@ -19,17 +16,9 @@ import com.lewydo.idlemergecubes.game.utils.disposeAll
 open class ABlur(
     override val screen: AdvancedScreen,
     var textureRegionBlur: TextureRegion? = null,
-): PreRenderableGroup() {
+) : PreRenderableGroup() {
 
     companion object {
-        /** -----------------------------------------------------------------------
-        // Шейдер — СТАТИЧНИЙ, один на весь клас (lazy створення при першому use).
-        //
-        // ВАЖЛИВО: шейдер НЕ dispose-уємо в instance dispose() — він shared.
-        // Якщо dispose тут, після знищення першого ABlur всі наступні отримають
-        // мертвий шейдер (lazy не перезапускається) → GL error / crash.
-        // Dispose шейдера відбувається тільки при виході з гри через GDXGame.dispose().
-        // --------------------------------------------------------------------- */
         private val shaderProgram: ShaderProgram by lazy {
             createShader(
                 "shader/defaultVS.glsl",
@@ -38,11 +27,11 @@ open class ABlur(
         }
     }
 
-    private var fboBlurH    : FrameBuffer?   = null
-    private var fboBlurV    : FrameBuffer?   = null
+    private var fboBlurH : FrameBuffer? = null
+    private var fboBlurV : FrameBuffer? = null
 
-    private var textureBlurH : TextureRegion? = null
-    private var textureBlurV : TextureRegion? = null
+    private var textureBlurH: TextureRegion? = null
+    private var textureBlurV: TextureRegion? = null
 
     var isBlurEnabled = false
         private set
@@ -53,9 +42,7 @@ open class ABlur(
             field = value
         }
 
-    // -------------------------------------------------------------------------
-    // Lifecycle
-    // -------------------------------------------------------------------------
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     override fun addActorsOnGroup() {
         createFrameBuffer()
@@ -66,16 +53,12 @@ open class ABlur(
         disposeAll(fboBlurH, fboBlurV)
     }
 
-    // -------------------------------------------------------------------------
-    // PreRenderMethods
-    // -------------------------------------------------------------------------
+    // ── PreRenderMethods ──────────────────────────────────────────────────────
 
     override fun getPreRenderMethods() = object : PreRenderMethods {
 
         override fun renderFboGroup(batch: Batch, parentAlpha: Float) {
             if (textureRegionBlur != null) {
-                //batch.setColor(color.r, color.g, color.b, parentAlpha)
-                //batch.color = Color.WHITE
                 batch.draw(textureRegionBlur, 0f, 0f, width, height)
             } else {
                 drawChildrenWithoutTransform(batch, parentAlpha)
@@ -83,21 +66,17 @@ open class ABlur(
         }
 
         override fun applyEffect(batch: Batch, parentAlpha: Float) {
-            if (isBlurEnabled.not()) return
+            if (!isBlurEnabled) return
 
+            // Всі blur passes використовують premultiplied alpha —
+            // вміст fboGroup вже premultiplied після preRender
             batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)
 
-            batch.applyBlur(fboBlurH, textureGroup, 1f, 0f)
-            batch.applyBlur(fboBlurV, textureBlurH, 0f, 1f)
-
-            //batch.applyBlur(fboBlurH, textureBlurV, 0.707f, 0.707f)
-            //batch.applyBlur(fboBlurV, textureBlurH, -0.707f, -0.707f)
-
-            batch.applyBlur(fboBlurH, textureBlurV, 0.383f, 0.924f)
-            batch.applyBlur(fboBlurV, textureBlurH, 0.924f, 0.383f)
-
-            //batch.applyBlur(fboBlurH, textureBlurV, 1f, 0f)
-            //batch.applyBlur(fboBlurV, textureBlurH, 0f, 1f)
+            // 4 passes: H, V, 45°, 135° — для круглого розмиття
+            applyBlurPass(batch, fboBlurH, textureGroup,  1f,      0f     )
+            applyBlurPass(batch, fboBlurV, textureBlurH,  0f,      1f     )
+            applyBlurPass(batch, fboBlurH, textureBlurV,  0.383f,  0.924f )
+            applyBlurPass(batch, fboBlurV, textureBlurH,  0.924f,  0.383f )
         }
 
         override fun renderFboResult(batch: Batch, parentAlpha: Float) {
@@ -106,51 +85,37 @@ open class ABlur(
         }
     }
 
-    /** -------------------------------------------------------------------------
-    // preRender override — перевіряємо що shaders/FBO готові
-    // ------------------------------------------------------------------------- */
-
-    override fun preRender(batch: Batch, parentAlpha: Float) {
-        if (fboBlurH == null || fboBlurV == null)
-            throw Exception("Error preRender: ${this::class.simpleName}")
-
-        super.preRender(batch, parentAlpha)
-    }
-
-    /** -------------------------------------------------------------------------
-    // Frame Buffer
-    // ------------------------------------------------------------------------- */
+    // ── FBO ───────────────────────────────────────────────────────────────────
 
     override fun createFrameBuffer() {
         super.createFrameBuffer()
 
-        fboBlurH = FrameBuffer(Pixmap.Format.RGBA8888, width.toInt(), height.toInt(), false)
-        fboBlurV = FrameBuffer(Pixmap.Format.RGBA8888, width.toInt(), height.toInt(), false)
+        val w = width.toInt().coerceAtLeast(1)
+        val h = height.toInt().coerceAtLeast(1)
+
+        fboBlurH = FrameBuffer(Pixmap.Format.RGBA8888, w, h, false)
+        fboBlurV = FrameBuffer(Pixmap.Format.RGBA8888, w, h, false)
 
         textureBlurH = TextureRegion(fboBlurH!!.colorBufferTexture).apply { flip(false, true) }
         textureBlurV = TextureRegion(fboBlurV!!.colorBufferTexture).apply { flip(false, true) }
     }
 
-    /** -------------------------------------------------------------------------
-    // applyBlur helper
-    //
-    // Виконує один blur-пас: рендер текстури в FBO з шейдером по осі (dH, dV).
-    // Шейдер встановлюється і скидається всередині — не впливає на зовнішній стан batch.
-    // batch.color не чіпаємо — blur працює з яскравістю пікселів напряму через uniform.
-    // ------------------------------------------------------------------------- */
+    // ── Blur pass ─────────────────────────────────────────────────────────────
 
-    private fun Batch.applyBlur(
-        fbo          : FrameBuffer?,
-        textureRegion: TextureRegion?,
+    private fun applyBlurPass(
+        batch         : Batch,
+        fbo           : FrameBuffer?,
+        textureRegion : TextureRegion?,
         dH: Float,
         dV: Float
     ) {
-        requireNotNull(fbo)           { "applyBlur: fbo is null"           }
-        requireNotNull(textureRegion) { "applyBlur: textureRegion is null" }
+        requireNotNull(fbo)           { "applyBlurPass: fbo is null"           }
+        requireNotNull(textureRegion) { "applyBlurPass: textureRegion is null" }
 
-        fbo.beginAdvanced(this)
+        // Використовуємо новий beginFbo/endFbo з PreRenderableGroup
+        fbo.beginFbo(batch)
 
-        shader = shaderProgram
+        batch.shader = shaderProgram
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0)
         textureRegion.texture.bind(0)
 
@@ -159,11 +124,11 @@ open class ABlur(
         shaderProgram.setUniformf("u_blurAmount", radiusBlur)
         shaderProgram.setUniformf("u_direction",  dH, dV)
 
-        withMatrix(camera.combined, identityMatrix) {
-            draw(textureRegion, 0f, 0f, fbo.width.toFloat(), fbo.height.toFloat())
+        batch.withMatrix(camera.combined, identityMatrix) {
+            batch.draw(textureRegion, 0f, 0f, fbo.width.toFloat(), fbo.height.toFloat())
         }
 
-        fbo.endAdvanced(this)
+        batch.shader = null
+        fbo.endFbo(batch)
     }
-
 }

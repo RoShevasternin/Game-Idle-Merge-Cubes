@@ -7,6 +7,7 @@ import com.lewydo.idlemergecubes.game.actors.panelGrid.ACube
 import com.lewydo.idlemergecubes.game.actors.panelGrid.ACubeLayer
 import com.lewydo.idlemergecubes.game.model.GridModel
 import com.lewydo.idlemergecubes.game.model.PlayerModel
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 import kotlinx.coroutines.CoroutineScope
 
 class GridController(
@@ -141,7 +142,6 @@ class GridController(
     // ======================================================
 
     private fun executeMerge(from: Int, to: Int) {
-
         // Перевіряємо актуальний стан моделі
         val fromLevel = gridModel.getLevel(from)
         val toLevel   = gridModel.getLevel(to)

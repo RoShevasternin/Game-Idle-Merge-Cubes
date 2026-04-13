@@ -181,16 +181,14 @@ class LoaderScreen : AdvancedScreen() {
         if (isFinishProgress) {
             isFinishProgress = false
 
-
-//            game.musicUtil.apply { music = main.apply {
-//                isLooping = true
-//                coff      = 0.15f
-//            } }
-
+            gdxGame.musicUtil.apply { currentMusic = MAIN.apply {
+                isLooping = true
+                coff      = 0.27f
+            } }
 
             stageUI.root.animDelay(1f) {
                 aMain.aLightLoader.onLoaderFinish()
-                animHideScreen { gdxGame.navigationManager.navigate(GameScreen::class.java.name) }// TestShaderScreen::class.java.name) }
+                animHideScreen { gdxGame.navigationManager.navigate(/*GameScreen::class.java.name) }*/ TestShaderScreen::class.java.name) }
             }
         }
     }

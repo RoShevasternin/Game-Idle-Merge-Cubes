@@ -8,6 +8,7 @@ import com.lewydo.idlemergecubes.game.actors.button.AButton
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
+import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
@@ -40,6 +41,9 @@ open class ALeaderboardButton(override val screen: AdvancedScreen) : AButton(scr
 
         addIconImg()
         addTitleLbl()
+
+        // todo: remove
+        addAndFillActor(Image(gdxGame.assetsAll.ComingSoon))
     }
 
     // ------------------------------------------------------------------------

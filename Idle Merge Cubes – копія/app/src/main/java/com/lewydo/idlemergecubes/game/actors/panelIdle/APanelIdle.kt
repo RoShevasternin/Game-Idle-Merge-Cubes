@@ -14,10 +14,13 @@ import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
+import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
+import com.lewydo.idlemergecubes.game.utils.actor.disable
+import com.lewydo.idlemergecubes.game.utils.actor.enable
 import com.lewydo.idlemergecubes.game.utils.actor.setPosition
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -205,6 +208,8 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
 
                 listConfettiEffect.forEach { it.start() }
                 aWaveEffect.start()
+
+                gdxGame.soundUtil.apply { play(SHOW_COLLECT) }
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.lewydo.idlemergecubes.game.actors.panel
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -9,8 +10,8 @@ import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.popup.ALevelPopup
 import com.lewydo.idlemergecubes.game.actors.progress.ACircleProgress
 import com.lewydo.idlemergecubes.game.utils.GameColor
-import com.lewydo.idlemergecubes.game.utils.StageTargets
-import com.lewydo.idlemergecubes.game.utils.actor.animDelay
+import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
+import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
@@ -18,6 +19,7 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
@@ -37,6 +39,8 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private var isVisiblePopup = false
 
     override fun addActorsOnGroup() {
+        setOrigin(Align.center)
+
         addPanelLvLImg()
         addLvLLbl()
         addLevelLbl()
@@ -46,6 +50,11 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
 
         collectPlayerData()
         handleClick()
+
+        runGDX {
+            registerTarget()
+            registerEvents()
+        }
     }
 
     // Actors ------------------------------------------------------------------------
@@ -53,8 +62,6 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
     private fun addPanelLvLImg() {
         addActor(aPanelLvLImg)
         aPanelLvLImg.setBounds(18f, 18f, 235f, 235f)
-
-        animDelay(1f) { registerCoordinates() }
     }
 
     private fun addLvLLbl() {
@@ -110,6 +117,16 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
         )
     }
 
+    private fun animShake() {
+        clearActions()
+        addAction(
+            Actions.sequence(
+                Actions.scaleTo(1.08f, 1.08f, 0.1f, Interpolation.sineOut),
+                Actions.scaleTo(1.0f,  1.0f,  0.2f, Interpolation.sineOut)
+            )
+        )
+    }
+
     // Logic ------------------------------------------------------------------------
 
     private fun handleClick() {
@@ -125,11 +142,19 @@ class APanelLvL(override val screen: AdvancedScreen): AdvancedGroup() {
         }
     }
 
-    private fun registerCoordinates() {
+    private fun registerTarget() {
         val v = aPanelLvLImg.localToStageCoordinates(
             Vector2(aPanelLvLImg.width / 2f, aPanelLvLImg.height / 2f)
         )
-        StageTargets.registerXpCenter(v.x, v.y)
+        GlobalStagePositions.register(GlobalStagePositions.Position.XP, v.x, v.y)
+    }
+
+    private fun registerEvents() {
+        coroutine?.launch {
+            GlobalEvents.events
+                .filter { it == GlobalEvents.EventType.END_FLY_XP }
+                .collect { runGDX { animShake() } }
+        }
     }
 
 }
