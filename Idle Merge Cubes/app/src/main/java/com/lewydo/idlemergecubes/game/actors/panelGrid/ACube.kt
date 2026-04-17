@@ -9,15 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoFont
-import com.lewydo.idlemergecubes.game.actors.layout.AlignH
-import com.lewydo.idlemergecubes.game.actors.layout.AlignV
-import com.lewydo.idlemergecubes.game.actors.shader.AHslImage
+import com.lewydo.idlemergecubes.game.actors.vfx.AHslImage
 import com.lewydo.idlemergecubes.game.utils.CubeColorSystem
-import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActors
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.currentTimeMinus
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ACube(
@@ -114,7 +110,6 @@ class ACube(
         visualColor = CubeColorSystem.getCubeColor(lvl)
 
         aCubeImg.setColorShader(visualColor)
-        aCubeImg.rerenderStaticOnce()
     }
 
     fun getVisualColor(): Color {

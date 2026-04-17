@@ -1,4 +1,4 @@
-package com.lewydo.idlemergecubes.game.actors.shader
+package com.lewydo.idlemergecubes.game.actors
 
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
@@ -24,7 +24,13 @@ class AScreenShot(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     override fun addActorsOnGroup() {
         updateBoundsScreenShot()
-        regionScreenShot = TextureRegion(Texture(boundsScreenShot.width.toInt(), boundsScreenShot.height.toInt(), Pixmap.Format.RGB888)).apply { flip(false, true) }
+        regionScreenShot = TextureRegion(
+            Texture(
+                boundsScreenShot.width.toInt(),
+                boundsScreenShot.height.toInt(),
+                Pixmap.Format.RGB888
+            )
+        ).apply { flip(false, true) }
 
         addAndFillActor(Image(regionScreenShot))
     }

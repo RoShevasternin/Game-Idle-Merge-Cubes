@@ -1,6 +1,5 @@
 package com.lewydo.idlemergecubes.game.actors.button
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Touchable
@@ -11,7 +10,7 @@ import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
 import com.lewydo.idlemergecubes.game.actors.label.ALabel
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
-import com.lewydo.idlemergecubes.game.actors.shader.AHslImage
+import com.lewydo.idlemergecubes.game.actors.vfx.AHslImage
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.CubeColorSystem
 import com.lewydo.idlemergecubes.game.utils.GameColor

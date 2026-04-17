@@ -1,4 +1,4 @@
-package com.lewydo.idlemergecubes.game.utils.advanced.preRenderGroup
+package com.lewydo.idlemergecubes.game.utils.vfx
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -12,7 +12,7 @@ interface PreRenderable {
 // Рекурсивно обходить дерево акторів і викликає preRender() для всіх PreRenderable.
 // Ключова логіка:
 // - Якщо актор є [PreRenderable] → викликаємо preRender() і НЕ йдемо глибше вручну,
-//   бо сам preRender() через [PreRenderableGroup.preRenderChildren] рекурсивно обробить своїх дітей.
+//   бо сам preRender() через [com.lewydo.idlemergecubes.game.utils.advanced.preRenderGroup.PreRenderableGroup.preRenderChildren] рекурсивно обробить своїх дітей.
 // - Якщо актор — звичайна Group → йдемо вглиб, шукаємо PreRenderable.
 // - Невидимих акторів пропускаємо.
 // ------------------------------------------------------------------------- */

@@ -25,6 +25,7 @@ import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.game.utils.font.FontGenerator
 import com.lewydo.idlemergecubes.game.utils.font.FontGenerator.Companion.FontPath
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.game.utils.vfx.RenderPipeline
 import com.lewydo.idlemergecubes.util.cancelCoroutinesAll
 import com.lewydo.idlemergecubes.util.currentClassName
 import com.lewydo.idlemergecubes.util.log
@@ -67,6 +68,12 @@ abstract class AdvancedScreen(
     val fontGenerator_Nunito_Regular   = FontGenerator(FontPath.Nunito_Regular)
     val fontGenerator_Nunito_SemiBold  = FontGenerator(FontPath.Nunito_SemiBold)
 
+    // ─── RenderPipeline ───────────────────────────────────────────────────────
+    // Shared VfxPool для всіх VfxGroup на цьому екрані.
+    // VfxGroup звертається до нього через screen.renderPipeline.vfxPool.
+    // Один екземпляр на екран — створюється разом з екраном, dispose в dispose().
+    val renderPipeline = RenderPipeline()
+
     override fun show() {
         log("show AdvancedScreen: $currentClassName")
         val screenWidth  = Gdx.graphics.width
@@ -97,6 +104,7 @@ abstract class AdvancedScreen(
         log("dispose AdvancedScreen: $currentClassName")
         disposeAll(
             stageBack, stageUI, drawerUtil,
+            renderPipeline,
 
             fontGenerator_Nunito_Black,
             fontGenerator_Nunito_Bold,

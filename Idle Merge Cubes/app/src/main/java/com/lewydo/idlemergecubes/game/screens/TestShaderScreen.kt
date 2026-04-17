@@ -12,8 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
 import com.lewydo.idlemergecubes.game.actors.progress.AProgressDefault
-import com.lewydo.idlemergecubes.game.actors.shader.ABlur
-import com.lewydo.idlemergecubes.game.actors.shader.ATestShader
+import com.lewydo.idlemergecubes.game.actors.vfx.ABlur
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
@@ -153,47 +152,6 @@ class TestShaderScreen: AdvancedScreen() {
                 }
             }
         }
-
-//        addScroll()
-    }
-
-    private fun Group.addTest() {
-        val test = ATestShader(this@TestShaderScreen)
-        test.debug()
-        test.setBounds(400f, 50f, 200f, 315f)
-        //movableActor = test
-
-        val test2 = ATestShader(this@TestShaderScreen)
-        test2.debug()
-        test2.setBounds(10f, 5f, 200f, 315f)
-
-        addActor(test)
-        test.addActor(test2)
-
-        test.setOrigin(Align.center)
-        //test.addAction(Actions.forever(Actions.rotateBy(-360f, 5f)))
-
-        test.color.a = 0.5f
-        test2.color.a = 0.5f
-
-        coroutine?.launch {
-            progress.progressPercentFlow.collect {
-                //p1.x = it * 3
-                //p2.x = -it * 3
-
-                //test.x = it * 3
-            }
-        }
-    }
-
-    private fun Group.addScroll() {
-        addActor(scroll)
-        scroll.setBounds(1263f, 109f, 602f, 707f)
-
-        tmpGroup.setSize(1000f, 2000f)
-
-        scroll.debug()
-        tmpGroup.debug()
     }
 
     override fun render(delta: Float) {

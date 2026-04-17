@@ -28,6 +28,8 @@ import com.lewydo.idlemergecubes.game.utils.Settings
 import com.lewydo.idlemergecubes.game.utils.ShaderClock
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGame
 import com.lewydo.idlemergecubes.game.utils.disposeAll
+import com.lewydo.idlemergecubes.game.utils.vfx.Blit
+import com.lewydo.idlemergecubes.game.utils.vfx.VfxShaderCache
 import com.lewydo.idlemergecubes.util.currentClassName
 import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.CoroutineScope
@@ -102,7 +104,10 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
         try {
             coroutine.cancel()
             disposableSet.disposeAll()
-            disposeAll(assetManager, musicUtil)
+            disposeAll(
+                assetManager, musicUtil,
+                VfxShaderCache, Blit,
+            )
 
             modelOfflineReward.saveLoginTime()
 
