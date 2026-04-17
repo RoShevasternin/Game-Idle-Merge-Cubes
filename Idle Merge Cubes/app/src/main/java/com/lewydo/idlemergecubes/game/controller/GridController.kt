@@ -53,6 +53,8 @@ class GridController(
     // INITIALIZATION
     // ======================================================
     fun initialize() {
+        val savedGrid = gridModel.gridFlow.value
+        gridModel.syncLocalGrid(savedGrid)
         initGrid()
     }
 

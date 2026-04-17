@@ -58,17 +58,21 @@ open class AButton(
         var isWithin     = false
         var isWithinArea = false
 
+        private var activePointer = -1
+
         override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            if (activePointer != -1) return false  // ← вже є активний палець
+            activePointer = pointer
+
             touchDownBlock(x, y)
             touchDragged(event, x, y, pointer)
-
             clickSound?.let { gdxGame.soundUtil.play(it) }
-
             event?.stop()
             return true
         }
 
         override fun touchDragged(event: InputEvent?, x: Float, y: Float, pointer: Int) {
+            if (pointer != activePointer) return
             touchDraggedBlock(x, y)
 
             isWithin = x in 0f..width && y in 0f..height
@@ -78,6 +82,9 @@ open class AButton(
         }
 
         override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+            if (pointer != activePointer) return
+            activePointer = -1
+
             touchUpBlock(x, y)
 
             if (isWithin || isWithinArea) {

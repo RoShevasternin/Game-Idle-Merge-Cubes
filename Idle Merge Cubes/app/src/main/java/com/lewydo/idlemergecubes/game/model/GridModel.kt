@@ -4,8 +4,11 @@ import com.lewydo.idlemergecubes.game.dataStore.DS_Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 
 class GridModel(
     private val ds: DS_Player,
@@ -20,78 +23,58 @@ class GridModel(
                 initialValue = ds.flow.value.grid
             )
 
-    private val currentGrid: List<Int>
-        get() = gridFlow.value
+    private val localGrid: MutableList<Int> = ds.flow.value.grid.toMutableList()
 
-    fun getLevel(index: Int): Int {
-        return currentGrid[index]
+    fun syncLocalGrid(grid: List<Int>) {
+        localGrid.clear()
+        localGrid.addAll(grid)
     }
 
-    fun isEmpty(index: Int): Boolean {
-        return currentGrid[index] == 0
-    }
+    fun getLevel(index: Int) = localGrid[index]
+
+    fun isEmpty(index: Int) = localGrid[index] == 0
+
+    fun hasEmptyCell() = localGrid.any { it == 0 }
+
+    fun totalPower() = localGrid.sum()
 
     fun addCube(level: Int): Int? {
-
-        val emptyIndex = currentGrid.indexOfFirst { it == 0 }
+        val emptyIndex = localGrid.indexOfFirst { it == 0 }
         if (emptyIndex == -1) return null
 
-        ds.update { data ->
-            val newGrid = data.grid.toMutableList()
-            newGrid[emptyIndex] = level
-            data.copy(grid = newGrid)
-        }
+        localGrid[emptyIndex] = level          // ← синхронно
+        ds.update { it.copy(grid = localGrid.toList()) }  // ← persist async
 
         return emptyIndex
     }
 
     fun move(from: Int, to: Int): Boolean {
+        if (localGrid[from] == 0) return false
+        if (localGrid[to]   != 0) return false
 
-        if (currentGrid[from] == 0) return false
-        if (currentGrid[to] != 0) return false
-
-        ds.update { data ->
-            val newGrid = data.grid.toMutableList()
-            newGrid[to] = newGrid[from]
-            newGrid[from] = 0
-            data.copy(grid = newGrid)
-        }
+        localGrid[to]   = localGrid[from]
+        localGrid[from] = 0
+        ds.update { it.copy(grid = localGrid.toList()) }
 
         return true
     }
 
     fun tryMerge(from: Int, to: Int): Int? {
+        val fromLevel = localGrid[from]
+        val toLevel   = localGrid[to]
 
-        val fromLevel = currentGrid[from]
-        val toLevel   = currentGrid[to]
-
-        if (fromLevel == 0) return null
-        if (fromLevel != toLevel) return null
+        if (fromLevel == 0 || fromLevel != toLevel) return null
 
         val newLevel = fromLevel + 1
-
-        ds.update { data ->
-            val newGrid = data.grid.toMutableList()
-            newGrid[to] = newLevel
-            newGrid[from] = 0
-            data.copy(grid = newGrid)
-        }
+        localGrid[to]   = newLevel
+        localGrid[from] = 0
+        ds.update { it.copy(grid = localGrid.toList()) }
 
         return newLevel
     }
 
-    fun totalPower(): Int {
-        return currentGrid.sum()
-    }
-
-    fun hasEmptyCell(): Boolean {
-        return currentGrid.any { it == 0 }
-    }
-
     fun clearGrid() {
-        ds.update { data ->
-            data.copy(grid = List(16) { 0 })
-        }
+        localGrid.fill(0)
+        ds.update { it.copy(grid = List(16) { 0 }) }
     }
-
 }

@@ -1,0 +1,152 @@
+menu.png
+size: 2008, 1969
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+alarm_box_on
+  rotate: false
+  xy: 851, 1
+  size: 249, 115
+  orig: 249, 115
+  offset: 0, 0
+  index: -1
+box_off
+  rotate: false
+  xy: 1101, 1
+  size: 249, 115
+  orig: 249, 115
+  offset: 0, 0
+  index: -1
+close_def
+  rotate: false
+  xy: 1, 307
+  size: 1916, 276
+  orig: 1916, 276
+  offset: 0, 0
+  index: -1
+close_press
+  rotate: false
+  xy: 1, 584
+  size: 1916, 276
+  orig: 1916, 276
+  offset: 0, 0
+  index: -1
+expand
+  rotate: false
+  xy: 1, 1
+  size: 82, 82
+  orig: 82, 82
+  offset: 0, 0
+  index: -1
+icons_alarm
+  rotate: false
+  xy: 84, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+icons_info
+  rotate: false
+  xy: 185, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+icons_music
+  rotate: false
+  xy: 286, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+icons_sound
+  rotate: false
+  xy: 387, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+icons_vibro
+  rotate: false
+  xy: 488, 1
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+menu_icon_leaderboard
+  rotate: false
+  xy: 589, 1
+  size: 130, 130
+  orig: 130, 130
+  offset: 0, 0
+  index: -1
+menu_icon_settings
+  rotate: false
+  xy: 720, 1
+  size: 130, 130
+  orig: 130, 130
+  offset: 0, 0
+  index: -1
+menu_item_section_def
+  rotate: false
+  xy: 1, 861
+  size: 1916, 276
+  orig: 1916, 276
+  offset: 0, 0
+  index: -1
+menu_item_section_press
+  rotate: false
+  xy: 1, 1138
+  size: 1916, 276
+  orig: 1916, 276
+  offset: 0, 0
+  index: -1
+music_box_on
+  rotate: false
+  xy: 1351, 1
+  size: 249, 115
+  orig: 249, 115
+  offset: 0, 0
+  index: -1
+reset_game_def
+  rotate: false
+  xy: 1, 1415
+  size: 1916, 276
+  orig: 1916, 276
+  offset: 0, 0
+  index: -1
+reset_game_press
+  rotate: false
+  xy: 1, 1692
+  size: 1916, 276
+  orig: 1916, 276
+  offset: 0, 0
+  index: -1
+settings_item
+  rotate: false
+  xy: 251, 132
+  size: 1756, 164
+  orig: 1756, 164
+  offset: 0, 0
+  index: -1
+settings_separator
+  rotate: false
+  xy: 1, 297
+  size: 1764, 9
+  orig: 1764, 9
+  offset: 0, 0
+  index: -1
+sound_box_on
+  rotate: false
+  xy: 1601, 1
+  size: 249, 115
+  orig: 249, 115
+  offset: 0, 0
+  index: -1
+vibro_box_on
+  rotate: false
+  xy: 1, 132
+  size: 249, 115
+  orig: 249, 115
+  offset: 0, 0
+  index: -1

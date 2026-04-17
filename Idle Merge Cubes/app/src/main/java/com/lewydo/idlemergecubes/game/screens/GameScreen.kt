@@ -1,7 +1,10 @@
 package com.lewydo.idlemergecubes.game.screens
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogLevelUp
@@ -28,6 +31,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.launch
@@ -38,8 +42,8 @@ class GameScreen: AdvancedScreen() {
         private var IS_CHECK_OFFLINE_REWARD = true
     }
 
-    //private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
-    //private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
+    private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
+    private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
 
 
     // ------------------------------------------------------------------------
@@ -81,18 +85,18 @@ class GameScreen: AdvancedScreen() {
         setBackBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
 
-//        stageUI.root.addActorWithConstraints(label) {
-//            topToTopOf = stageUI.root
-//            endToEndOf = stageUI.root
-//            marginTop  = 244f
-//            marginEnd  = 550f
-//        }
+        stageUI.root.addActorWithConstraints(label) {
+            topToTopOf = stageUI.root
+            endToEndOf = stageUI.root
+            marginTop  = 244f
+            marginEnd  = 550f
+        }
     }
 
-//    override fun render(delta: Float) {
-//        super.render(delta)
-//        label.setText("${Gdx.graphics.framesPerSecond} FPS")
-//    }
+    override fun render(delta: Float) {
+        super.render(delta)
+        label.setText("${Gdx.graphics.framesPerSecond} FPS")
+    }
 
     override fun Group.addActorsOnStageUI() {
         color.a = 0f

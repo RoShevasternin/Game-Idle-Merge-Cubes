@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
@@ -14,18 +13,16 @@ import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
 import com.lewydo.idlemergecubes.game.actors.progress.AProgressDefault
 import com.lewydo.idlemergecubes.game.actors.shader.ABlur
-import com.lewydo.idlemergecubes.game.actors.shader.ABlurBack
-import com.lewydo.idlemergecubes.game.actors.shader.AScreenShot
 import com.lewydo.idlemergecubes.game.actors.shader.ATestShader
-import com.lewydo.idlemergecubes.game.utils.*
+import com.lewydo.idlemergecubes.game.utils.Block
+import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
-import com.lewydo.idlemergecubes.game.utils.actor.addActors
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedStage
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 import kotlinx.coroutines.launch
 
 class TestShaderScreen: AdvancedScreen() {
@@ -91,12 +88,31 @@ class TestShaderScreen: AdvancedScreen() {
 
         val mainTEST = ABlur(this@TestShaderScreen) //ABlurBack(this@TestShaderScreen)//,game.assetsLoader.builderList[2])
         mainTEST.debug()
+
         mainTEST.setBounds(374f, 725f, 1413f, 1413f)
         addActor(mainTEST)
         movableActor = mainTEST
 
         val imgCoin = Image(gdxGame.assetsAll.COIN_BIG)
         mainTEST.addAndFillActor(imgCoin)
+
+
+//        var nx = 374f
+//        repeat(40) {
+//            val mainTEST2 = ABlur(this@TestShaderScreen) //ABlurBack(this@TestShaderScreen)//,game.assetsLoader.builderList[2])
+//            mainTEST2.debug()
+//
+//            mainTEST.radiusBlur = 50f
+//
+//            mainTEST2.setBounds(nx, 725f, 1413f, 1413f)
+//            addActor(mainTEST2)
+//
+//            val imgCoin2 = Image(gdxGame.assetsAll.COIN_BIG)
+//            mainTEST2.addAndFillActor(imgCoin2)
+//
+//            nx += 5f
+//        }
+
 
         addActorWithConstraints(aRedImg) {
             startToStartOf = mainTEST
