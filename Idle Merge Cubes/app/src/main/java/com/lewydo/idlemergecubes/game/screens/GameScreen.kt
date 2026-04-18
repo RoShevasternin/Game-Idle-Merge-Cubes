@@ -1,10 +1,8 @@
 package com.lewydo.idlemergecubes.game.screens
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogLevelUp
@@ -15,6 +13,7 @@ import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
 import com.lewydo.idlemergecubes.game.actors.panelGrid.APanelGrid
 import com.lewydo.idlemergecubes.game.actors.panelIdle.APanelIdle
 import com.lewydo.idlemergecubes.game.actors.panelMenu.APanelMenu
+import com.lewydo.idlemergecubes.game.actors.tutorial.ATutorial
 import com.lewydo.idlemergecubes.game.model.OfflineRewardModel
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.GameColor
@@ -31,8 +30,8 @@ import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.launch
 
@@ -42,8 +41,8 @@ class GameScreen: AdvancedScreen() {
         private var IS_CHECK_OFFLINE_REWARD = true
     }
 
-    private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
-    private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
+//    private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
+//    private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
 
 
     // ------------------------------------------------------------------------
@@ -65,6 +64,9 @@ class GameScreen: AdvancedScreen() {
     private val aDialogOfflineReward = ADialogOfflineReward(this)
     private val aDialogLevelUp       = ADialogLevelUp(this)
 
+    // поле — lazy бо не треба якщо вже пройдений
+    private val aTutorial by lazy { ATutorial(this) }
+
     // ------------------------------------------------------------------------
     // State
     // ------------------------------------------------------------------------
@@ -85,18 +87,18 @@ class GameScreen: AdvancedScreen() {
         setBackBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
 
-        stageUI.root.addActorWithConstraints(label) {
-            topToTopOf = stageUI.root
-            endToEndOf = stageUI.root
-            marginTop  = 244f
-            marginEnd  = 550f
-        }
+//        stageUI.root.addActorWithConstraints(label) {
+//            topToTopOf = stageUI.root
+//            endToEndOf = stageUI.root
+//            marginTop  = 244f
+//            marginEnd  = 550f
+//        }
     }
 
-    override fun render(delta: Float) {
-        super.render(delta)
-        label.setText("${Gdx.graphics.framesPerSecond} FPS")
-    }
+//    override fun render(delta: Float) {
+//        super.render(delta)
+//        label.setText("${Gdx.graphics.framesPerSecond} FPS")
+//    }
 
     override fun Group.addActorsOnStageUI() {
         color.a = 0f
@@ -107,6 +109,7 @@ class GameScreen: AdvancedScreen() {
         addBuyBtn()
 
         aPanelTop.toFront()
+        addTutorial()
 
         addDimImg()
         addPanelMenu()
@@ -187,6 +190,7 @@ class GameScreen: AdvancedScreen() {
 
         aBuyBtn.onClick = {
             aPanelGrid.buyCube()
+            gdxGame.tutorialManager.onBuyDone()
         }
 
     }
@@ -250,6 +254,20 @@ class GameScreen: AdvancedScreen() {
         addActorAligned(aDialogLevelUp, AlignH.CENTER, AlignV.CENTER)
 
         collectLevelUp()
+    }
+
+    // новий метод:
+    private fun Group.addTutorial() {
+        if (gdxGame.tutorialManager.isDone) return
+
+        addAndFillActor(aTutorial)
+
+        animDelay(0.5f) {
+            val pos = aBuyBtn.localToStageCoordinates(Vector2(aBuyBtn.width * 0.85f, aBuyBtn.height * 0.4f))
+            GlobalStagePositions.register(GlobalStagePositions.Position.BUY_BTN, pos.x, pos.y)
+            aTutorial.start()
+        }
+
     }
 
     // ------------------------------------------------------------------------

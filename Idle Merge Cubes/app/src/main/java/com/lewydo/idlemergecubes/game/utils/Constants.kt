@@ -5,7 +5,7 @@ const val HEIGHT_UI = 3840f
 
 const val TIME_ANIM_SCREEN = 0.333f
 
-const val IDLE_CYCLE_SECONDS = 3f
+const val IDLE_CYCLE_SECONDS = 10f
 
 // ------------------------------------------------------------------------
 // OFFLINE Idle Income

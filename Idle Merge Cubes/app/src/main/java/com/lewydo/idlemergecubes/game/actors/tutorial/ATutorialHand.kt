@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
+import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
@@ -13,18 +14,26 @@ import com.lewydo.idlemergecubes.game.utils.gdxGame
 class ATutorialHand(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     // ------------------------------------------------------------------------
+    // Offset
+    // ------------------------------------------------------------------------
+
+    private val offsetX = 28f
+    private val offsetY = 445f
+
+    // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
 
-    private val aHandImg = Image(gdxGame.assetsAll.coin)
+    private val aHandImg = Image(gdxGame.assetsAll.tutorial_hand)
 
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
 
     override fun addActorsOnGroup() {
-        setOrigin(Align.center)
+        setOrigin(offsetX, offsetY)
         addAndFillActor(aHandImg)
+        isVisible = false
     }
 
     // ------------------------------------------------------------------------
@@ -34,19 +43,37 @@ class ATutorialHand(override val screen: AdvancedScreen) : AdvancedGroup() {
     fun showTap(stageX: Float, stageY: Float) {
         clearActions()
         isVisible = true
-        setPosition(stageX - width / 2f, stageY - height / 2f)
 
-        addAction(Actions.forever(
-            Actions.sequence(
-                Actions.parallel(
-                    Actions.moveBy(0f, -50f, 0.22f, Interpolation.sineIn),
-                    Actions.scaleTo(0.88f, 0.88f, 0.22f, Interpolation.sineIn),
-                ),
-                Actions.parallel(
-                    Actions.moveBy(0f, 50f, 0.30f, Interpolation.sineOut),
-                    Actions.scaleTo(1f, 1f, 0.30f, Interpolation.sineOut),
-                ),
-                Actions.delay(0.5f)
+        setPosition(stageX - offsetX, stageY - offsetY)
+
+        setScale(0.6f)
+        y       -= 200f
+
+        addAction(Actions.sequence(
+            // --- поява ---
+            Actions.parallel(
+                Actions.fadeIn(0.35f, Interpolation.sineOut),
+                Actions.moveBy(0f, 200f, 0.45f, Interpolation.swingOut),
+                Actions.scaleTo(1.1f, 1.1f, 0.35f, Interpolation.swingOut),
+            ),
+            Actions.scaleTo(1f, 1f, 0.15f, Interpolation.sineOut),
+            Actions.delay(0.3f),
+
+            // --- тап петля ---
+            Actions.forever(
+                Actions.sequence(
+                    // опускається — натискає
+                    Actions.parallel(
+                        Actions.moveBy(0f, -55f, 0.18f, Interpolation.sineIn),
+                        Actions.scaleTo(0.90f, 0.90f, 0.18f, Interpolation.sineIn),
+                    ),
+                    // піднімається назад
+                    Actions.parallel(
+                        Actions.moveBy(0f, 55f, 0.28f, Interpolation.swingOut),
+                        Actions.scaleTo(1f, 1f, 0.28f, Interpolation.swingOut),
+                    ),
+                    Actions.delay(0.55f)
+                )
             )
         ))
     }
@@ -58,29 +85,52 @@ class ATutorialHand(override val screen: AdvancedScreen) : AdvancedGroup() {
     fun showDrag(from: Vector2, to: Vector2) {
         clearActions()
         isVisible = true
-        setPosition(from.x - width / 2f, from.y - height / 2f)
 
-        addAction(Actions.forever(
-            Actions.sequence(
-                // стискається — "бере" куб
-                Actions.scaleTo(0.88f, 0.88f, 0.15f, Interpolation.sineIn),
-                Actions.delay(0.1f),
+        setPosition(from.x - offsetX, from.y - offsetY)
+        color.a = 0f
+        setScale(0.6f)
+        y -= 200f
 
-                // летить до другого куба
-                Actions.parallel(
-                    Actions.moveTo(to.x - width / 2f, to.y - height / 2f, 0.5f, Interpolation.sineIn),
-                    Actions.scaleTo(1f, 1f, 0.2f, Interpolation.sineOut),
-                ),
+        addAction(Actions.sequence(
+            // --- поява (як showTap) ---
+            Actions.parallel(
+                Actions.fadeIn(0.35f, Interpolation.sineOut),
+                Actions.moveBy(0f, 200f, 0.45f, Interpolation.swingOut),
+                Actions.scaleTo(1.1f, 1.1f, 0.35f, Interpolation.swingOut),
+            ),
+            Actions.scaleTo(1f, 1f, 0.15f, Interpolation.sineOut),
+            Actions.delay(0.4f),
 
-                // "кидає"
-                Actions.scaleTo(0.88f, 0.88f, 0.12f, Interpolation.sineIn),
-                Actions.scaleTo(1f, 1f, 0.15f, Interpolation.sineOut),
-                Actions.delay(0.4f),
+            // --- drag петля ---
+            Actions.forever(
+                Actions.sequence(
+                    // стискається — "бере" куб
+                    Actions.scaleTo(0.85f, 0.85f, 0.18f, Interpolation.sineIn),
+                    Actions.delay(0.15f),
 
-                // повертається (невидимо)
-                Actions.alpha(0f, 0.15f),
-                Actions.moveTo(from.x - width / 2f, from.y - height / 2f, 0f),
-                Actions.alpha(1f, 0.15f),
+                    // летить до цілі
+                    Actions.parallel(
+                        Actions.moveTo(to.x - offsetX, to.y - offsetY, 0.55f, Interpolation.sineOut),
+                        Actions.scaleTo(0.95f, 0.95f, 0.55f, Interpolation.sineOut),
+                    ),
+
+                    // "відпускає" — легкий стрибок
+                    Actions.scaleTo(1.1f, 1.1f, 0.1f, Interpolation.sineOut),
+                    Actions.scaleTo(1f, 1f, 0.15f, Interpolation.swingOut),
+                    Actions.delay(0.35f),
+
+                    // невидимо повертається на старт
+                    Actions.parallel(
+                        Actions.alpha(0f, 0.18f, Interpolation.sineIn),
+                        Actions.scaleTo(0.8f, 0.8f, 0.18f, Interpolation.sineIn),
+                    ),
+                    Actions.moveTo(from.x - offsetX, from.y - offsetY, 0f),
+                    Actions.parallel(
+                        Actions.alpha(1f, 0.2f, Interpolation.sineOut),
+                        Actions.scaleTo(1f, 1f, 0.2f, Interpolation.swingOut),
+                    ),
+                    Actions.delay(0.2f),
+                )
             )
         ))
     }

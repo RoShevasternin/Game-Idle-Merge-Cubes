@@ -16,6 +16,8 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.util.OneTime
+import com.lewydo.idlemergecubes.util.log
 
 class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
 
@@ -55,6 +57,10 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
     private val offsetH = 10f
 
     // ------------------------------------------------------------------------
+    // Fields
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     // Particle pool
     // ------------------------------------------------------------------------
 
@@ -84,6 +90,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
         cubes[index] = cube
 
         cube.animSpawn()
+        registerTutorialPositions()
         return cube
     }
 
@@ -114,6 +121,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
         val finalPos = calculateFinalPos(targetCellPos)
 
         animMoveTo(cube, finalPos) {
+            registerTutorialPositions()
             onComplete()
         }
     }
@@ -156,6 +164,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
             spawnMergeEffect(target, target.getVisualColor())
             spawnFlyingLabels(target, coins, xp, target.getVisualColor())
 
+            gdxGame.tutorialManager.onMergeDone()
             onComplete()
         }
     }
@@ -277,6 +286,24 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
                 onEnd  = { GlobalEvents.emit(GlobalEvents.EventType.END_FLY_XP) }
             ).also { it.setBounds(from, size) }
         )
+    }
+
+    // ------------------------------------------------------------------------
+    // Register GlobalStagePosition
+    // ------------------------------------------------------------------------
+    private fun registerTutorialPositions() {
+        val list = cubes.values.take(2)
+        if (list.size < 2) return
+
+        list.getOrNull(0)?.let {
+            val pos = it.localToStageCoordinates(Vector2(it.width / 2f, it.height / 2f))
+            GlobalStagePositions.register(GlobalStagePositions.Position.CUBE_0, pos.x, pos.y)
+        }
+        list.getOrNull(1)?.let {
+            val pos = it.localToStageCoordinates(Vector2(it.width / 2f, it.height / 2f))
+            GlobalStagePositions.register(GlobalStagePositions.Position.CUBE_1, pos.x, pos.y)
+        }
+        gdxGame.tutorialManager.onCubePositionChanged()
     }
 
 }

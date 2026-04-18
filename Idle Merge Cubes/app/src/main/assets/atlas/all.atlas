@@ -1,5 +1,5 @@
 all.png
-size: 1975, 1281
+size: 1975, 1761
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
@@ -190,6 +190,13 @@ settings_press
   xy: 992, 48
   size: 118, 118
   orig: 118, 118
+  offset: 0, 0
+  index: -1
+tutorial_hand
+  rotate: false
+  xy: 1, 1281
+  size: 331, 479
+  orig: 331, 479
   offset: 0, 0
   index: -1
 x2

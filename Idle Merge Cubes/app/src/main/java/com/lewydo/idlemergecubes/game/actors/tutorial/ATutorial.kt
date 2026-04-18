@@ -1,8 +1,6 @@
 package com.lewydo.idlemergecubes.game.actors.tutorial
 
-import com.badlogic.gdx.math.Vector2
 import com.lewydo.idlemergecubes.game.manager.TutorialManager
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -19,12 +17,6 @@ class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
     // Actors
     // ------------------------------------------------------------------------
     private val aHand = ATutorialHand(screen)
-
-    // ------------------------------------------------------------------------
-    // Field
-    // ------------------------------------------------------------------------
-    // позиція центру BUY кнопки — встановлює GameScreen
-    var buyBtnCenter = Vector2()
 
     // ------------------------------------------------------------------------
     // Lifecycle
@@ -71,7 +63,8 @@ class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
     }
 
     private fun showBuyHint() {
-        aHand.showTap(buyBtnCenter.x, buyBtnCenter.y)
+        val pos = GlobalStagePositions.get(GlobalStagePositions.Position.BUY_BTN)
+        aHand.showTap(pos.x, pos.y)
     }
 
     private fun showMergeHint() {
@@ -86,9 +79,12 @@ class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     private fun registerEvents() {
         coroutine?.launch {
-            GlobalEvents.events
-                .filter { it == GlobalEvents.EventType.TUTORIAL_STEP_CHANGED }
-                .collect { runGDX { updateStep() } }
+            GlobalEvents.events.collect { event -> runGDX { when (event) {
+                GlobalEvents.EventType.TUTORIAL_STEP_CHANGED          -> updateStep()
+                GlobalEvents.EventType.TUTORIAL_CUBE_POSITION_CHANGED -> showMergeHint()
+                else -> {}
+            } } }
         }
     }
+
 }

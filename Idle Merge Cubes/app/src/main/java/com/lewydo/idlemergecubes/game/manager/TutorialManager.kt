@@ -8,23 +8,38 @@ class TutorialManager(val coroutine: CoroutineScope) {
 
     enum class Step { BUY, MERGE, DONE }
 
+    private var localStep: Step? = null
+
     val currentStep: Step
-        get() = Step.entries[gdxGame.ds_Player.flow.value.tutorialStep.coerceIn(0, Step.entries.lastIndex)]
+        get() {
+            if (localStep == null) {
+                localStep = Step.entries[
+                    gdxGame.ds_Player.flow.value.tutorialStep.coerceIn(0, Step.entries.lastIndex)
+                ]
+            }
+            return localStep!!
+        }
 
     val isDone: Boolean get() = currentStep == Step.DONE
 
     fun onBuyDone() {
-        if (currentStep != Step.BUY) return
+        if (localStep != Step.BUY) return
         saveStep(Step.MERGE)
     }
 
     fun onMergeDone() {
-        if (currentStep != Step.MERGE) return
+        if (localStep != Step.MERGE) return
         saveStep(Step.DONE)
     }
 
+    fun onCubePositionChanged() {
+        if (localStep != Step.MERGE) return
+        GlobalEvents.emit(GlobalEvents.EventType.TUTORIAL_CUBE_POSITION_CHANGED)
+    }
+
     private fun saveStep(step: Step) {
-        gdxGame.ds_Player.update { it.copy(tutorialStep = step.ordinal) }
+        localStep = step                          // ← синхронно одразу
+        gdxGame.ds_Player.update { it.copy(tutorialStep = step.ordinal) }  // ← persist async
         GlobalEvents.emit(GlobalEvents.EventType.TUTORIAL_STEP_CHANGED)
     }
 }

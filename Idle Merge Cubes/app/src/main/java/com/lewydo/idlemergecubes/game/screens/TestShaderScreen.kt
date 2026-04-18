@@ -41,7 +41,7 @@ class TestShaderScreen: AdvancedScreen() {
     private val aGreenImg = Image(gdxGame.assetsAll.green)
 
     override fun show() {
-        setBackBackground(gdxGame.assetsAll.bg_test)
+        //setBackBackground(gdxGame.assetsAll.bg_test)
         //setBackBackground(drawerUtil.getRegion(Color.GRAY))
         //setUIBackground(game.assetsAll.LVL_1.region)
         super.show()

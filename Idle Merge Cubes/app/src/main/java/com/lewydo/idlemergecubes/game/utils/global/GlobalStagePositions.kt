@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2
 
 object GlobalStagePositions {
 
-    enum class Position { COIN, XP, CUBE_0, CUBE_1 }
+    enum class Position { COIN, XP, BUY_BTN, CUBE_0, CUBE_1 }
 
     private val positionMap = Array(Position.entries.size) { Vector2() }
 

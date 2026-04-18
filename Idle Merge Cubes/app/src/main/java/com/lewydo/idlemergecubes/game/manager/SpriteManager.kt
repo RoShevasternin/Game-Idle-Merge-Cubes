@@ -44,7 +44,7 @@ class SpriteManager(var assetManager: AssetManager) {
     }
 
     enum class EnumTexture(val data: TextureData) {
-        bg_test(TextureData("textures/bg_test.png")),
+        //bg_test(TextureData("textures/bg_test.png")),
         green(TextureData("textures/green.png")),
         red(TextureData("textures/red.png")),
         ComingSoon(TextureData("textures/Coming Soon.png")),

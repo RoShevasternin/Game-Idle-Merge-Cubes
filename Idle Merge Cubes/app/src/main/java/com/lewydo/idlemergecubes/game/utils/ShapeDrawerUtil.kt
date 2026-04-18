@@ -23,26 +23,19 @@ class ShapeDrawerUtil(batch: Batch): Disposable {
     }
 
     fun getRegion(color: Color = Color.WHITE): TextureRegion {
-        val pixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-        pixmap.setColor(color)
-        pixmap.drawPixel(0, 0)
-
-        val texture = Texture(pixmap)
-        disposableSet.add(texture)
-
-        pixmap.dispose()
-        return TextureRegion(texture, 0, 0, 1, 1)
+        return TextureRegion(getTexture(color), 0, 0, 4, 4)
     }
 
     fun getTexture(color: Color = Color.WHITE): Texture {
-        val pixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-        pixmap.setColor(color)
-        pixmap.drawPixel(0, 0)
+        val pixmap = Pixmap(4, 4, Pixmap.Format.RGBA8888).apply {
+            setColor(color)
+            fill()
+        }
+        val texture = Texture(pixmap).also {
+            pixmap.dispose()
+            disposableSet.add(it)
+        }
 
-        val texture = Texture(pixmap)
-        disposableSet.add(texture)
-
-        pixmap.dispose()
         return texture
     }
 

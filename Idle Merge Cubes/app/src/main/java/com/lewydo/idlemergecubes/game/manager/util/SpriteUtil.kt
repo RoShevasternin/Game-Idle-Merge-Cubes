@@ -61,6 +61,7 @@ class SpriteUtil {
         val circle_stroke         = getAllRegion("offline_circle_stroke")
         val back_def              = getAllRegion("back_def")
         val back_press            = getAllRegion("back_press")
+        val tutorial_hand         = getAllRegion("tutorial_hand")
 
         // Idle
         val bag_coins                = getAllRegion("bag_coins")
@@ -122,7 +123,7 @@ class SpriteUtil {
         // ------------------------------------------------------------------------------
 
         // TEST
-        val bg_test    = SpriteManager.EnumTexture.bg_test.data.texture
+        //val bg_test    = SpriteManager.EnumTexture.bg_test.data.texture
         val green      = SpriteManager.EnumTexture.green.data.texture
         val red        = SpriteManager.EnumTexture.red.data.texture
         val ComingSoon = SpriteManager.EnumTexture.ComingSoon.data.texture

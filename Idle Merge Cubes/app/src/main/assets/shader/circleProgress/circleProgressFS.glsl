@@ -4,6 +4,7 @@ precision mediump float;
 
 varying vec2 v_texCoords;
 varying vec4 v_color;
+varying vec2 v_localUV;
 
 uniform float u_progress;      // -100..100
 uniform float u_startAngle;    // radians
@@ -111,8 +112,6 @@ void main()
 
     vec4 color = mix(u_colorStart, u_colorEnd, t);
 
-    vec4 finalColor = color * v_color;
-
     // Premultiplied alpha для LibGDX blending (GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
-    gl_FragColor = vec4(finalColor.rgb * finalColor.a, finalColor.a);
+    gl_FragColor = color * v_color;
 }
