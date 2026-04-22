@@ -23,7 +23,6 @@ val gdxGame: GDXGame get() = Gdx.app.applicationListener as GDXGame
 
 val Texture.region: TextureRegion get() = TextureRegion(this)
 val Float.toMS: Long get() = (this * 1000).toLong()
-val Viewport.zeroScreenVector: Vector2 get() = project(Vector2(0f, 0f))
 val TextureEmpty get() = Texture(1, 1, Pixmap.Format.Alpha)
 
 fun disposeAll(vararg disposable: Disposable?) {
@@ -32,8 +31,8 @@ fun disposeAll(vararg disposable: Disposable?) {
 
 fun currentTimeMinus(time: Long) = System.currentTimeMillis().minus(time)
 
-fun Collection<Disposable>.disposeAll() {
-    onEach { it.dispose() }
+fun Iterable<Disposable>.disposeAll() {
+    forEach { it.dispose() }
 }
 
 fun InputMultiplexer.addProcessors(vararg processor: InputProcessor) {
@@ -58,39 +57,7 @@ fun Vector2.divOr(scalar: Vector2, or: Float): Vector2 {
     return this
 }
 
-fun Texture.combineByCenter(texture: Texture): Texture {
-    if (textureData.isPrepared.not()) textureData.prepare()
-    val pixmap1 = textureData.consumePixmap()
-
-    if (texture.textureData.isPrepared.not()) texture.textureData.prepare()
-    val pixmap2 = texture.textureData.consumePixmap()
-
-    pixmap1.drawPixmap(pixmap2,
-        (width / 2) - (texture.width / 2),
-        (height / 2) - (texture.height / 2),
-    )
-    val textureResult = Texture(pixmap1)
-
-    if (pixmap1.isDisposed.not()) pixmap1.dispose()
-    if (pixmap2.isDisposed.not()) pixmap2.dispose()
-
-    dispose()
-    texture.dispose()
-
-    return textureResult
-}
-
 fun captureScreenShot(region: TextureRegion, x: Int, y: Int, w: Int, h: Int) {
     Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, region.texture.textureObjectHandle)
     Gdx.gl20.glCopyTexSubImage2D(GL20.GL_TEXTURE_2D, 0, 0, 0, x, y, w, h)
-}
-
-fun createShader(vertexPath: String, fragmentPath: String): ShaderProgram {
-    val vertex = Gdx.files.internal(vertexPath).readString()
-    val fragment = Gdx.files.internal(fragmentPath).readString()
-
-    return ShaderProgram(vertex, fragment).apply {
-        if (!isCompiled) throw IllegalStateException("Shader compile error\nVertex: $vertexPath\nFragment: $fragmentPath\n${log}")
-        gdxGame.disposableSet.add(this)
-    }
 }

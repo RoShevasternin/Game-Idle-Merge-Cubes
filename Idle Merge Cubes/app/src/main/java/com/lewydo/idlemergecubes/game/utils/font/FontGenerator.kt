@@ -8,18 +8,23 @@ import com.lewydo.idlemergecubes.game.utils.disposeAll
 
 class FontGenerator(fontPath: FontPath): FreeTypeFontGenerator(Gdx.files.internal(fontPath.path)) {
 
-    private val disposableSet = mutableSetOf<Disposable>()
+    private val fontCache = mutableMapOf<String, BitmapFont>()
 
-    override fun generateFont(parameter: FreeTypeFontParameter?): BitmapFont {
-        val font = super.generateFont(parameter)
-        disposableSet.add(font)
+    override fun generateFont(parameter: FreeTypeFontParameter): BitmapFont {
+        val key  = buildCacheKey(parameter)
+        val font = fontCache.getOrPut(key) { super.generateFont(parameter) }
+
         return font
+    }
+
+    private fun buildCacheKey(p: FreeTypeFontParameter): String {
+        return "${p.size}_${p.borderWidth}_${p.borderColor}_${p.shadowOffsetX}_${p.shadowOffsetY}_${p.characters.length}"
     }
 
     override fun dispose() {
         super.dispose()
-        disposableSet.disposeAll()
-        disposableSet.clear()
+        fontCache.values.disposeAll()
+        fontCache.clear()
     }
 
     companion object {

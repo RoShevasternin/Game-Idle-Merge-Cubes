@@ -43,10 +43,13 @@ abstract class AdvancedScreen(
     val viewportUI by lazy { ExtendViewport(WIDTH, HEIGHT) }
     val stageUI    by lazy { AdvancedStage(viewportUI) }
 
-    val scaleScreenToUiY: Float get() = (viewportUI.worldHeight / Gdx.graphics.height.toFloat())
+    private val scaleScreenToUiY: Float get() = (viewportUI.worldHeight / Gdx.graphics.height.toFloat())
 
-    val safeTopUI    get() = MainActivity.statusBarHeight * scaleScreenToUiY
-    val safeBottomUI get() = MainActivity.navBarHeight * scaleScreenToUiY
+    val safeTop    get() = MainActivity.statusBarHeight
+    val safeBottom get() = MainActivity.navBarHeight
+
+    val safeTopUI    get() = safeTop * scaleScreenToUiY
+    val safeBottomUI get() = safeBottom * scaleScreenToUiY
 
     val inputMultiplexer    = InputMultiplexer()
 

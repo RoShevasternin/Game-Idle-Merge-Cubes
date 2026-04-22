@@ -42,7 +42,7 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     private val fontBuy   = screen.fontGenerator_Nunito_Black.generateFont(parameter.setSize(126))
     private val fontPrice = screen.fontGenerator_Nunito_Black.generateFont(parameter.setSize(113))
-    private val fontCube  = screen.fontGenerator_Nunito_Black.generateFont(parameterCube)
+    //private val fontCube  = screen.fontGenerator_Nunito_Black.generateFont(parameterCube)
 
     // ------------------------------------------------------------------------
     // Field
@@ -62,7 +62,7 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     private val aCubeGroup = ATmpGroup(screen)
     private val aCubeImg   = AHslImage(screen, gdxGame.assetsAll.cube_buy)
-    private val aCubeLbl   = ALabel(screen, cubeLvl.toString(), Label.LabelStyle(fontCube, Color.WHITE))
+    private val aCubeLbl   = ALabel(screen, cubeLvl.toString(), Color.WHITE, parameterCube, screen.fontGenerator_Nunito_Black)
 
     private val aBuyLbl   = Label("BUY", Label.LabelStyle(fontBuy, Color.WHITE))
     private val aCoinImg  = Image(gdxGame.assetsAll.coin_with_border)

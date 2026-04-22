@@ -110,6 +110,10 @@ fun Actor.setOrigin(vector: Vector2) {
     setOrigin(vector.x, vector.y)
 }
 
+fun Actor.setSize(vector: Vector2) {
+    setSize(vector.x, vector.y)
+}
+
 // ------------------------------------------------------------------------
 // Animations
 // ------------------------------------------------------------------------
