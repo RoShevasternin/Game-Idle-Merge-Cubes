@@ -72,7 +72,7 @@ class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
         val to   = GlobalStagePositions.get(GlobalStagePositions.Position.CUBE_1)
 
         // захист — якщо позиції ще не зареєстровані (обидва Vector2 = 0,0)
-        if (from.isZero && to.isZero) return
+        if (from.isZero || to.isZero) return
 
         aHand.showDrag(from, to)
     }

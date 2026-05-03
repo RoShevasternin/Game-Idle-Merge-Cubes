@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.ScreenUtils
 import com.lewydo.idlemergecubes.MainActivity
+import com.lewydo.idlemergecubes.firebase.analytics.AnalyticsManager
 import com.lewydo.idlemergecubes.game.dataStore.DS_Player
 import com.lewydo.idlemergecubes.game.manager.MusicManager
 import com.lewydo.idlemergecubes.game.manager.NavigationManager
@@ -71,6 +72,7 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     val modelLevelUp       = LevelUpRewardModel(modelPlayer)
 
     val tutorialManager = TutorialManager(coroutine)
+    val analytics       = AnalyticsManager()
 
     override fun create() {
         navigationManager = NavigationManager(this)
@@ -98,6 +100,12 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
         super.pause()
         log("pause")
         modelOfflineReward.saveLoginTime()
+    }
+
+    override fun resume() {
+        super.resume()
+        log("resume")
+        Blit.dispose()
     }
 
     override fun dispose() {

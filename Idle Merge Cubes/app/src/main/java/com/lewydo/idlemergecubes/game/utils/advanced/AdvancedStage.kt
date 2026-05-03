@@ -3,6 +3,8 @@ package com.lewydo.idlemergecubes.game.utils.advanced
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.Viewport
+import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
+import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.vfx.renderPreRenderables
 
 open class AdvancedStage(viewport: Viewport) : Stage(viewport) {

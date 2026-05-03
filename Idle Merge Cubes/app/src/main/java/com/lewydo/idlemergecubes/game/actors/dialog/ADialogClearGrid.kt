@@ -1,7 +1,8 @@
 package com.lewydo.idlemergecubes.game.actors.dialog
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.lewydo.idlemergecubes.game.actors.button.AButton
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -13,8 +14,8 @@ class ADialogClearGrid(override val screen: AdvancedScreen): AdvancedGroup() {
     // Actors
     // ------------------------------------------------------------------------
     private val aDialogImg = Image(gdxGame.assetsAll.DIALOG_CLEAR_GRID)
-    private val aYesBtn    = AButton(screen, AButton.Type.YES)
-    private val aNoBtn     = AButton(screen, AButton.Type.NO)
+    private val aYesBtn    = AButtonTexture(screen, AButtonStyles.YES)
+    private val aNoBtn     = AButtonTexture(screen, AButtonStyles.NO)
 
     // ------------------------------------------------------------------------
     // Callback

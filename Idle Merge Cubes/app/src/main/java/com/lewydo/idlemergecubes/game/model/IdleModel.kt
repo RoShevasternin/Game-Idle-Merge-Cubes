@@ -1,5 +1,6 @@
 package com.lewydo.idlemergecubes.game.model
 
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +40,7 @@ class IdleModel(
         val reward = currentReward
         if (reward <= 0) return
 
+        gdxGame.analytics.collectIdle(reward.toLong())
         playerModel.addCoins(reward.toLong())
     }
 
@@ -50,6 +52,7 @@ class IdleModel(
         val reward = currentReward
         if (reward <= 0) return
 
+        gdxGame.analytics.collectIdleX2((reward * 2).toLong())
         playerModel.addCoins((reward * 2).toLong())
     }
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -14,12 +15,15 @@ import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.lewydo.idlemergecubes.MainActivity
+import com.lewydo.idlemergecubes.game.actors.ATmpGroup
+import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.HEIGHT_UI
 import com.lewydo.idlemergecubes.game.utils.ShapeDrawerUtil
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
+import com.lewydo.idlemergecubes.game.utils.actor.setSize
 import com.lewydo.idlemergecubes.game.utils.addProcessors
 import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.game.utils.font.FontGenerator
@@ -77,6 +81,15 @@ abstract class AdvancedScreen(
     // Один екземпляр на екран — створюється разом з екраном, dispose в dispose().
     val renderPipeline = RenderPipeline()
 
+    val rootConstraintLayout = AConstraintLayout(this)
+
+    override fun resize(width: Int, height: Int) {
+        stageBack.update(width, height, true)
+        stageUI.update(width, height, true)
+
+        rootConstraintLayout.setSize(viewportUI.worldWidth, viewportUI.worldHeight)
+    }
+
     override fun show() {
         log("show AdvancedScreen: $currentClassName")
         val screenWidth  = Gdx.graphics.width
@@ -90,8 +103,11 @@ abstract class AdvancedScreen(
         stageBack.root.addAndFillActor(backBackgroundImage)
         stageUI.root.addAndFillActor(uiBackgroundImage)
 
+        stageUI.root.addAndFillActor(rootConstraintLayout)
+
         stageBack.root.addActorsOnStageBack()
         stageUI.root.addActorsOnStageUI()
+        rootConstraintLayout.addActorsOnRootConstraintLayout()
 
         Gdx.input.inputProcessor = inputMultiplexer.apply { addProcessors(this@AdvancedScreen, stageUI, stageBack) }
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
@@ -136,6 +152,7 @@ abstract class AdvancedScreen(
 
     open fun Group.addActorsOnStageBack() {}
     open fun Group.addActorsOnStageUI() {}
+    open fun AConstraintLayout.addActorsOnRootConstraintLayout() {}
 
     fun setBackBackground(region: TextureRegion) {
         backBackgroundImage.drawable = TextureRegionDrawable(region)

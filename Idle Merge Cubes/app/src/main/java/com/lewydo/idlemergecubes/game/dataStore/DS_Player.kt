@@ -110,35 +110,37 @@ class DS_Player(override val coroutine: CoroutineScope): DataStoreJsonUtil<Playe
     }
 
     private fun logPlayerInit(data: PlayerData) {
-
         log("""
-        
-        ╔══════════════════════════════╗
-        ║  PLAYER INIT
-        ╠══════════════════════════════╣
-        ║  XP: ${data.xp}
-        ║  Coins: ${data.coins}
-        ║  AdsRemoved: ${data.adsRemoved}
-        ╚══════════════════════════════╝
-    """.trimIndent())
+    
+    ╔══════════════════════════════╗
+    ║  PLAYER INIT
+    ╠══════════════════════════════╣
+    ║  XP:           ${data.xp}
+    ║  Coins:        ${data.coins}
+    ║  LastLogin:    ${data.lastLoginTime}
+    ║  AdsRemoved:   ${data.adsRemoved}
+    ║  TutorialStep: ${data.tutorialStep}
+    ╚══════════════════════════════╝
+""".trimIndent())
 
         logGridInBox("GRID STATE", data.grid)
     }
 
     private fun logPlayerUpdate(old: PlayerData, new: PlayerData) {
+        val changes = buildList {
+            if (old.xp           != new.xp)            add("XP:           ${old.xp} → ${new.xp}")
+            if (old.coins        != new.coins)         add("Coins:        ${old.coins} → ${new.coins}")
+            if (old.lastLoginTime!= new.lastLoginTime) add("LastLogin:    ${old.lastLoginTime} → ${new.lastLoginTime}")
+            if (old.adsRemoved   != new.adsRemoved)    add("AdsRemoved:   ${old.adsRemoved} → ${new.adsRemoved}")
+            if (old.tutorialStep != new.tutorialStep)  add("TutorialStep: ${old.tutorialStep} → ${new.tutorialStep}")
+        }
 
-        log("""
-        
-        ╔══════════════════════════════╗
-        ║  PLAYER UPDATE
-        ╠══════════════════════════════╣
-        ║  XP: ${old.xp} → ${new.xp}
-        ║  Coins: ${old.coins} → ${new.coins}
-        ║  AdsRemoved: ${old.adsRemoved} → ${new.adsRemoved}
-        ╚══════════════════════════════╝
-    """.trimIndent())
+        if (changes.isNotEmpty()) {
+            val body = changes.joinToString("\n") { "║  $it" }
+            log("\n╔══════════════════════════════╗\n║  PLAYER UPDATE\n╠══════════════════════════════╣\n$body\n╚══════════════════════════════╝")
+        }
 
-        logGridInBox("GRID STATE", new.grid)
+        if (old.grid != new.grid) logGridInBox("GRID UPDATE", new.grid)
     }
 
 }

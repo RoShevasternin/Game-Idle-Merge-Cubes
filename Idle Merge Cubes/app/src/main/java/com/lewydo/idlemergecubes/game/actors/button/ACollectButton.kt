@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
 import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoFont
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
@@ -45,7 +47,7 @@ class ACollectButton(
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aBtn           = AButton(screen, AButton.Type.COLLECT)
+    private val aBtn           = AButtonTexture(screen, AButtonStyles.COLLECT)
     private val aCenterImg     = Image(currentDataType.center)
     private val aGlareLeftImg  = Image(gdxGame.assetsAll.glare_collect_left)
     private val aGlareRightImg = Image(gdxGame.assetsAll.glare_collect_right)
@@ -98,7 +100,7 @@ class ACollectButton(
         aBtn.setOnClickListener(gdxGame.soundUtil.COLLECT) { blockClick.invoke() }
 
         val tmpPos = Vector2(x, y)
-        aBtn.touchDownBlock = { x, y ->
+        aBtn.onTouchDown = { x, y ->
             aBtn.localToStageCoordinates(tmpPos.set(x, y))
             collectEffectPool.spawn(parent = screen.stageUI.root, x = tmpPos.x, y = tmpPos.y) {
                 fitToSize(targetWidth = aBtn.width, baseWidth = BASE_WIDTH_EFFECT)

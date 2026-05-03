@@ -8,6 +8,7 @@ import com.lewydo.idlemergecubes.game.actors.panelGrid.ACubeLayer
 import com.lewydo.idlemergecubes.game.model.GridModel
 import com.lewydo.idlemergecubes.game.model.PlayerModel
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.tiktok.TikTokManager
 import kotlinx.coroutines.CoroutineScope
 
 class GridController(
@@ -165,6 +166,7 @@ class GridController(
         playerModel.addCoins(coins)
 
         cubeLayer.mergeCubes(from, to, targetPos, xp, coins) {
+            gdxGame.analytics.merge(newLevel)
             done()
         }
     }
@@ -190,6 +192,8 @@ class GridController(
         val bounds = Rectangle(cell.x, cell.y, cell.width, cell.height)
         attachCube(cubeLayer.spawnCube(index, cubeLvL, bounds))
 
+        gdxGame.analytics.buyCube(gdxGame.modelPlayer.buyPriceFlow.value)
+        TikTokManager.spendCredits()
         done()
     }
 

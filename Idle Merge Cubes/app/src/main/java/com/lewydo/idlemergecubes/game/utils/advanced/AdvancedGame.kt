@@ -30,6 +30,7 @@ open class AdvancedGame: ApplicationListener {
     }
 
     override fun dispose() {
+        screen?.hide()
         screen?.dispose()
     }
 
@@ -38,6 +39,7 @@ open class AdvancedGame: ApplicationListener {
     // ---------------------------------------------------
 
     fun updateScreen(screen: AdvancedScreen) {
+        this.screen?.hide()
         this.screen?.dispose()
         this.screen = screen.apply {
             resize(Gdx.graphics.width, Gdx.graphics.height)

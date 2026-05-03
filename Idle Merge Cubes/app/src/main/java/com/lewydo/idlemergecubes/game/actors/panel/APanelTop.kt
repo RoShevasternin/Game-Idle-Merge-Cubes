@@ -1,7 +1,8 @@
 package com.lewydo.idlemergecubes.game.actors.panel
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.lewydo.idlemergecubes.game.actors.button.AButton
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -13,7 +14,7 @@ class APanelTop(override val screen: AdvancedScreen): AdvancedGroup() {
     // Actors
     // ------------------------------------------------------------------------
     private val aPanelTopImg      = Image(gdxGame.assetsAll.PANEL_TOP)
-    private val aSettingsBtn      = AButton(screen, AButton.Type.SETTINGS)
+    private val aSettingsBtn      = AButtonTexture(screen, AButtonStyles.SETTINGS)
     private val aPanelBalanceCoin = APanelBalanceCoin(screen)
     private val aPanelLvL         = APanelLvL(screen)
 

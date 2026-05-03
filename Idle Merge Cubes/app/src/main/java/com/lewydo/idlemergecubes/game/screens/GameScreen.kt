@@ -1,14 +1,18 @@
 package com.lewydo.idlemergecubes.game.screens
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogLevelUp
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogOfflineReward
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
+import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
 import com.lewydo.idlemergecubes.game.actors.panelGrid.APanelGrid
 import com.lewydo.idlemergecubes.game.actors.panelIdle.APanelIdle
@@ -30,19 +34,22 @@ import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.runGDX
+import com.lewydo.idlemergecubes.tiktok.TikTokManager
 import kotlinx.coroutines.launch
 
 class GameScreen: AdvancedScreen() {
 
     companion object {
         private var IS_CHECK_OFFLINE_REWARD = true
+        private var IS_FPS_DEBUG = true
     }
 
-//    private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
-//    private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
+    private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
+    private val label = Label("FPS", Label.LabelStyle(font, Color.WHITE))
 
 
     // ------------------------------------------------------------------------
@@ -84,25 +91,28 @@ class GameScreen: AdvancedScreen() {
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun show() {
+        stageUI.root.color.a = 0f
+
         setBackBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
 
-//        stageUI.root.addActorWithConstraints(label) {
-//            topToTopOf = stageUI.root
-//            endToEndOf = stageUI.root
-//            marginTop  = 244f
-//            marginEnd  = 550f
-//        }
+        if (IS_FPS_DEBUG) {
+            rootConstraintLayout.add(label) {
+                endToEnd(margin = 550f)
+                topToTop(margin = 244f)
+            }
+        }
+
+        animShowScreen()
+
     }
 
-//    override fun render(delta: Float) {
-//        super.render(delta)
-//        label.setText("${Gdx.graphics.framesPerSecond} FPS")
-//    }
+    override fun render(delta: Float) {
+        super.render(delta)
+        if (IS_FPS_DEBUG) label.setText("${Gdx.graphics.framesPerSecond} FPS")
+    }
 
-    override fun Group.addActorsOnStageUI() {
-        color.a = 0f
-
+    override fun AConstraintLayout.addActorsOnRootConstraintLayout() {
         addPanelTop()
         addPanelGame()
         addPanelIdle()
@@ -117,8 +127,6 @@ class GameScreen: AdvancedScreen() {
         addDialogClearGrid()
         addDialogLevelUp()
         addDialogOfflineReward()
-
-        animShowScreen()
     }
 
     // ------------------------------------------------------------------------
@@ -138,9 +146,12 @@ class GameScreen: AdvancedScreen() {
     // Add Actors
     // ------------------------------------------------------------------------
 
-    private fun Group.addPanelTop() {
+    private fun AConstraintLayout.addPanelTop() {
         aPanelTop.setSize(2160f, 467f)
-        addActorAligned(aPanelTop, AlignH.CENTER, AlignV.TOP)
+        add(aPanelTop) {
+            centerX()
+            topToTop()
+        }
 
         aPanelTop.onClickSettingsBtn = { setState(StateDim.MENU) }
 
@@ -156,14 +167,11 @@ class GameScreen: AdvancedScreen() {
 //        }
     }
 
-    private fun Group.addPanelGame() {
+    private fun AConstraintLayout.addPanelGame() {
         aPanelGrid.setSize(1905f, 1905f)
-        addActorWithConstraints(aPanelGrid) {
-            startToStartOf = this@addPanelGame
-            endToEndOf     = this@addPanelGame
-            topToBottomOf  = aPanelTop
-
-            marginTop = 238f
+        add(aPanelGrid) {
+            centerX()
+            topToBottom(aPanelTop, 238f)
         }
     }
 
@@ -189,6 +197,8 @@ class GameScreen: AdvancedScreen() {
         }
 
         aBuyBtn.onClick = {
+            gdxGame.activity.adManager.banner.hide()
+
             aPanelGrid.buyCube()
             gdxGame.tutorialManager.onBuyDone()
         }
@@ -356,10 +366,12 @@ class GameScreen: AdvancedScreen() {
             aDialogOfflineReward.setDuration(result.duration.toDisplayString())
 
             aDialogOfflineReward.onCollect   = {
+                gdxGame.analytics.collectOffline(result.coins)
                 gdxGame.modelOfflineReward.collect(result)
                 setState(StateDim.NONE)
             }
             aDialogOfflineReward.onCollectX2 = {
+                gdxGame.analytics.collectOfflineX2(result.coins)
                 gdxGame.modelOfflineReward.collectX2(result)
                 setState(StateDim.NONE)
             }
@@ -382,15 +394,19 @@ class GameScreen: AdvancedScreen() {
                     previousLevel = newLevel
                     val reward = gdxGame.modelLevelUp.calculateReward(newLevel)
 
+                    TikTokManager.levelUp()
+
                     runGDX {
                         aDialogLevelUp.setLevel(newLevel)
                         aDialogLevelUp.setReward(reward)
 
                         aDialogLevelUp.onCollect = {
+                            gdxGame.analytics.levelUp(newLevel)
                             gdxGame.modelLevelUp.collect(newLevel)
                             setState(StateDim.NONE)
                         }
                         aDialogLevelUp.onCollectX2 = {
+                            gdxGame.analytics.levelUpX2(newLevel)
                             gdxGame.modelLevelUp.collectX2(newLevel)
                             setState(StateDim.NONE)
                         }

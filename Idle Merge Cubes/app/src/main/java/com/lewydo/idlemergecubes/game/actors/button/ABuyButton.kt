@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
 import com.lewydo.idlemergecubes.game.actors.label.ALabel
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
 import com.lewydo.idlemergecubes.game.actors.vfx.AHslImage
@@ -58,7 +60,7 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
     private val aBack = ATmpGroup(screen)
 
     private val aContent = ATmpGroup(screen)
-    private val aBuyBtn  = AButton(screen, AButton.Type.BUY)
+    private val aBuyBtn  = AButtonTexture(screen, AButtonStyles.BUY)
 
     private val aCubeGroup = ATmpGroup(screen)
     private val aCubeImg   = AHslImage(screen, gdxGame.assetsAll.cube_buy)
@@ -105,9 +107,10 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     private fun AdvancedGroup.addBuyBtn() {
         addAndFillActor(aBuyBtn)
-        aBuyBtn.isAnimState = false
+        // todo ----
+        //aBuyBtn.isAnimState = false
 
-        aBuyBtn.touchDownBlock = { x, y, ->
+        aBuyBtn.onTouchDown = { x, y, ->
             animClick(x, y)
 
             aCoinEffectPool.spawn(thisRoot, x, y) {

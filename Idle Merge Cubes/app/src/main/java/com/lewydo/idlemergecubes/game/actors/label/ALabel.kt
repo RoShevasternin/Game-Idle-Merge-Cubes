@@ -26,7 +26,7 @@ class ALabel(
 
     override fun addActorsOnGroup() {
         val pxPerUnit  = screen.scalerUItoScreen.toActual(1f).roundToInt().toFloat()
-        val sizePx     = (parameter.size * pxPerUnit).roundToInt()
+        val sizePx     = (parameter.size * pxPerUnit).roundToInt().coerceAtLeast(4)  // ← мінімум 4, захист від density=0
 
         // Отримуємо базовий шрифт з кешу (генерується тільки один раз)
         val cachedFont = generator.generateFont(parameter.copy().setSize(sizePx))

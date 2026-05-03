@@ -10,6 +10,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication
+import com.google.android.gms.ads.MobileAds
+import com.lewydo.idlemergecubes.ads.AdManager
 import com.lewydo.idlemergecubes.databinding.ActivityMainBinding
 import com.lewydo.idlemergecubes.util.OneTime
 import com.lewydo.idlemergecubes.util.log
@@ -34,6 +36,13 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
     private lateinit var binding : ActivityMainBinding
 
     val windowInsetsController by lazy { WindowCompat.getInsetsController(window, window.decorView) }
+
+    lateinit var adManager: AdManager
+        private set
+
+    // ------------------------------------------------------------------------
+    // Lifecycle
+    // ------------------------------------------------------------------------
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,9 +76,17 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
         }
     }
 
+    override fun onResume()  { super.onResume();  adManager.onResume() }
+    override fun onPause()   { super.onPause();   adManager.onPause() }
+    override fun onDestroy() { super.onDestroy(); adManager.onDestroy() }
+
     private fun initialize() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        initializeAds()
+
+        adManager.banner.show()
     }
 
     // ------------------------------------------------------------------------
@@ -113,6 +130,15 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
                 startActivity(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/dev?id=5953840215091948966".toUri()))
             }
         }
+    }
+
+    // ------------------------------------------------------------------------
+    // Ads
+    // ------------------------------------------------------------------------
+
+    private fun initializeAds() {
+        adManager = AdManager(this, binding)
+        adManager.initialize()
     }
 
 }

@@ -1,20 +1,30 @@
 plugins {
     id("com.android.application")
     id("kotlinx-serialization")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
     namespace = "com.lewydo.idlemergecubes"
-    compileSdk = 36
+    compileSdk {
+        version = release(36) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "com.lewydo.idlemergecubes"
         minSdk = 24
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.0.6"
+        versionCode = 12
+        versionName = "1.0.12"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Field ------------------------------------------------------------------------
+        buildConfigField("String", "TIKTOK_APP_SECRET", "\"TT0bEVmoSXeW766VqfhNHCEmDlGsUEfc\"")
+        buildConfigField("String", "TIKTOK_APP_ID", "\"7634158979790340116\"")
     }
 
     buildTypes {
@@ -22,48 +32,63 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            // Field ------------------------------------------------------------------------
+            manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+            buildConfigField("String", "ADMOB_BANNER_ID", "\"ca-app-pub-3940256099942544/9214589741\"")
+            //buildConfigField("String", "ADMOB_REWARDED_ID", "ca-app-pub-3940256099942544/5354046379")
         }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            // Field ------------------------------------------------------------------------
+            manifestPlaceholders["admobAppId"] = "ca-app-pub-4052300465234748~1065877728"
+            buildConfigField("String", "ADMOB_BANNER_ID", "\"ca-app-pub-4052300465234748/7968396645\"")
+            //buildConfigField("String", "ADMOB_REWARDED_ID", "\"твій_реальний_rewarded_id\"")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-        }
-    }
     sourceSets {
         getByName("main") {
-            jniLibs { srcDir("libs") }
-            res { srcDirs("src\\main\\res", "src\\main\\res\\launcher") }
+            jniLibs.directories.add("libs")
+            res.directories += setOf("src/main/res", "src/main/res/launcher")
         }
     }
     buildFeatures {
         viewBinding = true
         buildConfig = true
     }
+    packaging { jniLibs { useLegacyPackaging = true } }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
 }
 
 val natives: Configuration by configurations.creating
 
 dependencies {
+    // Test ------------------------------------------------------------------------
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
+    // AndroidX ------------------------------------------------------------------------
     implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.9.7")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.8")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
 
+    // LibGDX ------------------------------------------------------------------------
     val gdxVersion = "1.14.0"
     implementation("com.badlogicgames.gdx:gdx-backend-android:$gdxVersion")
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a")
@@ -76,8 +101,26 @@ dependencies {
     natives("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86")
     natives("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64")
 
+    // Other ------------------------------------------------------------------------
     implementation("space.earlygrey:shapedrawer:2.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
+
+    // TikTok
+    implementation("com.github.tiktok:tiktok-business-android-sdk:1.6.0")
+
+    // Install Referrer
+    implementation("com.android.installreferrer:installreferrer:2.2")
+
+    // Billing
+    implementation("com.android.billingclient:billing-ktx:8.3.0")
+
+    // AdMob
+    implementation("com.google.android.gms:play-services-ads:25.2.0")
 }
 
 tasks.register("copyAndroidNatives") {

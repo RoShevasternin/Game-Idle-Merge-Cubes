@@ -9,7 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.lewydo.idlemergecubes.game.actors.button.AButton
+import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonBase
 import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -81,12 +82,12 @@ fun Actor.getTopParent(root: Group): Group {
 // ------------------------------------------------------------------------
 
 fun Actor.disable() = when(this) {
-    is AButton -> disable()
+    is AButtonBase -> disable()
     else       -> touchable = Touchable.disabled
 }
 
 fun Actor.enable() = when(this) {
-    is AButton -> enable()
+    is AButtonBase -> enable()
     else       -> touchable = Touchable.enabled
 }
 

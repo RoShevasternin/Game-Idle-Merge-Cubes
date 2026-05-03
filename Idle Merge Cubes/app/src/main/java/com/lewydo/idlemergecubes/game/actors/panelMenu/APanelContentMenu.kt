@@ -1,7 +1,8 @@
 package com.lewydo.idlemergecubes.game.actors.panelMenu
 
 import com.lewydo.idlemergecubes.game.actors.AScrollPane
-import com.lewydo.idlemergecubes.game.actors.button.AButton
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.layout.linear.AVerticalGroup
 import com.lewydo.idlemergecubes.game.actors.panelMenu.settings.ASettingsSection
@@ -13,8 +14,8 @@ class APanelContentMenu(override val screen: AdvancedScreen) : AConstraintLayout
     // Actors aBottomVerticalGroup
     // ------------------------------------------------------------------------
     private val aBottomVerticalGroup = AVerticalGroup(screen, gap = 47f)
-    private val aResetGameBtn        = AButton(screen, AButton.Type.MENU_RESET_GAME)
-    private val aCloseBtn            = AButton(screen, AButton.Type.MENU_CLOSE)
+    private val aResetGameBtn        = AButtonTexture(screen, AButtonStyles.MENU_RESET_GAME)
+    private val aCloseBtn            = AButtonTexture(screen, AButtonStyles.MENU_CLOSE)
 
     // ------------------------------------------------------------------------
     // Actors aContentVerticalGroup

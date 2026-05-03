@@ -11,7 +11,15 @@ class FontGenerator(fontPath: FontPath): FreeTypeFontGenerator(Gdx.files.interna
     private val fontCache = mutableMapOf<String, BitmapFont>()
 
     override fun generateFont(parameter: FreeTypeFontParameter): BitmapFont {
-        val key  = buildCacheKey(parameter)
+        // захист від розміру < 4
+        if (parameter.size < 4) parameter.size = 4
+
+        // захист від відсутності великої літери
+        if (!parameter.characters.any { it in 'A'..'Z' }) {
+            parameter.characters += "A"
+        }
+
+        val key  = buildCacheKey(parameter)  // ← після модифікації
         val font = fontCache.getOrPut(key) { super.generateFont(parameter) }
 
         return font

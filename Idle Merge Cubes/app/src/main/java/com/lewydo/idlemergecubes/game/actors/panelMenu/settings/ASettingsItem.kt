@@ -3,7 +3,8 @@ package com.lewydo.idlemergecubes.game.actors.panelMenu.settings
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.lewydo.idlemergecubes.game.actors.checkbox.ACheckBox
+import com.lewydo.idlemergecubes.game.actors.checkbox.base.ACheckBox
+import com.lewydo.idlemergecubes.game.actors.checkbox.base.ACheckBoxStyles
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
@@ -19,10 +20,10 @@ class ASettingsItem(
 ) : AdvancedGroup() {
 
     private val currentItemData = listOf(
-        ItemData(gdxGame.assetsAll.icons_sound, "Sound"             , ACheckBox.Type.SOUND),
-        ItemData(gdxGame.assetsAll.icons_music, "Music"             , ACheckBox.Type.MUSIC),
-        ItemData(gdxGame.assetsAll.icons_vibro, "Vibration"         , ACheckBox.Type.VIBRO),
-        ItemData(gdxGame.assetsAll.icons_alarm, "Notifications"     , ACheckBox.Type.ALARM),
+        ItemData(gdxGame.assetsAll.icons_sound, "Sound"             , ACheckBoxStyles.SOUND),
+        ItemData(gdxGame.assetsAll.icons_music, "Music"             , ACheckBoxStyles.MUSIC),
+        ItemData(gdxGame.assetsAll.icons_vibro, "Vibration"         , ACheckBoxStyles.VIBRO),
+        ItemData(gdxGame.assetsAll.icons_alarm, "Notifications"     , ACheckBoxStyles.ALARM),
         ItemData(gdxGame.assetsAll.icons_info , "Who Made This Game", null),
     )[type.ordinal]
 
@@ -86,7 +87,7 @@ class ASettingsItem(
     data class ItemData(
         val icon    : TextureRegion?  = null,
         val title   : String          = "",
-        val boxType : ACheckBox.Type? = null,
+        val boxType : ACheckBox.Style? = null,
     )
 
     enum class Type {

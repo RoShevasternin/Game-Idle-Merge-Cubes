@@ -4,7 +4,8 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.game.actors.button.AButton
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.REMOVE_ADS_PRICE
@@ -18,7 +19,7 @@ import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-open class ARemoveAdsButton(override val screen: AdvancedScreen) : AButton(screen, Type.MENU_ITEM) {
+open class ARemoveAdsButton(override val screen: AdvancedScreen) : AButtonTexture(screen, AButtonStyles.MENU_ITEM) {
 
     private val textRemoveAds = "Remove Ads"
 

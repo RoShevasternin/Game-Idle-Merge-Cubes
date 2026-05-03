@@ -7,7 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.brand.ABrand
 import com.lewydo.idlemergecubes.game.actors.brand.ADescription
-import com.lewydo.idlemergecubes.game.actors.button.AButton
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
+import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
@@ -33,7 +35,7 @@ class WhoScreen: AdvancedScreen() {
     // Actors
     // ------------------------------------------------------------------------
 
-    private val aBackBtn      = AButton(this, AButton.Type.BACK)
+    private val aBackBtn      = AButtonTexture(this, AButtonStyles.BACK)
     private val aTitleLbl     = Label(textTitle, Label.LabelStyle(fontTitle, Color.WHITE))
     private val aBrand        = ABrand(this)
     private val aSeparatorImg = Image(gdxGame.assetsAll.separator)

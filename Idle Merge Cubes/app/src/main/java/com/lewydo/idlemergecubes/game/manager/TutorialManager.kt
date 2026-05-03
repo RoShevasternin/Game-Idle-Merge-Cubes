@@ -2,6 +2,7 @@ package com.lewydo.idlemergecubes.game.manager
 
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
+import com.lewydo.idlemergecubes.tiktok.TikTokManager
 import kotlinx.coroutines.CoroutineScope
 
 class TutorialManager(val coroutine: CoroutineScope) {
@@ -24,12 +25,15 @@ class TutorialManager(val coroutine: CoroutineScope) {
 
     fun onBuyDone() {
         if (localStep != Step.BUY) return
+        gdxGame.analytics.tutorialBegin()
         saveStep(Step.MERGE)
     }
 
     fun onMergeDone() {
         if (localStep != Step.MERGE) return
+        gdxGame.analytics.tutorialComplete()
         saveStep(Step.DONE)
+        TikTokManager.tutorialComplete()
     }
 
     fun onCubePositionChanged() {

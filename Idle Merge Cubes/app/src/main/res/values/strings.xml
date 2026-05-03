@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Idle Merge Cubes</string>
+
+    <!--AdMob-->
+
+    <!-- App ID
+        Test: ca-app-pub-3940256099942544~3347511713
+        Original: ca-app-pub-4052300465234748~1065877728
+    -->
+    <!-- Banner ID
+        Test: ca-app-pub-3940256099942544/9214589741
+        Original: ca-app-pub-4052300465234748/7968396645
+    -->
+
+<!--    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>-->
+<!--    <string name="admob_banner_id">ca-app-pub-3940256099942544/9214589741</string>-->
 </resources>
