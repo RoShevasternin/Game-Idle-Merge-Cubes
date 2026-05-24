@@ -5,48 +5,41 @@ import com.lewydo.idlemergecubes.game.utils.OFFLINE_MAX_SEC
 import com.lewydo.idlemergecubes.game.utils.OFFLINE_MIN_SEC
 import kotlin.math.min
 
-class OfflineRewardModel(
-    private val playerModel: PlayerModel,
-) {
+class OfflineRewardModel(private val playerModel: PlayerModel) {
 
-    companion object {
-        private const val MIN_OFFLINE_SEC = OFFLINE_MIN_SEC
-        private const val MAX_OFFLINE_SEC = OFFLINE_MAX_SEC
-    }
-
-    // =====================================================
-    // CALCULATE
-    // =====================================================
+    // ------------------------------------------------------------------------
+    // Calculate
+    // ------------------------------------------------------------------------
 
     fun calculate(): OfflineResult {
-        val now       = System.currentTimeMillis()
-        val lastLogin = playerModel.lastLoginTime
-
+        val now        = System.currentTimeMillis()
+        val lastLogin  = playerModel.lastLoginTime
         if (lastLogin == 0L) return OfflineResult.None
 
         val elapsedSec = (now - lastLogin) / 1000f
-        if (elapsedSec < MIN_OFFLINE_SEC) return OfflineResult.None
+        if (elapsedSec < OFFLINE_MIN_SEC) return OfflineResult.None
 
-        val clampedSec   = min(elapsedSec, MAX_OFFLINE_SEC)
-        val hours        = clampedSec / 3600f
-        val level        = playerModel.currentLevel
-        val buyPrice     = playerModel.currentBuyPrice
-        val cubesPerHour = 3f + level * 0.3f
-
-        // OFFLINE_EFFICIENCY обрізає щоб 8h ≈ стара 3h нагорода за максимум
-        val rawReward  = (hours * cubesPerHour * buyPrice * OFFLINE_EFFICIENCY).toLong()
-        val minReward  = buyPrice * 5
-        val finalReward = maxOf(rawReward, minReward)
+        val clampedSec = min(elapsedSec, OFFLINE_MAX_SEC)
 
         return OfflineResult.Reward(
-            coins    = finalReward,
-            duration = calcDuration(clampedSec),
+            coins    = calculateReward(clampedSec),
+            duration = toDuration(clampedSec),
         )
     }
 
-    // =====================================================
-    // COLLECT
-    // =====================================================
+    private fun calculateReward(elapsedSec: Float): Long {
+        val hours        = elapsedSec / 3600f
+        val level        = playerModel.currentLevel
+        val buyPrice     = playerModel.currentBuyPrice
+        val cubesPerHour = 3f + level * 0.3f
+        val rawReward    = (hours * cubesPerHour * buyPrice * OFFLINE_EFFICIENCY).toLong()
+        val minReward    = buyPrice * 5
+        return maxOf(rawReward, minReward)
+    }
+
+    // ------------------------------------------------------------------------
+    // Collect
+    // ------------------------------------------------------------------------
 
     fun collect(result: OfflineResult.Reward) {
         playerModel.addCoins(result.coins)
@@ -58,63 +51,46 @@ class OfflineRewardModel(
         saveLoginTime()
     }
 
-    // =====================================================
-    // SAVE LOGIN TIME — викликати при старті та паузі
-    // =====================================================
+    // ------------------------------------------------------------------------
+    // Login time
+    // ------------------------------------------------------------------------
 
     fun saveLoginTime() {
-        // ТЕСТ — закоментуй після перевірки
-        //val fiveHoursAgo = System.currentTimeMillis() - (30 * 1000L * 1000L)
-        //playerModel.updateLastLoginTime(fiveHoursAgo)
-
-        // РЕАЛЬНЕ — розкоментуй після тесту
         playerModel.updateLastLoginTime(System.currentTimeMillis())
     }
 
-    // =====================================================
-    // HELPERS
-    // =====================================================
+    // ------------------------------------------------------------------------
+    // Private
+    // ------------------------------------------------------------------------
 
-    private fun calcDuration(elapsedSec: Float): OfflineDuration {
+    private fun toDuration(elapsedSec: Float): OfflineDuration {
         val totalMin = (elapsedSec / 60).toInt()
-        val hours    = totalMin / 60
-        val minutes  = totalMin % 60
-        val seconds  = (elapsedSec % 60).toInt()
-
-        return OfflineDuration(hours, minutes, seconds)
+        return OfflineDuration(
+            hours   = totalMin / 60,
+            minutes = totalMin % 60,
+            seconds = (elapsedSec % 60).toInt(),
+        )
     }
 
-    // =====================================================
-    // RESULT
-    // =====================================================
+    // ------------------------------------------------------------------------
+    // Result
+    // ------------------------------------------------------------------------
 
     sealed class OfflineResult {
-
-        // Немає нагороди — не показуємо діалог
-        object None : OfflineResult()
-
-        // Є нагорода — показуємо діалог
-        data class Reward(
-            val coins   : Long,
-            val duration: OfflineDuration,
-        ) : OfflineResult()
+        data object None : OfflineResult()
+        data class Reward(val coins: Long, val duration: OfflineDuration) : OfflineResult()
     }
 
-    // =====================================================
-    // DURATION
-    // =====================================================
+    // ------------------------------------------------------------------------
+    // Duration
+    // ------------------------------------------------------------------------
 
-    data class OfflineDuration(
-        val hours  : Int,
-        val minutes: Int,
-        val seconds: Int,
-    ) {
-        // "3 HOURS" / "45 MINUTES" / "30 SECONDS" / "2 HOURS 15 MINUTES"
+    data class OfflineDuration(val hours: Int, val minutes: Int, val seconds: Int) {
+
         fun toDisplayString(): String {
-            val h = hours.toTimeString("HOUR", "HOURS")
-            val m = minutes.toTimeString("MINUTE", "MINUTES")
-            val s = seconds.toTimeString("SECOND", "SECONDS")
-
+            val h = hours.toLabel("HOUR", "HOURS")
+            val m = minutes.toLabel("MINUTE", "MINUTES")
+            val s = seconds.toLabel("SECOND", "SECONDS")
             return when {
                 hours > 0 && minutes > 0 -> "$h $m"
                 hours > 0                -> h
@@ -123,8 +99,7 @@ class OfflineRewardModel(
             }
         }
 
-        private fun Int.toTimeString(singular: String, plural: String): String {
-            return "$this ${if (this == 1) singular else plural}"
-        }
+        private fun Int.toLabel(singular: String, plural: String) =
+            "$this ${if (this == 1) singular else plural}"
     }
 }

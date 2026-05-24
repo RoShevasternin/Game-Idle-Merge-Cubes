@@ -1,15 +1,13 @@
 package com.lewydo.idlemergecubes.game.screens
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.game.actors.brand.ABrand
-import com.lewydo.idlemergecubes.game.actors.brand.ADescription
+import com.lewydo.idlemergecubes.game.actors.who_made.ABrand
+import com.lewydo.idlemergecubes.game.actors.who_made.ADescription
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
-import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
@@ -17,9 +15,9 @@ import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
-import com.lewydo.idlemergecubes.util.log
 
 class WhoScreen: AdvancedScreen() {
 
@@ -28,15 +26,14 @@ class WhoScreen: AdvancedScreen() {
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.ALL)
-    private val fontTitle = fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(160))
+    private val parameter = FontParameter().setCharacters(FontParameter.CharType.ALL).setSize(160)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
 
-    private val aBackBtn      = AButtonTexture(this, AButtonStyles.BACK)
-    private val aTitleLbl     = Label(textTitle, Label.LabelStyle(fontTitle, Color.WHITE))
+    private val aBackBtn      = AButtonTexture(this, AButtonStyles.Texture.BACK)
+    private val aTitleLbl     = Label(textTitle, FontFactory.create(this, parameter, fontGenerator_Nunito_SemiBold))
     private val aBrand        = ABrand(this)
     private val aSeparatorImg = Image(gdxGame.assetsAll.separator)
     private val aDescription  = ADescription(this)

@@ -1,80 +1,60 @@
 package com.lewydo.idlemergecubes.game.model
 
-import com.lewydo.idlemergecubes.game.dataStore.DS_Player
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.launch
+import com.lewydo.idlemergecubes.game.state.GameState
 
-class GridModel(
-    private val ds: DS_Player,
-    scope: CoroutineScope
-) {
+class GridModel(private val state: GameState) {
 
-    val gridFlow: StateFlow<List<Int>> =
-        ds.flow.map { it.grid }
-            .stateIn(
-                scope = scope,
-                started = SharingStarted.Eagerly,
-                initialValue = ds.flow.value.grid
-            )
+    // ------------------------------------------------------------------------
+    // Flow
+    // ------------------------------------------------------------------------
 
-    private val localGrid: MutableList<Int> = ds.flow.value.grid.toMutableList()
+    val gridFlow = state.gridFlow
 
-    fun syncLocalGrid(grid: List<Int>) {
-        localGrid.clear()
-        localGrid.addAll(grid)
-    }
+    // ------------------------------------------------------------------------
+    // Read
+    // ------------------------------------------------------------------------
 
-    fun getLevel(index: Int) = localGrid[index]
+    fun getLevel(index: Int) = state.gridFlow.value[index]
+    fun isEmpty(index: Int)  = state.gridFlow.value[index] == 0
+    fun hasEmptyCell()       = state.gridFlow.value.any { it == 0 }
+    fun totalPower()         = state.gridFlow.value.sum()
 
-    fun isEmpty(index: Int) = localGrid[index] == 0
-
-    fun hasEmptyCell() = localGrid.any { it == 0 }
-
-    fun totalPower() = localGrid.sum()
+    // ------------------------------------------------------------------------
+    // Write
+    // ------------------------------------------------------------------------
 
     fun addCube(level: Int): Int? {
-        val emptyIndex = localGrid.indexOfFirst { it == 0 }
-        if (emptyIndex == -1) return null
-
-        localGrid[emptyIndex] = level          // ← синхронно
-        ds.update { it.copy(grid = localGrid.toList()) }  // ← persist async
-
-        return emptyIndex
+        val grid  = state.gridFlow.value.toMutableList()
+        val index = grid.indexOfFirst { it == 0 }
+        if (index == -1) return null
+        grid[index] = level
+        state.gridFlow.value = grid
+        return index
     }
 
     fun move(from: Int, to: Int): Boolean {
-        if (localGrid[from] == 0) return false
-        if (localGrid[to]   != 0) return false
-
-        localGrid[to]   = localGrid[from]
-        localGrid[from] = 0
-        ds.update { it.copy(grid = localGrid.toList()) }
-
+        val grid = state.gridFlow.value
+        if (grid[from] == 0 || grid[to] != 0) return false
+        val new   = grid.toMutableList()
+        new[to]   = new[from]
+        new[from] = 0
+        state.gridFlow.value = new
         return true
     }
 
     fun tryMerge(from: Int, to: Int): Int? {
-        val fromLevel = localGrid[from]
-        val toLevel   = localGrid[to]
-
-        if (fromLevel == 0 || fromLevel != toLevel) return null
-
+        val grid      = state.gridFlow.value
+        val fromLevel = grid[from]
+        if (fromLevel == 0 || fromLevel != grid[to]) return null
+        val new      = grid.toMutableList()
         val newLevel = fromLevel + 1
-        localGrid[to]   = newLevel
-        localGrid[from] = 0
-        ds.update { it.copy(grid = localGrid.toList()) }
-
+        new[to]      = newLevel
+        new[from]    = 0
+        state.gridFlow.value = new
         return newLevel
     }
 
     fun clearGrid() {
-        localGrid.fill(0)
-        ds.update { it.copy(grid = List(16) { 0 }) }
+        state.gridFlow.value = List(16) { 0 }
     }
 }

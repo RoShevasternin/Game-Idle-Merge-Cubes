@@ -18,14 +18,16 @@ import com.lewydo.idlemergecubes.game.utils.CubeColorSystem
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
@@ -38,13 +40,21 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
     private val parameter = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "BUY")
         .setShadow(7, 7, GameColor.brown_8D3800)
         .setBorder(3f, GameColor.brown_8D3800)
+
+    private val parameterBuy   = parameter.copy().setSize(126)
+    private val parameterPrice = parameter.copy().setSize(113)
+
     private val parameterCube = FontParameter().setCharacters(FontParameter.CharType.NUMBERS)
         .setBorder(1.5f, GameColor.brown_8D3800)
         .setSize(67)
 
-    private val fontBuy   = screen.fontGenerator_Nunito_Black.generateFont(parameter.setSize(126))
-    private val fontPrice = screen.fontGenerator_Nunito_Black.generateFont(parameter.setSize(113))
-    //private val fontCube  = screen.fontGenerator_Nunito_Black.generateFont(parameterCube)
+    private val parameterUpgrade = FontParameter()
+        .setCharacters(FontParameter.CharType.NUMBERS.chars + "BUYupgraded!Lv.")
+        .setSize(90)
+        .setBorder(3f, GameColor.brown_8D3800)
+        .setShadow(6, 6, GameColor.brown_8D3800)
+
+    private val fontUpgrade = screen.fontGenerator_Nunito_Black.generateFont(parameterUpgrade)
 
     // ------------------------------------------------------------------------
     // Field
@@ -60,18 +70,19 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
     private val aBack = ATmpGroup(screen)
 
     private val aContent = ATmpGroup(screen)
-    private val aBuyBtn  = AButtonTexture(screen, AButtonStyles.BUY)
+    private val aBuyBtn  = AButtonTexture(screen, AButtonStyles.Texture.BUY)
 
     private val aCubeGroup = ATmpGroup(screen)
     private val aCubeImg   = AHslImage(screen, gdxGame.assetsAll.cube_buy)
-    private val aCubeLbl   = ALabel(screen, cubeLvl.toString(), Color.WHITE, parameterCube, screen.fontGenerator_Nunito_Black)
+    private val aCubeLbl   = Label(cubeLvl.toString(), FontFactory.create(screen, parameterCube, screen.fontGenerator_Nunito_Black))
 
-    private val aBuyLbl   = Label("BUY", Label.LabelStyle(fontBuy, Color.WHITE))
+    private val aBuyLbl   = Label("BUY", FontFactory.create(screen, parameterBuy, screen.fontGenerator_Nunito_Black))
     private val aCoinImg  = Image(gdxGame.assetsAll.coin_with_border)
-    private val aPriceLbl = Label("0", Label.LabelStyle(fontPrice, Color.WHITE))
+    private val aPriceLbl = Label("0", FontFactory.create(screen, parameterPrice, screen.fontGenerator_Nunito_Black))
 
-    private val aCoinEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.BUY)
-    private val aStarEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.STAR)
+    private val aCoinEffectPool        = AParticleEffectPool(gdxGame.particleEffectAll.BUY)
+    private val aStarEffectPool        = AParticleEffectPool(gdxGame.particleEffectAll.STAR)
+    private val aWaveUpgradeEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.WAVE_UPGRADE)
 
     // ------------------------------------------------------------------------
     // Callback
@@ -98,7 +109,7 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
         }
 
         collectBuyState()
-        startIdleAnim()
+        animIdle()
     }
 
     // ------------------------------------------------------------------------
@@ -107,8 +118,6 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     private fun AdvancedGroup.addBuyBtn() {
         addAndFillActor(aBuyBtn)
-        // todo ----
-        //aBuyBtn.isAnimState = false
 
         aBuyBtn.onTouchDown = { x, y, ->
             animClick(x, y)
@@ -162,37 +171,58 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
     // Collect
     // ------------------------------------------------------------------------
 
+    // В collectBuyState() — додати два нових launch
     private fun collectBuyState() {
         coroutine?.launch {
-            combine(
-                gdxGame.modelPlayer.coinsFlow,
-                gdxGame.modelPlayer.buyPriceFlow,
-                gdxGame.modelGrid.gridFlow
-            ) { coins, price, grid ->
 
-                val hasMoney = coins >= price
-                val hasSpace = grid.any { it == 0 }
-
-                Triple(price, hasMoney, hasSpace)
-            }.collect { (price, hasMoney, hasSpace) ->
+            // Існуючий — ціна і стан кнопки
+            launch {
+                combine(
+                    gdxGame.modelPlayer.coinsFlow,
+                    gdxGame.modelPlayer.buyPriceFlow,
+                    gdxGame.modelGrid.gridFlow
+                ) { coins, price, grid ->
+                    Triple(price, coins >= price, grid.any { it == 0 })
+                }.collect { (price, hasMoney, hasSpace) ->
                     runGDX {
-                        // оновлюємо ціну
                         aPriceLbl.setText(NumberFormatter.format(price))
-
-                        // стан кнопки
                         if (hasMoney && hasSpace) enable() else disable()
                     }
                 }
+            }
+
+            // Оновлюємо рівень куба на кнопці
+            launch {
+                gdxGame.modelBuyLevel.buyLevelFlow.collect { level ->
+                    runGDX { updateCubeLevel(level) }
+                }
+            }
+
+            // Анімація апгрейду
+            launch {
+                GlobalEvents.events
+                    .filter { it == GlobalEvents.EventType.BUY_LEVEL_UPGRADED }
+                    .collect {
+                        runGDX {
+                            animBuyUpgrade(gdxGame.modelBuyLevel.currentBuyLevel)
+
+                            aWaveUpgradeEffectPool.spawn(aContent, thisRoot.width / 2f, thisRoot.height / 2f) {
+                                fitToSize(targetWidth = thisRoot.width, baseWidth = BASE_WIDTH_EFFECT)
+                            }
+                        }
+                    }
+            }
         }
     }
 
     // ------------------------------------------------------------------------
-    // Idle — moveBy від (0,0) завжди безпечний
+    // Animations
     // ------------------------------------------------------------------------
 
-    private fun startIdleAnim() {
+    private fun animIdle() {
         aContent.clearActions()
-        aContent.addAction(Actions.forever(Actions.sequence(
+        aContent.addAction(Actions.forever(
+                Actions.sequence(
             Actions.parallel(
                 Actions.moveBy(0f, 35f, 1.1f, Interpolation.sine),
                 Actions.scaleTo(1.04f, 1.04f, 1.1f, Interpolation.sine),
@@ -204,10 +234,6 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
         )))
     }
 
-    // ------------------------------------------------------------------------
-    // Click — moveTo(0,0) завжди повертає точно на місце
-    // ------------------------------------------------------------------------
-
     fun animClick(x: Float, y: Float) {
         val normalizedX = ((x / width) - 0.5f) * 2f
         val tiltAngle   = (normalizedX * 2.5f).coerceIn(-2f, 2f)
@@ -217,7 +243,8 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
         aContent.originY = height * 0.5f
 
         aContent.clearActions()
-        aContent.addAction(Actions.sequence(
+        aContent.addAction(
+            Actions.sequence(
             Actions.parallel(
                 Actions.moveBy(pushX, -12f, 0.09f, Interpolation.sine),
                 Actions.scaleTo(1.03f, 0.93f, 0.09f, Interpolation.sine),
@@ -235,9 +262,61 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
             ),
             Actions.run {
                 aContent.setOrigin(Align.center)
-                startIdleAnim()
+                animIdle()
             }
         ))
+    }
+
+    private fun animBuyUpgrade(newLevel: Int) {
+        val lbl = ALabel(screen, "BUY upgraded! Lv.$newLevel", Label.LabelStyle(fontUpgrade, Color.GOLD))
+        lbl.pack()
+        lbl.setOrigin(Align.center)
+        lbl.setPosition((width - lbl.width) / 2f, height)
+        lbl.setScale(0f)
+        lbl.color.a = 0f
+        addActor(lbl)
+
+        lbl.addAction(Actions.sequence(
+            // Поява — повільніше і плавніше
+            Actions.parallel(
+                Actions.scaleTo(1f, 1f, 0.4f, Interpolation.swingOut),
+                Actions.fadeIn(0.35f),
+            ),
+            // Підлітає вгору і зависає
+            Actions.parallel(
+                Actions.moveBy(0f, 100f, 1.6f, Interpolation.sineOut),
+            ),
+            // Зависає — пауза щоб юзер встиг прочитати
+            Actions.delay(0.8f),
+            // Набирає силу — стискається і опускається
+            Actions.parallel(
+                Actions.scaleTo(1.2f, 0.8f, 0.22f, Interpolation.sineIn),
+                Actions.moveBy(0f, -20f, 0.22f, Interpolation.sineIn),
+            ),
+            // Імпульс вгору — плавніше зникнення
+            Actions.parallel(
+                Actions.moveBy(0f, 150f, 0.6f, Interpolation.sineIn),
+                Actions.scaleTo(0.7f, 1.2f, 0.18f, Interpolation.sineOut),
+                Actions.sequence(
+                    Actions.delay(0.15f),
+                    Actions.scaleTo(0f, 0f, 0.4f, Interpolation.sineIn),
+                ),
+                Actions.sequence(
+                    Actions.delay(0.1f),
+                    Actions.fadeOut(0.5f, Interpolation.sineIn),
+                ),
+            ),
+            Actions.run { lbl.remove() }
+        ))
+    }
+
+    // ------------------------------------------------------------------------
+    // Logic
+    // ------------------------------------------------------------------------
+    private fun updateCubeLevel(level: Int) {
+        cubeLvl = level
+        aCubeLbl.setText(level.toString())
+        aCubeImg.setColorShader(CubeColorSystem.getCubeColor(level))
     }
 
     // ------------------------------------------------------------------------
@@ -247,7 +326,7 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
     fun enable() {
         if (touchable == Touchable.enabled) return
         touchable = Touchable.enabled
-        startIdleAnim()
+        animIdle()
 
         aBuyBtn.enable()
     }
@@ -257,7 +336,8 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
         touchable = Touchable.disabled
 
         aContent.clearActions()
-        aContent.addAction(Actions.parallel(
+        aContent.addAction(
+            Actions.parallel(
             Actions.moveTo(0f, 0f, 0.15f, Interpolation.sineOut),
             Actions.scaleTo(1f, 1f, 0.15f, Interpolation.sineOut),
             Actions.rotateTo(0f, 0.15f, Interpolation.sineOut),

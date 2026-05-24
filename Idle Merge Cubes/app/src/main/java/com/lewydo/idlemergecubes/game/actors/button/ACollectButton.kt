@@ -7,7 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
-import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoFont
+import com.lewydo.idlemergecubes.game.actors.label.ALabel
+import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoSize
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
@@ -18,6 +19,7 @@ import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -41,13 +43,13 @@ class ACollectButton(
         .setBorder(2f, currentDataType.colorBorder)
         .setShadow(7, 5, currentDataType.colorShadow)
 
-    private val fontTitle  = screen.fontGenerator_Nunito_Black.generateFont(parameter.setSize(90))
-    private val fontReward = screen.fontGenerator_Nunito_Black.generateFont(parameter.setSize(80))
+    private val parameterTitle  = parameter.copy().setSize(90)
+    private val parameterReward = parameter.copy().setSize(80)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aBtn           = AButtonTexture(screen, AButtonStyles.COLLECT)
+    private val aBtn           = AButtonTexture(screen, AButtonStyles.Texture.COLLECT)
     private val aCenterImg     = Image(currentDataType.center)
     private val aGlareLeftImg  = Image(gdxGame.assetsAll.glare_collect_left)
     private val aGlareRightImg = Image(gdxGame.assetsAll.glare_collect_right)
@@ -60,17 +62,17 @@ class ACollectButton(
     )
 
     private val aIconImg   = Image(currentDataType.icon)
-    private val aTitleLbl  = ALabelAutoFont(
+    private val aTitleLbl  = ALabelAutoSize(
         screen       = screen,
         text         = currentDataType.title,
-        labelStyle   = Label.LabelStyle(fontTitle, Color.WHITE),
-        fitMode      = ALabelAutoFont.FitMode.HEIGHT,
+        labelStyle   = FontFactory.create(screen, parameterTitle, screen.fontGenerator_Nunito_Black),
+        fitMode      = ALabelAutoSize.FitMode.HEIGHT,
         isWrapWidth  = true
     )
-    private val aRewardLbl = ALabelAutoFont(
+    private val aRewardLbl = ALabelAutoSize(
         screen       = screen,
-        labelStyle   = Label.LabelStyle(fontReward, Color.WHITE),
-        fitMode      = ALabelAutoFont.FitMode.HEIGHT,
+        labelStyle   = FontFactory.create(screen, parameterReward, screen.fontGenerator_Nunito_Black),
+        fitMode      = ALabelAutoSize.FitMode.HEIGHT,
         isWrapWidth  = true
     )
 
@@ -155,11 +157,13 @@ class ACollectButton(
     }
 
     private fun AHorizontalGroup.addTitleLbl() {
+        aTitleLbl.width  = 1f
         aTitleLbl.height = this.height * 0.53f // 53%
         addActor(aTitleLbl)
     }
 
     private fun AHorizontalGroup.addRewardLbl() {
+        aTitleLbl.width   = 1f
         aRewardLbl.height = this.height * 0.48f // 48%
         addActor(aRewardLbl)
     }

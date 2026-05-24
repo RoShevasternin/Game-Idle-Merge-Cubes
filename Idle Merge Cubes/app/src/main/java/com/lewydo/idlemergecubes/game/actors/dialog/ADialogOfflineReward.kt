@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ACircleStrokeFill
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectActor
 import com.lewydo.idlemergecubes.game.actors.button.ACollectButton
+import com.lewydo.idlemergecubes.game.actors.label.ALabel
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.vfx.AMask
@@ -19,6 +20,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -33,9 +35,9 @@ class ADialogOfflineReward(override val screen: AdvancedScreen): AdvancedGroup()
     // Font
     // ------------------------------------------------------------------------
 
-    private val parameter    = FontParameter().setCharacters(FontParameter.CharType.ALL)
-    private val fontTitle    = screen.fontGenerator_Nunito_ExtraBold.generateFont(parameter.setSize(140).setShadow(7, 7, GameColor.brown_683E03))
-    private val fontSubTitle = screen.fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(80).setShadow(0, 0, Color.BLACK))
+    private val parameter         = FontParameter().setCharacters(FontParameter.CharType.ALL)
+    private val parameterTitle    = parameter.copy().setSize(140).setShadow(7, 7, GameColor.brown_683E03)
+    private val parameterSubTitle = parameter.copy().setSize(80).setShadow(0, 0, Color.BLACK)
 
     // ------------------------------------------------------------------------
     // Actors
@@ -45,8 +47,8 @@ class ADialogOfflineReward(override val screen: AdvancedScreen): AdvancedGroup()
     private val aCollectX2Btn = ACollectButton(screen, ACollectButton.Type.COLLECT_X2)
 
     private val aCircleStrokeFill = ACircleStrokeFill(screen)
-    private val aTitleLbl         = Label(textTitle, Label.LabelStyle(fontTitle, Color.WHITE))
-    private val aSubTitleLbl      = Label(textSubTitle, Label.LabelStyle(fontSubTitle, Color.WHITE))
+    private val aTitleLbl         = Label(textTitle, FontFactory.create(screen, parameterTitle, screen.fontGenerator_Nunito_ExtraBold))
+    private val aSubTitleLbl      = Label(textSubTitle, FontFactory.create(screen, parameterSubTitle, screen.fontGenerator_Nunito_SemiBold))
 
     private val aMask           = AMask(screen, gdxGame.assetsAll.MASK_DIALOG_OFFLINE)
     private val aEffectConfetti = AParticleEffectActor(ParticleEffect(gdxGame.particleEffectAll.CONFETTI))

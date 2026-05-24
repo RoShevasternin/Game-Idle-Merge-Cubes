@@ -62,20 +62,22 @@ class AProgressIdle(override val screen: AdvancedScreen): AdvancedGroup() {
         aLavaProgress.reset()
     }
 
-    // ------------------------------------------------------------------------
-    // Animations
-    // ------------------------------------------------------------------------
+    fun setProgress(pct: Float) {
+        aLavaProgress.clearActions()  // ← чистимо саме aLavaProgress де живе onFinished
 
-    fun startFill(seconds: Float) {
-        toStart()
+        val targetX = (pct * aLavaProgress.parent.width) - aLavaProgress.width
+        aLavaProgress.addAction(
+            Actions.moveTo(targetX.coerceAtLeast(-aLavaProgress.width), 0f, 0.5f, Interpolation.sineOut)
+        )
 
-        aLavaProgress.addAction(Actions.sequence(
-            Actions.moveTo(0f, 0f, seconds, Interpolation.linear),
-            Actions.run {
-                aLavaProgress.finish()
-                onFinished.invoke()
-            }
-        ))
+        if (pct >= 1f) {
+            aLavaProgress.addAction(
+                Actions.sequence(
+                    Actions.moveTo(0f, 0f, 0.3f, Interpolation.sineOut),
+                    Actions.run { onFinished.invoke() }
+                )
+            )
+        }
     }
 
 }

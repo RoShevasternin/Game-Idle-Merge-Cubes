@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.label.ALabel
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -19,17 +20,14 @@ class APanelTopMenu(override val screen: AdvancedScreen): AdvancedGroup() {
     // Font
     // ------------------------------------------------------------------------
 
-    private val parameter = FontParameter()
-
-    private val parameterTitle = parameter.setCharacters(textTitle).setSize(160)
-    private val fontTitle      = screen.fontGenerator_Nunito_Bold.generateFont(parameterTitle)
+    private val parameter = FontParameter().setCharacters(textTitle).setSize(160)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
 
     private val aPanelMenuImg = Image(gdxGame.assetsAll.PANEL_MENU)
-    private val aTitleLbl     = Label(textTitle, Label.LabelStyle(fontTitle, Color.WHITE))
+    private val aTitleLbl     = Label(textTitle, FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Bold))
 
     // ------------------------------------------------------------------------
     // Lifecycle

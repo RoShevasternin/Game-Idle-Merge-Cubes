@@ -6,12 +6,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogLevelUp
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogOfflineReward
-import com.lewydo.idlemergecubes.game.actors.layout.AlignH
-import com.lewydo.idlemergecubes.game.actors.layout.AlignV
+import com.lewydo.idlemergecubes.game.actors.hint.ABuyHint
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
 import com.lewydo.idlemergecubes.game.actors.panelGrid.APanelGrid
@@ -23,8 +23,6 @@ import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
-import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
-import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
@@ -38,14 +36,14 @@ import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.runGDX
-import com.lewydo.idlemergecubes.tiktok.TikTokManager
+import com.lewydo.idlemergecubes.services.tiktok.TikTokManager
 import kotlinx.coroutines.launch
 
 class GameScreen: AdvancedScreen() {
 
     companion object {
         private var IS_CHECK_OFFLINE_REWARD = true
-        private var IS_FPS_DEBUG = true
+        private var IS_FPS_DEBUG = BuildConfig.DEBUG
     }
 
     private val font  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
@@ -56,20 +54,21 @@ class GameScreen: AdvancedScreen() {
     // Actors
     // ------------------------------------------------------------------------
 
-    private val aPanelTop  = APanelTop(this)
-    private val aPanelGrid = APanelGrid(this)
-    private val aPanelIdle = APanelIdle(this)
+    private val aPanelTop  by lazy { APanelTop(this) }
+    private val aPanelGrid by lazy { APanelGrid(this) }
+    private val aPanelIdle by lazy { APanelIdle(this) }
 
-    private val aBuyBtn = ABuyButton(this)
+    private val aBuyBtn  by lazy { ABuyButton(this) }
+    private val aBuyHint by lazy { ABuyHint(this) }
 
-    private val aDimImg    = Image(drawerUtil.getTexture(GameColor.black_55))
+    private val aDimImg = Image(drawerUtil.getTexture(GameColor.black_55))
     //private val aBackBlur  = ABlurBack(this@GameScreen)
 
-    private val aPanelMenu = APanelMenu(this)
+    private val aPanelMenu by lazy { APanelMenu(this) }
 
-    private val aDialogClearGrid     = ADialogClearGrid(this)
-    private val aDialogOfflineReward = ADialogOfflineReward(this)
-    private val aDialogLevelUp       = ADialogLevelUp(this)
+    private val aDialogClearGrid     by lazy { ADialogClearGrid(this) }
+    private val aDialogOfflineReward by lazy { ADialogOfflineReward(this) }
+    private val aDialogLevelUp       by lazy { ADialogLevelUp(this) }
 
     // поле — lazy бо не треба якщо вже пройдений
     private val aTutorial by lazy { ATutorial(this) }
@@ -117,6 +116,7 @@ class GameScreen: AdvancedScreen() {
         addPanelGame()
         addPanelIdle()
         addBuyBtn()
+        addBuyHint()
 
         aPanelTop.toFront()
         addTutorial()
@@ -173,31 +173,36 @@ class GameScreen: AdvancedScreen() {
             centerX()
             topToBottom(aPanelTop, 238f)
         }
+
+        aPanelGrid.onMergeExecuted = { isEnchanted ->
+            gdxGame.modelMergeBonus.onMerge(isEnchanted)
+        }
     }
 
-    private fun Group.addPanelIdle() {
+    private fun AConstraintLayout.addPanelIdle() {
         aPanelIdle.setSize(1905f, 428f)
-        addActorWithConstraints(aPanelIdle) {
-            startToStartOf = this@addPanelIdle
-            endToEndOf     = this@addPanelIdle
-            topToBottomOf  = aPanelGrid
-
-            marginTop = 151f
+        add(aPanelIdle) {
+            centerX()
+            topToBottom(aPanelGrid, 151f)
         }
     }
 
-    private fun Group.addBuyBtn() {
+    private fun AConstraintLayout.addBuyBtn() {
         aBuyBtn.setSize(1905f, 386f)
-        addActorWithConstraints(aBuyBtn) {
-            startToStartOf   = this@addBuyBtn
-            endToEndOf       = this@addBuyBtn
-            bottomToBottomOf = this@addBuyBtn
-
-            marginBottom = 200f
+        add(aBuyBtn) {
+            centerX()
+            bottomToBottom(margin = 200f)
         }
 
+//      var flag = true
         aBuyBtn.onClick = {
-            gdxGame.activity.adManager.banner.hide()
+//            if (flag) {
+//                flag = false
+//                gdxGame.activity.adManager.banner.hide()
+//            } else {
+//                flag = true
+//                gdxGame.activity.adManager.banner.show()
+//            }
 
             aPanelGrid.buyCube()
             gdxGame.tutorialManager.onBuyDone()
@@ -205,14 +210,19 @@ class GameScreen: AdvancedScreen() {
 
     }
 
-    private fun Group.addPanelMenu() {
+    private fun AConstraintLayout.addBuyHint() {
+        aBuyHint.setSize(1864f, 61f)
+        add(aBuyHint) {
+            startToStart(aBuyBtn); endToEnd(aBuyBtn)
+            topToBottom(aBuyBtn, margin = 16f)
+        }
+
+    }
+
+    private fun AConstraintLayout.addPanelMenu() {
         aPanelMenu.disable()
         aPanelMenu.setSize(WIDTH_UI, 2738f)
-        addActorWithConstraints(aPanelMenu) {
-            startToStartOf   = this@addPanelMenu
-            endToEndOf       = this@addPanelMenu
-            bottomToBottomOf = this@addPanelMenu
-        }
+        add(aPanelMenu) { centerX() }
 
         aPanelMenu.y = -aPanelMenu.height
 
@@ -220,22 +230,22 @@ class GameScreen: AdvancedScreen() {
         aPanelMenu.blockClearGrid = { setState(StateDim.DIALOG_CLEAR_GRID) }
     }
 
-    private fun Group.addDimImg() {
+    private fun AConstraintLayout.addDimImg() {
         //aBackBlur.animHideAndDisable()
         //aBackBlur.isStaticEffect = true
         //aBackBlur.radiusBlur     = 0f
         //addAndFillActor(aBackBlur)
 
         aDimImg.animHideAndDisable()
-        addAndFillActor(aDimImg)
+        add(aDimImg) { fillParent() }
 
         aDimImg.setOnClickListener(null) { if (isClosableDim) setState(StateDim.NONE) }
     }
 
-    private fun Group.addDialogClearGrid() {
+    private fun AConstraintLayout.addDialogClearGrid() {
         aDialogClearGrid.animHideAndDisable()
         aDialogClearGrid.setSize(1433f, 635f)
-        addActorAligned(aDialogClearGrid, AlignH.CENTER, AlignV.CENTER)
+        add(aDialogClearGrid) { center() }
 
         aDialogClearGrid.blockYes = {
             aPanelGrid.resetGrid()
@@ -247,10 +257,10 @@ class GameScreen: AdvancedScreen() {
 
     }
 
-    private fun Group.addDialogOfflineReward() {
+    private fun AConstraintLayout.addDialogOfflineReward() {
         aDialogOfflineReward.animHideAndDisable()
         aDialogOfflineReward.setSize(1908f, 2333f)
-        addActorAligned(aDialogOfflineReward, AlignH.CENTER, AlignV.CENTER)
+        add(aDialogOfflineReward) { center() }
 
         if (IS_CHECK_OFFLINE_REWARD) {
             IS_CHECK_OFFLINE_REWARD = false
@@ -258,15 +268,14 @@ class GameScreen: AdvancedScreen() {
         }
     }
 
-    private fun Group.addDialogLevelUp() {
+    private fun AConstraintLayout.addDialogLevelUp() {
         aDialogLevelUp.animHideAndDisable()
         aDialogLevelUp.setSize(1908f, 2333f)
-        addActorAligned(aDialogLevelUp, AlignH.CENTER, AlignV.CENTER)
+        add(aDialogLevelUp) { center() }
 
         collectLevelUp()
     }
 
-    // новий метод:
     private fun Group.addTutorial() {
         if (gdxGame.tutorialManager.isDone) return
 

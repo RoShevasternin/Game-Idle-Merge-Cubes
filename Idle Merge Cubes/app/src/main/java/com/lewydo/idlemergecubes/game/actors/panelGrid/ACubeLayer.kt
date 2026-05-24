@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.label.AFlyingLabel
+import com.lewydo.idlemergecubes.game.actors.label.ALabel
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
@@ -14,10 +15,9 @@ import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
-import com.lewydo.idlemergecubes.util.OneTime
-import com.lewydo.idlemergecubes.util.log
 
 class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
 
@@ -27,7 +27,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
     // Font
     // ------------------------------------------------------------------------
 
-    private val parameter = FontParameter()
+    private val parameterCube = FontParameter()
         .setCharacters(FontParameter.CharType.NUMBERS.chars)
         .setSize(264)
         .setBorder(3f, GameColor.brown_8D3800)
@@ -39,10 +39,9 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
         .setBorder(5f, GameColor.purple_350080)
         .setShadow(6, 6, GameColor.purple_350080)
 
-    private val font            = screen.fontGenerator_Nunito_Bold.generateFont(parameter)
     private val fontFlyingLabel = screen.fontGenerator_Nunito_Black.generateFont(parameterFlyingLabel)
 
-    private val lsCube = Label.LabelStyle(font, Color.WHITE)
+    private val labelStyleCube = FontFactory.create(screen, parameterCube, screen.fontGenerator_Nunito_Bold)
 
     // ------------------------------------------------------------------------
     // Storage
@@ -77,7 +76,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
     // ------------------------------------------------------------------------
 
     fun spawnCube(index: Int, level: Int, cellBounds: Rectangle): ACube {
-        val cube = ACube(screen, index, level, lsCube)
+        val cube = ACube(screen, index, level, labelStyleCube)
 
         cube.setBounds(
             cellBounds.x + offsetX,
@@ -187,6 +186,14 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
         cubes.clear()
     }
 
+    // Апгрейд кубів після підвищення рівня BUY
+    // ACube.setLevel() вже містить animUpgrade() — нічого додаткового не треба
+    fun upgradeCubes(indices: List<Int>, newLevel: Int) {
+        indices.forEach { index ->
+            cubes[index]?.setLevel(newLevel)
+        }
+    }
+
     // ------------------------------------------------------------------------
     // Merge effect
     // ------------------------------------------------------------------------
@@ -271,7 +278,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
                 text   = "+$coins",
                 style  = style,
                 to     = GlobalStagePositions.get(GlobalStagePositions.Position.COIN),
-                side   = AFlyingLabel.Side.Left,
+                type   = AFlyingLabel.Type.COIN,
                 onEnd  = { GlobalEvents.emit(GlobalEvents.EventType.END_FLY_COIN) }
             ).also { it.setBounds(from, size) }
         )
@@ -282,7 +289,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
                 text   = "+$xp XP",
                 style  = style,
                 to     = GlobalStagePositions.get(GlobalStagePositions.Position.XP),
-                side   = AFlyingLabel.Side.Right,
+                type   = AFlyingLabel.Type.XP,
                 onEnd  = { GlobalEvents.emit(GlobalEvents.EventType.END_FLY_XP) }
             ).also { it.setBounds(from, size) }
         )

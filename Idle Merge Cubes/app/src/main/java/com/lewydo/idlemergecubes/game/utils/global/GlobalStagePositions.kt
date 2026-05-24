@@ -12,5 +12,5 @@ object GlobalStagePositions {
         positionMap[position.ordinal].set(x, y)
     }
 
-    fun get(position: Position): Vector2 = positionMap[position.ordinal]
+    fun get(position: Position): Vector2 = positionMap[position.ordinal].cpy()
 }

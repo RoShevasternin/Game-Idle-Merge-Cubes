@@ -3,7 +3,6 @@ package com.lewydo.idlemergecubes.game.actors.button.base
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActors
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -20,9 +19,9 @@ open class AButtonTexture(
         val disabled: Drawable = default,
     )
 
-    private val defaultImage  = Image(style.default)
-    private val pressedImage  = Image(style.pressed).apply  { color.a = 0f }
-    private val disabledImage = Image(style.disabled).apply { color.a = 0f }
+    val defaultImage  = Image(style.default)
+    val pressedImage  = Image(style.pressed).apply  { color.a = 0f }
+    val disabledImage = Image(style.disabled).apply { color.a = 0f }
 
     override fun addActorsOnGroup() {
         addAndFillActors(listOf(defaultImage, pressedImage, disabledImage))

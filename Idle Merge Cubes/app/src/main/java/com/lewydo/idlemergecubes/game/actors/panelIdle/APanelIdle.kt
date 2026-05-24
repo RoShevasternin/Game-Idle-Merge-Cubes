@@ -13,22 +13,19 @@ import com.lewydo.idlemergecubes.game.utils.IDLE_CYCLE_SECONDS
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
-import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
-import com.lewydo.idlemergecubes.game.utils.actor.disable
-import com.lewydo.idlemergecubes.game.utils.actor.enable
 import com.lewydo.idlemergecubes.game.utils.actor.setPosition
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
-import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
@@ -44,7 +41,7 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
         Color(0.96f, 0.42f, 0.71f, 1f), // #F472B6 рожевий
     )
 
-    private val textIdleIncome = "IDLE INCOME"
+    private val textTitle = "MERGE BONUS"
 
     private val BASE_WIDTH_EFFECT = 1047f
 
@@ -52,15 +49,15 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
     // Font
     // ------------------------------------------------------------------------
 
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "," + textIdleIncome)
-    private val fontTitle = screen.fontGenerator_Nunito_Bold.generateFont(parameter.setSize(72))
-    private val fontCoins = screen.fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(64))
+    private val parameter      = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "," + textTitle)
+    private val parameterTitle = parameter.copy().setSize(72)
+    private val parameterCoins = parameter.copy().setSize(64)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aTitleLbl = Label(textIdleIncome, Label.LabelStyle(fontTitle, Color.WHITE))
-    private val aCoinLbl  = Label("0", Label.LabelStyle(fontCoins, Color.WHITE))
+    private val aTitleLbl = Label(textTitle, FontFactory.create(screen, parameterTitle, screen.fontGenerator_Nunito_Bold))
+    private val aCoinLbl  = Label("0", FontFactory.create(screen, parameterCoins, screen.fontGenerator_Nunito_SemiBold))
 
     private val aPanelIdleImg = Image(gdxGame.assetsAll.PANEL_IDLE)
     private val aCoinImg      = Image(gdxGame.assetsAll.coin)
@@ -95,7 +92,7 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
         addEffectConfetti()
         addEffectWave()
 
-        collectIdleReward()
+        collectMergeBonusProgress()
         collectState()
     }
 
@@ -137,11 +134,11 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
 
         aPanelCollectIdle.apply {
             onCollect = {
-                gdxGame.modelIdle.collect()
+                gdxGame.modelMergeBonus.collect()
                 stateFlow.value = IdlePanelState.FILLING
             }
             onCollectX2 = {
-                gdxGame.modelIdle.collectX2()
+                gdxGame.modelMergeBonus.collectX2()
                 stateFlow.value = IdlePanelState.FILLING
             }
         }
@@ -170,12 +167,26 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
     // Collect
     // ------------------------------------------------------------------------
 
-    private fun collectIdleReward() {
+    private fun collectMergeBonusProgress() {
         coroutine?.launch {
-            gdxGame.modelIdle.rewardFlow.collect { reward ->
+            gdxGame.modelMergeBonus.rewardFlow.collect { reward ->
                 runGDX {
                     aCoinLbl.setText(NumberFormatter.format(reward))
                     aPanelCollectIdle.setReward(reward)
+                }
+            }
+        }
+
+        coroutine?.launch {
+            gdxGame.modelMergeBonus.progressFlow.collect { progress ->
+                runGDX {
+                    val count = gdxGame.modelMergeBonus.countFlow.value
+                    val goal  = gdxGame.modelMergeBonus.goalFlow.value
+                    aPanelProgressIdle.updateProgress(count, goal)
+
+                    if (progress >= 1f && stateFlow.value == IdlePanelState.FILLING) {
+                        stateFlow.value = IdlePanelState.READY
+                    }
                 }
             }
         }
@@ -199,7 +210,7 @@ class APanelIdle(override val screen: AdvancedScreen): AdvancedGroup() {
                 aPanelProgressIdle.animShow(0.25f)
                 aPanelCollectIdle.animHideAndDisable(0.25f)
 
-                aPanelProgressIdle.startIdleCycle(IDLE_CYCLE_SECONDS)
+                //aPanelProgressIdle.startIdleCycle(IDLE_CYCLE_SECONDS)
             }
 
             IdlePanelState.READY -> {

@@ -18,7 +18,7 @@ abstract class AButtonBase(
     var onTouchUp      : AButtonBase.(x: Float, y: Float) -> Unit = { _, _ -> }
 
     private var onClickBlock : () -> Unit = {}
-    private var clickSound   : SoundUtil.AdvancedSound? = gdxGame.soundUtil.CLICK
+    private var clickSound   : SoundUtil.AdvancedSound? = null
 
     private val scrollThreshold = 10f
     private var startX    = 0f

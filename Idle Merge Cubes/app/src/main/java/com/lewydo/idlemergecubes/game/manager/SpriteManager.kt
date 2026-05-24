@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 
 class SpriteManager(var assetManager: AssetManager) {
 
-    var loadableAtlasList   = mutableListOf<AtlasData>()
-    var loadableTexturesList   = mutableListOf<TextureData>()
+    var loadableAtlasList    = mutableListOf<AtlasData>()
+    var loadableTexturesList = mutableListOf<TextureData>()
 
     fun loadAtlas() {
         loadableAtlasList.onEach { assetManager.load(it.path, TextureAtlas::class.java) }
@@ -35,7 +35,10 @@ class SpriteManager(var assetManager: AssetManager) {
 
 
     enum class EnumAtlas(val data: AtlasData) {
-        LOADER  (AtlasData("atlas/loader.atlas")),
+        BRAND(AtlasData("atlas/brand.atlas")),
+
+        LOADER(AtlasData("atlas/loader.atlas")),
+
         ALL     (AtlasData("atlas/all.atlas")),
         GRID    (AtlasData("atlas/grid.atlas")),
         MENU    (AtlasData("atlas/menu.atlas")),
@@ -49,10 +52,12 @@ class SpriteManager(var assetManager: AssetManager) {
         red(TextureData("textures/red.png")),
         ComingSoon(TextureData("textures/Coming Soon.png")),
 
+        // Band
+        BRAND_BACKGROUND(TextureData("textures/brand/background.png")),
 
         // Loader
         BACKGROUND(TextureData("textures/loader/background.png")),
-        MASK      (TextureData("textures/loader/mask.png")),
+        MASK(TextureData("textures/loader/mask.png")),
 
         C1(TextureData("textures/loader/light/c1.png")),
         C2(TextureData("textures/loader/light/c2.png")),
@@ -78,6 +83,7 @@ class SpriteManager(var assetManager: AssetManager) {
         MASK_PROGRESS_IDLE       (TextureData("textures/all/mask/mask_progress_idle.png")),
         MASK_DIALOG_OFFLINE      (TextureData("textures/all/mask/mask_dialog_offline.png")),
         MASK_DIALOG_LEVEL_UP     (TextureData("textures/all/mask/mask_dialog_level_up.png")),
+        MASK_PROGRESS_BUY_HINT   (TextureData("textures/all/mask/mask_progress_buy_hint.png")),
 
         // All | panel
         PANEL_TOP           (TextureData("textures/all/panel/panel_top.png")),

@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.12.0</string>
+        <string>8.0.1</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -143,6 +143,8 @@
         <key>autoAliasEnabled</key>
         <false/>
         <key>trimSpriteNames</key>
+        <false/>
+        <key>enableCacheBusting</key>
         <false/>
         <key>prependSmartFolderName</key>
         <false/>
@@ -431,6 +433,21 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">lock.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>11,11,23,23</rect>
+                <key>scale9Paddings</key>
+                <rect>11,11,23,23</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">no_def.png</key>
             <key type="filename">no_press.png</key>
             <key type="filename">yes_def.png</key>
@@ -491,6 +508,36 @@
                 <rect>59,59,117,117</rect>
                 <key>scale9Paddings</key>
                 <rect>59,59,117,117</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">progress_buy_hint.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>254,4,508,8</rect>
+                <key>scale9Paddings</key>
+                <rect>254,4,508,8</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">progress_frame_buy_hint.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>255,5,510,10</rect>
+                <key>scale9Paddings</key>
+                <rect>255,5,510,10</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

@@ -21,29 +21,38 @@ class ABagCoins(override val screen: AdvancedScreen) : VfxImage(
 ) {
     private val bagEffect = effect as BagCoinsEffect
 
-    private var fillDuration = 10f
-    private var elapsed      = 0f
-    private var isFilling    = false
+//    private var fillDuration = 10f
+//    private var elapsed      = 0f
+//    private var isFilling    = false
 
-    override fun act(delta: Float) {
-        super.act(delta)
-        if (!isFilling) return
+//    override fun act(delta: Float) {
+//        super.act(delta)
+//        if (!isFilling) return
+//
+//        elapsed += delta
+//        bagEffect.fillPercent = (elapsed / fillDuration * 100f).coerceAtMost(100f)
+//        if (bagEffect.fillPercent >= 100f) isFilling = false
+//    }
+//
+//    fun startFill(seconds: Float) {
+//        fillDuration          = seconds
+//        elapsed               = 0f
+//        bagEffect.fillPercent = 0f
+//        isFilling             = true
+//    }
 
-        elapsed += delta
-        bagEffect.fillPercent = (elapsed / fillDuration * 100f).coerceAtMost(100f)
-        if (bagEffect.fillPercent >= 100f) isFilling = false
-    }
+//    fun reset() {
+//        elapsed               = 0f
+//        bagEffect.fillPercent = 0f
+//        isFilling             = false
+//    }
 
-    fun startFill(seconds: Float) {
-        fillDuration          = seconds
-        elapsed               = 0f
-        bagEffect.fillPercent = 0f
-        isFilling             = true
+    // ── Новий метод — пряме виставлення прогресу ──────────────────────────────
+    fun setProgress(pct: Float) {
+        bagEffect.fillPercent = (pct * 100f).coerceIn(0f, 100f)
     }
 
     fun reset() {
-        elapsed               = 0f
         bagEffect.fillPercent = 0f
-        isFilling             = false
     }
 }

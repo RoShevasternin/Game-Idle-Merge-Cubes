@@ -7,6 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
@@ -20,6 +22,10 @@ abstract class DataStoreJsonUtil<T>(
     abstract val coroutine: CoroutineScope
     abstract val flow     : MutableStateFlow<T>
     abstract val dataStore: AbstractDataStore.DataStoreElement<String>
+
+    // Mutex гарантує що update-и виконуються строго один за одним,
+    // навіть якщо їх викликають одночасно з кількох корутинів
+    protected val mutex = Mutex()
 
     open fun initialize() {
         /*coroutine.launch(Dispatchers.IO) {
@@ -51,14 +57,15 @@ abstract class DataStoreJsonUtil<T>(
         }*/
 
         coroutine.launch(Dispatchers.IO) {
+            mutex.withLock {
+                val oldValue = flow.value
+                val newValue = block(oldValue)
 
-            val oldValue = flow.value
-            val newValue = block(oldValue)
+                flow.value = newValue
+                dataStore.update { Json.encodeToString(serializer, newValue) }
 
-            flow.value = newValue
-            dataStore.update { Json.encodeToString(serializer, newValue) }
-
-            logUpdate(oldValue, newValue)
+                logUpdate(oldValue, newValue)
+            }
         }
     }
 

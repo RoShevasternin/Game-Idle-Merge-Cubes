@@ -7,7 +7,6 @@ import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -15,7 +14,6 @@ import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.lewydo.idlemergecubes.MainActivity
-import com.lewydo.idlemergecubes.game.actors.ATmpGroup
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.HEIGHT_UI
@@ -23,7 +21,6 @@ import com.lewydo.idlemergecubes.game.utils.ShapeDrawerUtil
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
-import com.lewydo.idlemergecubes.game.utils.actor.setSize
 import com.lewydo.idlemergecubes.game.utils.addProcessors
 import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.game.utils.font.FontGenerator
@@ -35,6 +32,7 @@ import com.lewydo.idlemergecubes.util.currentClassName
 import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlin.text.toFloat
 
 abstract class AdvancedScreen(
     val WIDTH : Float = WIDTH_UI,
@@ -47,15 +45,18 @@ abstract class AdvancedScreen(
     val viewportUI by lazy { ExtendViewport(WIDTH, HEIGHT) }
     val stageUI    by lazy { AdvancedStage(viewportUI) }
 
-    private val scaleScreenToUiY: Float get() = (viewportUI.worldHeight / Gdx.graphics.height.toFloat())
+    val safeTopPX    get() = MainActivity.statusBarHeight
+    val safeBottomPX get() = MainActivity.navBarHeight
 
-    val safeTop    get() = MainActivity.statusBarHeight
-    val safeBottom get() = MainActivity.navBarHeight
+    val screenWidthPX  get() = Gdx.graphics.width
+    val screenHeightPX get() = Gdx.graphics.height
 
-    val safeTopUI    get() = safeTop * scaleScreenToUiY
-    val safeBottomUI get() = safeBottom * scaleScreenToUiY
+    private val scaleScreenToUiY: Float get() = (viewportUI.worldHeight / screenHeightPX)
 
-    val inputMultiplexer    = InputMultiplexer()
+    val safeTopUI    get() = safeTopPX * scaleScreenToUiY
+    val safeBottomUI get() = safeBottomPX * scaleScreenToUiY
+
+    val inputMultiplexer = InputMultiplexer()
 
     val backBackgroundImage = Image()
     val uiBackgroundImage   = Image()
@@ -74,6 +75,7 @@ abstract class AdvancedScreen(
     val fontGenerator_Nunito_ExtraBold = FontGenerator(FontPath.Nunito_ExtraBold)
     val fontGenerator_Nunito_Regular   = FontGenerator(FontPath.Nunito_Regular)
     val fontGenerator_Nunito_SemiBold  = FontGenerator(FontPath.Nunito_SemiBold)
+    val fontGenerator_Nunito_Medium    = FontGenerator(FontPath.Nunito_Medium)
 
     // ─── RenderPipeline ───────────────────────────────────────────────────────
     // Shared VfxPool для всіх VfxGroup на цьому екрані.
@@ -84,21 +86,12 @@ abstract class AdvancedScreen(
     val rootConstraintLayout = AConstraintLayout(this)
 
     override fun resize(width: Int, height: Int) {
-        stageBack.update(width, height, true)
-        stageUI.update(width, height, true)
-
-        rootConstraintLayout.setSize(viewportUI.worldWidth, viewportUI.worldHeight)
+        updateSize()
     }
 
     override fun show() {
         log("show AdvancedScreen: $currentClassName")
-        val screenWidth  = Gdx.graphics.width
-        val screenHeight = Gdx.graphics.height
-
-        scalerUItoScreen.calculateScale(scalerVector.set(screenWidth.toFloat(), screenHeight.toFloat()))
-
-        stageBack.update(screenWidth, screenHeight, true)
-        stageUI.update(screenWidth, screenHeight, true)
+        updateSize()
 
         stageBack.root.addAndFillActor(backBackgroundImage)
         stageUI.root.addAndFillActor(uiBackgroundImage)
@@ -130,6 +123,7 @@ abstract class AdvancedScreen(
             fontGenerator_Nunito_ExtraBold,
             fontGenerator_Nunito_Regular,
             fontGenerator_Nunito_SemiBold,
+            fontGenerator_Nunito_Medium,
         )
         disposableSet.disposeAll()
         inputMultiplexer.clear()
@@ -153,6 +147,13 @@ abstract class AdvancedScreen(
     open fun Group.addActorsOnStageBack() {}
     open fun Group.addActorsOnStageUI() {}
     open fun AConstraintLayout.addActorsOnRootConstraintLayout() {}
+
+    private fun updateSize() {
+        stageBack.update(Gdx.graphics.width, Gdx.graphics.height, true)
+        stageUI.update(screenWidthPX, screenHeightPX, true)
+        scalerUItoScreen.calculateScale(scalerVector.set(screenWidthPX.toFloat(), screenHeightPX.toFloat()))
+        rootConstraintLayout.setSize(viewportUI.worldWidth, viewportUI.worldHeight)
+    }
 
     fun setBackBackground(region: TextureRegion) {
         backBackgroundImage.drawable = TextureRegionDrawable(region)

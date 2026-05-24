@@ -8,18 +8,17 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoFont
+import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoSize
 import com.lewydo.idlemergecubes.game.actors.vfx.AHslImage
 import com.lewydo.idlemergecubes.game.utils.CubeColorSystem
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActors
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ACube(
     override val screen: AdvancedScreen,
-    var index: Int,
-    var lvl  : Int,
+    var index : Int,
+    var lvl   : Int,
     labelStyle: Label.LabelStyle,
 ): AdvancedGroup() {
 
@@ -35,7 +34,7 @@ class ACube(
     //private val aCube1Img = AHslImage(screen, gdxGame.assetsAll.listCube[0])
 
     private val aCubeImg      = AHslImage(screen, gdxGame.assetsAll.cube)
-    private val aCubeLevelLbl = ALabelAutoFont(screen, lvl.toString(), labelStyle, fitMode = ALabelAutoFont.FitMode.MIN)
+    private val aCubeLevelLbl = ALabelAutoSize(screen, lvl.toString(), labelStyle, fitMode = ALabelAutoSize.FitMode.MIN)
 
     // ------------------------------------------------------------------------
     // STATE

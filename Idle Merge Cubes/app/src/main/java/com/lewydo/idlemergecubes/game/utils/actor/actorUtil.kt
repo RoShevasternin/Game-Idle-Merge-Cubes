@@ -1,5 +1,6 @@
 package com.lewydo.idlemergecubes.game.utils.actor
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonBase
 import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
@@ -65,18 +67,6 @@ fun Actor.setOnTouchListener(
     })
 }
 
-fun Actor.getTopParent(root: Group): Group {
-    var top = this.parent
-
-    if (top == root) return root
-
-    while (top.parent != root) {
-        top = top.parent
-    }
-
-    return top
-}
-
 // ------------------------------------------------------------------------
 // disable | enable
 // ------------------------------------------------------------------------
@@ -89,6 +79,13 @@ fun Actor.disable() = when(this) {
 fun Actor.enable() = when(this) {
     is AButtonBase -> enable()
     else       -> touchable = Touchable.enabled
+}
+
+// ------------------------------------------------------------------------
+// Label
+// ------------------------------------------------------------------------
+fun Label.setFontColor(color: Color) {
+    style = Label.LabelStyle(style.font, color)
 }
 
 // ------------------------------------------------------------------------

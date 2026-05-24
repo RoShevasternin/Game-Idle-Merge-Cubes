@@ -1,4 +1,4 @@
-package com.lewydo.idlemergecubes.firebase.analytics
+package com.lewydo.idlemergecubes.services.firebase.analytics
 
 import android.os.Bundle
 import com.google.firebase.Firebase

@@ -1,19 +1,14 @@
-package com.lewydo.idlemergecubes.game.actors.brand
+package com.lewydo.idlemergecubes.game.actors.who_made
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.R
-import com.lewydo.idlemergecubes.appContext
 import com.lewydo.idlemergecubes.game.actors.AScrollPane
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.linear.AVerticalGroup
-import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
-import com.lewydo.idlemergecubes.game.utils.actor.setBounds
-import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.actor.setOnTouchListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen

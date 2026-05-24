@@ -10,8 +10,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication
-import com.google.android.gms.ads.MobileAds
-import com.lewydo.idlemergecubes.ads.AdManager
+import com.lewydo.idlemergecubes.services.ads.AdManager
 import com.lewydo.idlemergecubes.databinding.ActivityMainBinding
 import com.lewydo.idlemergecubes.util.OneTime
 import com.lewydo.idlemergecubes.util.log
@@ -85,8 +84,6 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
         setContentView(binding.root)
 
         initializeAds()
-
-        adManager.banner.show()
     }
 
     // ------------------------------------------------------------------------

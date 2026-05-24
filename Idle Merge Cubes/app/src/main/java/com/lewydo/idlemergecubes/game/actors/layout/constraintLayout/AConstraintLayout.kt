@@ -3,6 +3,7 @@ package com.lewydo.idlemergecubes.game.actors.layout.constraintLayout
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 
 // ═════════════════════════════════════════════════════════════════════════════
 //  AConstraintLayout
@@ -114,6 +115,8 @@ open class AConstraintLayout(override val screen: AdvancedScreen) : AdvancedGrou
             applyDimension(actor, params)
             applyPosition(actor, params)
         }
+
+        GlobalEvents.emit(GlobalEvents.EventType.CONSTRAINT_LAYOUT_COMPLETE)
     }
 
     // ── Dimension resolution ──────────────────────────────────────────────────

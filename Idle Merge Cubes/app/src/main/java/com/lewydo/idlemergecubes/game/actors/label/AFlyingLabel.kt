@@ -4,35 +4,66 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class AFlyingLabel(
     override val screen: AdvancedScreen,
     text      : String,
     val style : Label.LabelStyle,
     val to    : Vector2,
-    val side  : Side,
+    val type  : Type,
     val onEnd : Block,
 ) : AdvancedGroup() {
 
     // ------------------------------------------------------------------------
-    // Side
+    // Type
     // ------------------------------------------------------------------------
 
-    enum class Side { Left, Right }
+    enum class Type { COIN, XP }
 
-    private val label = Label(text, style)
+    // ------------------------------------------------------------------------
+    // Actors
+    // ------------------------------------------------------------------------
+
+    private val label   = Label(text, style)
+    private val coinImg = if (type == Type.COIN) Image(gdxGame.assetsAll.coin) else null
 
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
 
     override fun addActorsOnGroup() {
-        addAndFillActor(label)
+        val layout      = GlyphLayout(style.font, label.text)
+        val labelWidth  = layout.width
+        val labelHeight = layout.height
+        val iconSize    = labelHeight * 1.2f
+        val gap         = 8f
+
+        when (type) {
+            Type.COIN -> {
+                coinImg?.let {
+                    addActor(it)
+                    // іконка по центру висоти labelHeight
+                    val iconY = (labelHeight - iconSize)
+                    it.setBounds(0f, iconY, iconSize, iconSize)
+                }
+                addActor(label)
+                label.setBounds(iconSize + gap, 0f, labelWidth, labelHeight)
+                setSize(iconSize + gap + labelWidth, labelHeight)
+            }
+            Type.XP -> {
+                addActor(label)
+                label.setBounds(0f, 0f, labelWidth, labelHeight)
+                setSize(labelWidth, labelHeight)
+            }
+        }
+
         setScale(0f)
         startFly()
     }
@@ -42,29 +73,17 @@ class AFlyingLabel(
     // ------------------------------------------------------------------------
 
     private fun startFly() {
-        // Рахуємо реальну ширину тексту
-        val layout     = GlyphLayout(style.font, label.text)
-        val labelWidth = layout.width
-
-        val gap       = 25f  // половина відступу між лейблами
-        val offsetX   = if (side == Side.Left) -(labelWidth + gap) else gap
-
-        // фаза 1 — підлітаємо вгору і вбік від куба
-        val floatX = x + offsetX
-        val floatY = y + 200f
+        val gap     = 25f
+        val offsetX = if (type == Type.COIN) -(width + gap) else gap
+        val floatX  = x + offsetX
+        val floatY  = y + 200f
 
         addAction(Actions.sequence(
             Actions.parallel(
-            // поява
-            Actions.scaleTo(1f, 1f, 0.15f, Interpolation.swingOut),
-            // підлітаємо до float позиції
-            Actions.moveTo(floatX, floatY, 0.25f, Interpolation.swingOut),
+                Actions.scaleTo(1f, 1f, 0.15f, Interpolation.swingOut),
+                Actions.moveTo(floatX, floatY, 0.25f, Interpolation.swingOut),
             ),
-
-            // зависаємо
             Actions.delay(0.2f),
-
-            // летимо до цілі
             Actions.parallel(
                 Actions.moveTo(to.x, to.y, 0.45f, Interpolation.sineIn),
                 Actions.sequence(

@@ -1,4 +1,4 @@
-package com.lewydo.idlemergecubes.tiktok
+package com.lewydo.idlemergecubes.services.tiktok
 
 import android.app.Application
 import com.lewydo.idlemergecubes.BuildConfig

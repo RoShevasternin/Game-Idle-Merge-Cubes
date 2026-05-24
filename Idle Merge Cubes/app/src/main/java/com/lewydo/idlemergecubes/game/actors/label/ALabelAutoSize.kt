@@ -4,11 +4,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 
-class ALabelAutoFont(
+class ALabelAutoSize(
     override val screen   : AdvancedScreen,
     text: String = "",
     private val labelStyle: LabelStyle,
@@ -70,7 +69,6 @@ class ALabelAutoFont(
         // Виставляємо свій розмір одразу — не чекаємо батька
         if (isWrapWidth  && computedTextWidth  > 0f) width  = computedTextWidth
         if (isWrapHeight && computedTextHeight > 0f) height = computedTextHeight
-
         if (isWrapWidth || isWrapHeight) invalidateHierarchy()
 
         isAdjusting = false

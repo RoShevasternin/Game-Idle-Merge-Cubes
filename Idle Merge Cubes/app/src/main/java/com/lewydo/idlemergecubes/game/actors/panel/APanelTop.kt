@@ -14,7 +14,7 @@ class APanelTop(override val screen: AdvancedScreen): AdvancedGroup() {
     // Actors
     // ------------------------------------------------------------------------
     private val aPanelTopImg      = Image(gdxGame.assetsAll.PANEL_TOP)
-    private val aSettingsBtn      = AButtonTexture(screen, AButtonStyles.SETTINGS)
+    private val aSettingsBtn      = AButtonTexture(screen, AButtonStyles.Texture.SETTINGS)
     private val aPanelBalanceCoin = APanelBalanceCoin(screen)
     private val aPanelLvL         = APanelLvL(screen)
 

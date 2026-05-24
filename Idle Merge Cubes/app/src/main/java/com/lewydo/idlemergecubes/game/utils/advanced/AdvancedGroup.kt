@@ -10,8 +10,6 @@ import com.badlogic.gdx.utils.Disposable
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.util.cancelCoroutinesAll
-import com.lewydo.idlemergecubes.util.currentClassName
-import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.concurrent.atomic.AtomicBoolean
@@ -41,16 +39,23 @@ abstract class AdvancedGroup : WidgetGroup(), Disposable {
 
     private val mapIsTransform = mutableMapOf<AdvancedGroup, Boolean>()
 
+    // Список акторів які мають заповнювати всю групу
+    private val fillActors = mutableListOf<Actor>()
+
     abstract fun addActorsOnGroup()
 
-    // ── Draw ──────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Draw
+    // ------------------------------------------------------------------------
     override fun draw(batch: Batch?, parentAlpha: Float) {
         preDrawArray.forEach { it.draw(parentAlpha * color.a) }
         super.draw(batch, parentAlpha)
         postDrawArray.forEach { it.draw(parentAlpha * color.a) }
     }
 
-    // ── Stage / init ──────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Stage / init
+    // ------------------------------------------------------------------------
     override fun setStage(stage: Stage?) {
         super.setStage(stage)
         tryInitGroup()
@@ -59,6 +64,7 @@ abstract class AdvancedGroup : WidgetGroup(), Disposable {
     override fun sizeChanged() {
         super.sizeChanged()
         tryInitGroup()
+        fillActors.forEach { it.setSize(width, height) }
     }
 
     private fun tryInitGroup() {
@@ -68,11 +74,15 @@ abstract class AdvancedGroup : WidgetGroup(), Disposable {
         }
     }
 
-    // ── Dispose ───────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Dispose
+    // ------------------------------------------------------------------------
     override fun dispose() {
         if (isDisposed.not()) {
             preDrawArray.clear()
             postDrawArray.clear()
+
+            fillActors.clear()
 
             disposableSet.disposeAll()
             disposableSet.clear()
@@ -96,6 +106,21 @@ abstract class AdvancedGroup : WidgetGroup(), Disposable {
         clearChildren()
     }
 
+    // ------------------------------------------------------------------------
+    // Add Actors
+    // ------------------------------------------------------------------------
+    fun addAndFillActor(actor: Actor) {
+        addActor(actor)
+        fillActors.add(actor)
+        actor.setSize(width, height)
+    }
+
+    fun addAndFillActors(vararg actors: Actor) { actors.forEach { addAndFillActor(it) } }
+    fun addAndFillActors(actors: List<Actor>)  { actors.forEach { addAndFillActor(it) } }
+
+    // ------------------------------------------------------------------------
+    // Transforms
+    // ------------------------------------------------------------------------
     private fun setIsTransformAll(newIsTransform: Boolean, states: MutableMap<AdvancedGroup, Boolean>) {
         states[this] = isTransform
         isTransform  = newIsTransform

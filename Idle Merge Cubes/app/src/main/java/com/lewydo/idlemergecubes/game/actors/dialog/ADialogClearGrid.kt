@@ -14,8 +14,8 @@ class ADialogClearGrid(override val screen: AdvancedScreen): AdvancedGroup() {
     // Actors
     // ------------------------------------------------------------------------
     private val aDialogImg = Image(gdxGame.assetsAll.DIALOG_CLEAR_GRID)
-    private val aYesBtn    = AButtonTexture(screen, AButtonStyles.YES)
-    private val aNoBtn     = AButtonTexture(screen, AButtonStyles.NO)
+    private val aYesBtn    = AButtonTexture(screen, AButtonStyles.Texture.YES)
+    private val aNoBtn     = AButtonTexture(screen, AButtonStyles.Texture.NO)
 
     // ------------------------------------------------------------------------
     // Callback

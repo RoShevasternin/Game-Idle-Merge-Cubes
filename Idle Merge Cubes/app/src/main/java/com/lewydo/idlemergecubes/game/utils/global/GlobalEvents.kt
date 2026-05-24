@@ -8,6 +8,8 @@ object GlobalEvents {
     enum class EventType {
         END_FLY_COIN, END_FLY_XP,
         TUTORIAL_STEP_CHANGED, TUTORIAL_CUBE_POSITION_CHANGED,
+        CONSTRAINT_LAYOUT_COMPLETE,
+        BUY_LEVEL_UPGRADED,
     }
 
     private val _events = MutableSharedFlow<EventType>(extraBufferCapacity = 16)

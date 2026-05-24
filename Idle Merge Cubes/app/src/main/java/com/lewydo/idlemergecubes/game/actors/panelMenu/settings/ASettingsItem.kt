@@ -5,8 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.checkbox.base.ACheckBox
 import com.lewydo.idlemergecubes.game.actors.checkbox.base.ACheckBoxStyles
-import com.lewydo.idlemergecubes.game.utils.Block
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
+import com.lewydo.idlemergecubes.game.actors.label.ALabel
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
@@ -15,8 +14,8 @@ import kotlin.String
 
 class ASettingsItem(
     override val screen: AdvancedScreen,
-    ls   : Label.LabelStyle,
-    type: Type
+    style : Label.LabelStyle,
+    type  : Type
 ) : AdvancedGroup() {
 
     private val currentItemData = listOf(
@@ -32,7 +31,7 @@ class ASettingsItem(
     // ------------------------------------------------------------------------
     private val aBgImg     = Image(gdxGame.assetsAll.settings_item)
     private val aIconImg   = Image(currentItemData.icon)
-    private val aTitleLbl  = Label(currentItemData.title, ls)
+    private val aTitleLbl  = Label(currentItemData.title, style)
     private val aBox       = if (currentItemData.boxType == null) null else ACheckBox(screen, currentItemData.boxType)
 
     // ------------------------------------------------------------------------

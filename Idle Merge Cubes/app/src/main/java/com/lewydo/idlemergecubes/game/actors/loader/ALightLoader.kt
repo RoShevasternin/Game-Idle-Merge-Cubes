@@ -1,4 +1,4 @@
-package com.lewydo.idlemergecubes.game.actors.light
+package com.lewydo.idlemergecubes.game.actors.loader
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Rectangle
@@ -25,7 +25,7 @@ class ALightLoader(override val screen: LoaderScreen): AdvancedGroup() {
 
     override fun addActorsOnGroup() {
         addListLightImg()
-        
+
         animateLights()
     }
 

@@ -1,184 +1,109 @@
 package com.lewydo.idlemergecubes.game.model
 
-import com.lewydo.idlemergecubes.game.data.PlayerData
-import com.lewydo.idlemergecubes.game.dataStore.DS_Player
+import com.lewydo.idlemergecubes.game.state.GameState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlin.math.ln
 import kotlin.math.pow
 
 class PlayerModel(
-    private val ds: DS_Player,
-    scope: CoroutineScope
+    private val state: GameState,
+    private val scope: CoroutineScope
 ) {
 
     companion object {
-        private const val BASE_XP = 100.0
-        private const val GROWTH = 1.33
+        private const val BASE_XP      = 100.0
+        private const val GROWTH       = 1.33
         private const val GROWTH_DELTA = GROWTH - 1.0
     }
 
-    // =====================================================
-    // Джерело правди
-    // =====================================================
+    // ------------------------------------------------------------------------
+    // Flows
+    // ------------------------------------------------------------------------
 
-    val playerFlow: StateFlow<PlayerData> =
-        ds.flow.stateIn(
-            scope = scope,
-            started = SharingStarted.Eagerly,
-            initialValue = ds.flow.value
-        )
+    val coinsFlow = state.coinsFlow
+    val xpFlow    = state.xpFlow
 
-    val currentPlayer: PlayerData
-        get() = playerFlow.value
+    val levelFlow: StateFlow<Int> = state.xpFlow
+        .map { xpToLevel(it) }
+        .distinctUntilChanged()
+        .stateIn(scope, SharingStarted.Eagerly, xpToLevel(state.xpFlow.value))
 
-    // =====================================================
-    // XP
-    // =====================================================
+    val buyPriceFlow: Flow<Long> = levelFlow
+        .map { (8 + it * 2).toLong() }
 
-    val xpFlow: StateFlow<Long> =
-        playerFlow
-            .map { it.xp }
-            .distinctUntilChanged()
-            .stateIn(scope, SharingStarted.Eagerly, currentPlayer.xp)
+    // ------------------------------------------------------------------------
+    // Current values
+    // ------------------------------------------------------------------------
 
-    val currentXp: Long
-        get() = xpFlow.value
+    val currentCoins   : Long    get() = state.coinsFlow.value
+    val currentXp      : Long    get() = state.xpFlow.value
+    val currentLevel   : Int     get() = levelFlow.value
+    val currentBuyPrice: Long    get() = (8 + currentLevel * 2).toLong()
+    val lastLoginTime  : Long    get() = state.lastLoginTime
+    val adsRemoved     : Boolean get() = state.adsRemoved
+    val tutorialStep   : Int     get() = state.tutorialStep
 
-    fun addXp(amount: Long) {
-        if (amount <= 0) return
-
-        ds.update { data ->
-            data.copy(xp = data.xp + amount)
-        }
-    }
-
-    // =====================================================
-    // LEVEL (обчислюється з XP)
-    // =====================================================
-
-    val levelFlow: StateFlow<Int> =
-        xpFlow
-            .map { calculateLevelFromXp(it) }
-            .distinctUntilChanged()
-            .stateIn(scope, SharingStarted.Eagerly, calculateLevelFromXp(currentXp))
-
-    val currentLevel: Int
-        get() = levelFlow.value
-
-    private fun calculateLevelFromXp(xp: Long): Int {
-        if (xp <= 0) return 1
-
-        val value = 1 + (xp * GROWTH_DELTA / BASE_XP)
-        val level = 1 + ln(value) / ln(GROWTH)
-
-        return level.toInt().coerceAtLeast(1)
-    }
-
-    // =====================================================
-    // Прогрес рівня
-    // =====================================================
-
-    fun xpToNextLevel(level: Int = currentLevel): Long {
-        return (BASE_XP * GROWTH.pow(level - 1)).toLong()
-    }
-
-    fun xpToReachLevel(level: Int): Long {
-        return (BASE_XP * (GROWTH.pow(level - 1) - 1.0) / GROWTH_DELTA).toLong()
-    }
-
-    fun xpIntoCurrentLevel(): Long {
-        val levelStartXp = xpToReachLevel(currentLevel)
-        return currentXp - levelStartXp
-    }
-
-    fun progressPercent(): Float {
-        val progress = xpIntoCurrentLevel().toFloat()
-        val needed = xpToNextLevel().toFloat()
-
-        if (needed <= 0f) return 0f
-
-        return (progress / needed).coerceIn(0f, 1f)
-    }
-
-    fun progressPercent100(): Float {
-        return (progressPercent() * 100f)
-    }
-
-    // =====================================================
-    // COINS
-    // =====================================================
-
-    val coinsFlow: StateFlow<Long> =
-        playerFlow
-            .map { it.coins }
-            .distinctUntilChanged()
-            .stateIn(scope, SharingStarted.Eagerly, currentPlayer.coins)
-
-    val currentCoins: Long
-        get() = coinsFlow.value
+    // ------------------------------------------------------------------------
+    // Coins
+    // ------------------------------------------------------------------------
 
     fun addCoins(amount: Long) {
         if (amount <= 0) return
-
-        ds.update { data ->
-            data.copy(coins = data.coins + amount)
-        }
+        state.coinsFlow.value += amount
     }
 
     fun spendCoins(amount: Long): Boolean {
-        if (amount <= 0) return false
-        if (currentCoins < amount) return false
-
-        ds.update { data ->
-            data.copy(coins = data.coins - amount)
-        }
-
+        if (amount !in 1..currentCoins) return false
+        state.coinsFlow.value -= amount
         return true
     }
 
-    // =====================================================
-    // Ads / IAP
-    // =====================================================
+    // ------------------------------------------------------------------------
+    // XP + Level
+    // ------------------------------------------------------------------------
 
-    val adsRemovedFlow: StateFlow<Boolean> =
-        playerFlow
-            .map { it.adsRemoved }
-            .distinctUntilChanged()
-            .stateIn(scope, SharingStarted.Eagerly, currentPlayer.adsRemoved)
-
-    fun setAdsRemoved() {
-        ds.update { data ->
-            data.copy(adsRemoved = true)
-        }
+    fun addXp(amount: Long) {
+        if (amount <= 0) return
+        state.xpFlow.value += amount
+        // levelFlow оновиться автоматично через map
     }
 
-    // =====================================================
-    // Offline
-    // =====================================================
-
-    fun updateLastLoginTime(timestamp: Long) {
-        ds.update { data ->
-            data.copy(lastLoginTime = timestamp)
-        }
+    private fun xpToLevel(xp: Long): Int {
+        if (xp <= 0) return 1
+        return (1 + ln(1 + xp * GROWTH_DELTA / BASE_XP) / ln(GROWTH))
+            .toInt().coerceAtLeast(1)
     }
 
-    val lastLoginTime: Long
-        get() = currentPlayer.lastLoginTime
+    // ------------------------------------------------------------------------
+    // Level progress
+    // ------------------------------------------------------------------------
 
-    // =====================================================
-    // BUY PRICE
-    // =====================================================
+    fun xpForLevel(level: Int = currentLevel): Long =
+        (BASE_XP * GROWTH.pow(level - 1)).toLong()
 
-    val buyPriceFlow: StateFlow<Long> =
-        levelFlow
-            .map { level -> (8 + level * 2).toLong() }
-            .stateIn(
-                scope,
-                SharingStarted.Eagerly,
-                (8 + currentLevel * 2).toLong()
-            )
+    fun xpToReachLevel(level: Int): Long =
+        (BASE_XP * (GROWTH.pow(level - 1) - 1.0) / GROWTH_DELTA).toLong()
 
-    val currentBuyPrice: Long
-        get() = buyPriceFlow.value
+    fun xpInCurrentLevel(): Long =
+        currentXp - xpToReachLevel(currentLevel)
+
+    fun levelProgress(): Float {
+        val needed = xpForLevel().toFloat()
+        return if (needed <= 0f) 0f
+        else (xpInCurrentLevel().toFloat() / needed).coerceIn(0f, 1f)
+    }
+
+    // ------------------------------------------------------------------------
+    // Misc
+    // ------------------------------------------------------------------------
+
+    fun setAdsRemoved()               { state.adsRemoved    = true }
+    fun updateLastLoginTime(ts: Long) { state.lastLoginTime = ts   }
+    fun updateTutorialStep(step: Int) { state.tutorialStep  = step }
 }

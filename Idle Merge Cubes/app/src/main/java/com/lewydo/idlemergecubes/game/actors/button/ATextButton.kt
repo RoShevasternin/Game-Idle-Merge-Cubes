@@ -1,32 +1,83 @@
 package com.lewydo.idlemergecubes.game.actors.button
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonAnim
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonAnimTexture
+import com.lewydo.idlemergecubes.game.actors.button.base.AButtonBase
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
 import com.lewydo.idlemergecubes.game.actors.label.ALabel
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontGenerator
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 
-// ATextButton.kt — тепер наслідується від AButtonTexture
-open class ATextButton(
-    override val screen: AdvancedScreen,
-    text     : String,
-    color    : Color,
-    parameter: FontParameter,
-    generator: FontGenerator,
-    style    : Style = AButtonStyles.NONE,
-) : AButtonTexture(screen, style) {
+// ------------------------------------------------------------------------
+// WithLabel
+// ------------------------------------------------------------------------
+interface WithLabel {
+    val label: Label
 
-    val label = ALabel(screen, text, color, parameter, generator)
+    fun addLabel(group: AButtonBase) {
+        group.addAndFillActor(label)
+        label.disable()
+        label.setAlignment(Align.center)
+    }
+}
+
+// ------------------------------------------------------------------------
+// ATextButton Texture
+// ------------------------------------------------------------------------
+open class ATextButtonTexture(
+    override val screen: AdvancedScreen,
+    text: String, color: Color,
+    parameter: FontParameter, generator: FontGenerator,
+    style: Style = AButtonStyles.Texture.NONE,
+) : AButtonTexture(screen, style), WithLabel {
+
+    override val label = Label(text, FontFactory.create(screen, parameter, generator, color))
 
     override fun addActorsOnGroup() {
         super.addActorsOnGroup()
-        addAndFillActor(label)
-        label.disable()
-        label.setAlignment(Align.center)
+        addLabel(this)
+    }
+}
+
+// ------------------------------------------------------------------------
+// ATextButton Anim
+// ------------------------------------------------------------------------
+open class ATextButtonAnim(
+    override val screen: AdvancedScreen,
+    text: String, color: Color,
+    parameter: FontParameter, generator: FontGenerator,
+    style: Style = AButtonStyles.Anim.NONE,
+) : AButtonAnim(screen, style), WithLabel {
+
+    override val label = Label(text, FontFactory.create(screen, parameter, generator, color))
+
+    override fun addActorsOnGroup() {
+        super.addActorsOnGroup()
+        addLabel(this)
+    }
+}
+
+// ------------------------------------------------------------------------
+// ATextButton AnimTexture
+// ------------------------------------------------------------------------
+open class ATextButtonAnimTexture(
+    override val screen: AdvancedScreen,
+    text: String, color: Color,
+    parameter: FontParameter, generator: FontGenerator,
+    style: Style = AButtonStyles.AnimTexture.NONE,
+) : AButtonAnimTexture(screen, style), WithLabel {
+
+    override val label = Label(text, FontFactory.create(screen, parameter, generator, color))
+
+    override fun addActorsOnGroup() {
+        super.addActorsOnGroup()
+        addLabel(this)
     }
 }

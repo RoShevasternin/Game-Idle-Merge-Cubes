@@ -45,8 +45,9 @@ class ParticleEffectManager(var assetManager: AssetManager) {
 
         CONFETTI(ParticleEffectData("particle/confetti/confetti.p","particle/SHARED")),
 
-        BUY (ParticleEffectData("particle/buy/buy.p",  "particle/buy")),
-        STAR(ParticleEffectData("particle/buy/star.p", "particle/buy")),
+        BUY         (ParticleEffectData("particle/buy/buy.p",  "particle/buy")),
+        STAR        (ParticleEffectData("particle/buy/star.p", "particle/buy")),
+        WAVE_UPGRADE(ParticleEffectData("particle/buy/wave_upgrade.p", "particle/buy")),
 
         IDLE_CONFETTI(ParticleEffectData("particle/idleIncome/confetti.p", "particle/SHARED")),
         IDLE_WAVE    (ParticleEffectData("particle/idleIncome/wave.p", "particle/idleIncome")),

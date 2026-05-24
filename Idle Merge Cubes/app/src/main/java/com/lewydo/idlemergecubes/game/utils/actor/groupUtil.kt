@@ -5,10 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
+// ------------------------------------------------------------------------
+// Add Actors
+// ------------------------------------------------------------------------
 fun Group.addAndFillActor(actor: Actor) {
     addActor(actor)
     actor.setSize(width, height)
@@ -18,6 +17,10 @@ fun Group.addAndFillActors(actors: List<Actor>) { actors.forEach { addAndFillAct
 fun Group.addAndFillActors(vararg actors: Actor) { actors.forEach { addAndFillActor(it) } }
 fun Group.addActors(vararg actors: Actor)        { actors.forEach { addActor(it) } }
 fun Group.addActors(actors: List<Actor>)         { actors.forEach { addActor(it) } }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
 
 fun Group.addActorAligned(actor: Actor, h: AlignH = AlignH.LEFT, v: AlignV = AlignV.BOTTOM) {
     addActor(actor)

@@ -22,7 +22,9 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
 //
 //    private val aCoinLbl = Label("", Label.LabelStyle(font, GameColor.yellow_FFF858))
 
+    // ------------------------------------------------------------------------
     // Actors
+    // ------------------------------------------------------------------------
     private val aLIGHTImg = Image(gdxGame.assetsAll.LIGHT)
 
     private val aPanelGameImg = Image(gdxGame.assetsAll.PANEL_GAME)
@@ -35,10 +37,23 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
     private val aCellLayer = ACellLayer(screen)
     private val aCubeLayer = ACubeLayer(screen)
 
+    // ------------------------------------------------------------------------
     // Field
+    // ------------------------------------------------------------------------
     private val controller = GridController(coroutine, gdxGame.modelGrid, gdxGame.modelPlayer, aCellLayer, aCubeLayer)
 
+    // ------------------------------------------------------------------------
+    // Callback
+    // ------------------------------------------------------------------------
+    var onMergeExecuted: ((isEnchanted: Boolean) -> Unit)? = null
+        set(value) {
+            field = value
+            controller.onMergeExecuted = value
+        }
 
+    // ------------------------------------------------------------------------
+    // Lifecycle
+    // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
         addLIGHTImg()
         addPanelGameImg()
@@ -50,8 +65,9 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
         controller.initialize()
     }
 
-    // Actors ------------------------------------------------------------------------
-
+    // ------------------------------------------------------------------------
+    // Actors
+    // ------------------------------------------------------------------------
     private fun addLIGHTImg() {
         val size = width * 1.6f
         aLIGHTImg.setSize(size, size)
@@ -97,8 +113,9 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
         addAndFillActor(aCubeLayer)
     }
 
-    // Anim ------------------------------------------------------------------------
-
+    // ------------------------------------------------------------------------
+    // Animations
+    // ------------------------------------------------------------------------
     private fun animGlares() {
         // Анімація для першого великого бліка
         aGlare1Img.addAction(Actions.forever(Actions.sequence(
@@ -137,9 +154,9 @@ class APanelGrid(override val screen: AdvancedScreen): AdvancedGroup() {
         )))
     }
 
-    // ======================================================
-    // LOGIC
-    // ======================================================
+    // ------------------------------------------------------------------------
+    // API
+    // ------------------------------------------------------------------------
 
     fun buyCube() {
         controller.buyCube()

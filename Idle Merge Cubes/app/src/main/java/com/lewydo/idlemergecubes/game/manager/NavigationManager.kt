@@ -36,6 +36,7 @@ class NavigationManager(val game: GDXGame) {
     fun isBackStackEmpty() = backStack.isEmpty()
 
     private fun getScreenByName(name: String): AdvancedScreen = when(name) {
+        BrandScreen ::class.java.name -> BrandScreen()
         LoaderScreen::class.java.name -> LoaderScreen()
         GameScreen  ::class.java.name -> GameScreen()
         WhoScreen   ::class.java.name -> WhoScreen()

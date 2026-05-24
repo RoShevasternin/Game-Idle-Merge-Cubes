@@ -14,8 +14,8 @@ class APanelContentMenu(override val screen: AdvancedScreen) : AConstraintLayout
     // Actors aBottomVerticalGroup
     // ------------------------------------------------------------------------
     private val aBottomVerticalGroup = AVerticalGroup(screen, gap = 47f)
-    private val aResetGameBtn        = AButtonTexture(screen, AButtonStyles.MENU_RESET_GAME)
-    private val aCloseBtn            = AButtonTexture(screen, AButtonStyles.MENU_CLOSE)
+    private val aResetGameBtn        = AButtonTexture(screen, AButtonStyles.Texture.MENU_RESET_GAME)
+    private val aCloseBtn            = AButtonTexture(screen, AButtonStyles.Texture.MENU_CLOSE)
 
     // ------------------------------------------------------------------------
     // Actors aContentVerticalGroup

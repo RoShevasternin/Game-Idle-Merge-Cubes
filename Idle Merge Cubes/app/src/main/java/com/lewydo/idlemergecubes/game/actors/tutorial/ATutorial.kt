@@ -8,7 +8,6 @@ import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.runGDX
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
@@ -16,6 +15,7 @@ class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
+
     private val aHand = ATutorialHand(screen)
 
     // ------------------------------------------------------------------------
@@ -23,32 +23,19 @@ class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
     // ------------------------------------------------------------------------
 
     override fun addActorsOnGroup() {
-        disable() // не блокуємо дотики
-        addHand()
-
-        registerEvents()
-    }
-
-    // ------------------------------------------------------------------------
-    // Add Actors
-    // ------------------------------------------------------------------------
-    private fun addHand() {
+        disable()
         addActor(aHand)
         aHand.setSize(331f, 479f)
-    }
 
+        collectEvents()
+    }
 
     // ------------------------------------------------------------------------
     // Public
     // ------------------------------------------------------------------------
 
-    fun start() {
-        updateStep()
-    }
-
-    fun onResume() {
-        if (!gdxGame.tutorialManager.isDone) updateStep()
-    }
+    fun start()    { updateStep() }
+    fun onResume() { if (!gdxGame.tutorialManager.isDone) updateStep() }
 
     // ------------------------------------------------------------------------
     // Private
@@ -70,21 +57,21 @@ class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
     private fun showMergeHint() {
         val from = GlobalStagePositions.get(GlobalStagePositions.Position.CUBE_0)
         val to   = GlobalStagePositions.get(GlobalStagePositions.Position.CUBE_1)
-
-        // захист — якщо позиції ще не зареєстровані (обидва Vector2 = 0,0)
         if (from.isZero || to.isZero) return
-
         aHand.showDrag(from, to)
     }
 
-    private fun registerEvents() {
+    private fun collectEvents() {
         coroutine?.launch {
-            GlobalEvents.events.collect { event -> runGDX { when (event) {
-                GlobalEvents.EventType.TUTORIAL_STEP_CHANGED          -> updateStep()
-                GlobalEvents.EventType.TUTORIAL_CUBE_POSITION_CHANGED -> showMergeHint()
-                else -> {}
-            } } }
+            GlobalEvents.events.collect { event ->
+                runGDX {
+                    when (event) {
+                        GlobalEvents.EventType.TUTORIAL_STEP_CHANGED          -> updateStep()
+                        GlobalEvents.EventType.TUTORIAL_CUBE_POSITION_CHANGED -> showMergeHint()
+                        else -> {}
+                    }
+                }
+            }
         }
     }
-
 }

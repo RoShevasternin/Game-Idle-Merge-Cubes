@@ -7,33 +7,27 @@ import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
 import com.lewydo.idlemergecubes.game.utils.GameColor
-import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.REMOVE_ADS_PRICE
-import com.lewydo.idlemergecubes.game.utils.actor.addActors
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
-import com.lewydo.idlemergecubes.game.utils.runGDX
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 
-open class ARemoveAdsButton(override val screen: AdvancedScreen) : AButtonTexture(screen, AButtonStyles.MENU_ITEM) {
+open class ARemoveAdsButton(override val screen: AdvancedScreen) : AButtonTexture(screen, AButtonStyles.Texture.MENU_ITEM) {
 
     private val textRemoveAds = "Remove Ads"
 
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters("$textRemoveAds $REMOVE_ADS_PRICE $")
-    private val font = screen.fontGenerator_Nunito_Bold.generateFont(parameter.setSize(80))
+    private val parameter = FontParameter().setCharacters("$textRemoveAds $REMOVE_ADS_PRICE $").setSize(80)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aTitleLbl = Label(textRemoveAds, Label.LabelStyle(font, Color.WHITE))
-    private val aPriceLbl = Label("$$REMOVE_ADS_PRICE", Label.LabelStyle(font, GameColor.green_98FF68))
+    private val aTitleLbl = Label(textRemoveAds, FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Bold))
+    private val aPriceLbl = Label("$$REMOVE_ADS_PRICE", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Bold, GameColor.green_98FF68))
 
     // ------------------------------------------------------------------------
     // Lifecycle

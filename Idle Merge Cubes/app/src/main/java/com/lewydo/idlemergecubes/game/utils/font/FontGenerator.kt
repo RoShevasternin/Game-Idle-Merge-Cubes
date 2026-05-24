@@ -41,6 +41,7 @@ class FontGenerator(fontPath: FontPath): FreeTypeFontGenerator(Gdx.files.interna
             Nunito_Bold      ("font/Nunito-Bold.ttf"),
             Nunito_ExtraBold ("font/Nunito-ExtraBold.ttf"),
             Nunito_Regular   ("font/Nunito-Regular.ttf"),
+            Nunito_Medium    ("font/Nunito-Medium.ttf"),
             Nunito_SemiBold  ("font/Nunito-SemiBold.ttf"),
         }
     }

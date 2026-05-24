@@ -4,7 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.BuildConfig
-import com.lewydo.idlemergecubes.game.actors.AMainLoader
+import com.lewydo.idlemergecubes.game.actors.loader.AMainLoader
+import com.lewydo.idlemergecubes.game.actors.label.ALabel
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
@@ -22,6 +23,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
@@ -35,24 +37,22 @@ class LoaderScreen : AdvancedScreen() {
     private var isFinishLoading  = false
     private var isFinishProgress = false
 
-    private val textBranding = """
-        Powered by LibGDX
-        Developed by Lewydo™
-        Version ${BuildConfig.VERSION_NAME}
-    """.trimIndent()
-
-    private val parameter = FontParameter().setCharacters(textBranding).setSize(40)
-    private val font      = fontGenerator_Nunito_SemiBold.generateFont(parameter)
-
+    // ------------------------------------------------------------------------
+    // Actors
+    // ------------------------------------------------------------------------
     private val aMain by lazy { AMainLoader(this) }
 
-    private val brandingLbl  = Label(textBranding, Label.LabelStyle(font, GameColor.white_55))
-
-
+    // ------------------------------------------------------------------------
+    // Lifecycle
+    // ------------------------------------------------------------------------
     override fun show() {
+        stageUI.root.color.a = 0f
+
         loadSplashAssets()
         setBackBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
+
+        animShowScreen()
 
         loadAssets()
         collectProgress()
@@ -64,6 +64,13 @@ class LoaderScreen : AdvancedScreen() {
         isFinish()
     }
 
+    override fun AConstraintLayout.addActorsOnRootConstraintLayout() {
+        add(aMain) { fillParent() }
+    }
+
+    // ------------------------------------------------------------------------
+    // Screen Animations
+    // ------------------------------------------------------------------------
     override fun animHideScreen(blockEnd: Block) {
         stageUI.root.animHide(TIME_ANIM_SCREEN) { blockEnd() }
     }
@@ -72,29 +79,9 @@ class LoaderScreen : AdvancedScreen() {
         stageUI.root.animShow(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
-    // Actors ------------------------------------------------------------------------
-
-    override fun Group.addActorsOnStageUI() {
-        color.a = 0f
-
-        //aMain.debug()
-        aMain.setSize(WIDTH_UI, HEIGHT_UI)
-        addActorAligned(aMain, AlignH.CENTER, AlignV.CENTER)
-
-        addBrandingLbl()
-
-        animShowScreen()
-    }
-
-    private fun Group.addBrandingLbl() {
-        brandingLbl.setSize(443f, 165f)
-        addActorAligned(brandingLbl, AlignH.CENTER)
-        brandingLbl.setAlignment(Align.center)
-        brandingLbl.y = 120f
-    }
-
-    // Logic ------------------------------------------------------------------------
-
+    // ------------------------------------------------------------------------
+    // Logic
+    // ------------------------------------------------------------------------
     private fun loadSplashAssets() {
         with(gdxGame.spriteManager) {
             loadableAtlasList = mutableListOf(SpriteManager.EnumAtlas.LOADER.data)
@@ -166,7 +153,7 @@ class LoaderScreen : AdvancedScreen() {
                     progress += 1
 
                     runGDX {
-                        aMain.aLoading.setProgressPercent(progress.toFloat())
+                        aMain.aCenterContentLoader.aLoading.setProgressPercent(progress.toFloat())
                     }
 
                     if (progress % 50 == 0) log("progress = $progress%")
@@ -187,8 +174,10 @@ class LoaderScreen : AdvancedScreen() {
                 coff      = 0.27f
             } }
 
+            gdxGame.activity.adManager.banner.show()
+
             stageUI.root.animDelay(1f) {
-                aMain.aLightLoader.onLoaderFinish()
+                aMain.aCenterContentLoader.aLightLoader.onLoaderFinish()
                 animHideScreen { gdxGame.navigationManager.navigate(GameScreen::class.java.name) } //TestShaderScreen::class.java.name) }
             }
         }

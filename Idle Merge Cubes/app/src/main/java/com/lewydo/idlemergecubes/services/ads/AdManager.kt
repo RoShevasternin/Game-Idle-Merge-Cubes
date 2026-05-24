@@ -1,4 +1,4 @@
-package com.lewydo.idlemergecubes.ads
+package com.lewydo.idlemergecubes.services.ads
 
 import com.google.android.gms.ads.MobileAds
 import com.lewydo.idlemergecubes.MainActivity

@@ -2,9 +2,7 @@ package com.lewydo.idlemergecubes
 
 import android.app.Application
 import android.content.Context
-import com.lewydo.idlemergecubes.tiktok.TikTokManager
-import com.lewydo.idlemergecubes.util.log
-import com.tiktok.TikTokBusinessSdk
+import com.lewydo.idlemergecubes.services.tiktok.TikTokManager
 
 lateinit var appContext: Context private set
 

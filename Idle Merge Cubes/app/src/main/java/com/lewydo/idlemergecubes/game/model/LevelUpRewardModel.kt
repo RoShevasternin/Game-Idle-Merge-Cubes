@@ -1,30 +1,28 @@
 package com.lewydo.idlemergecubes.game.model
 
-class LevelUpRewardModel(
-    private val playerModel: PlayerModel
-) {
+class LevelUpRewardModel(private val playerModel: PlayerModel) {
 
-    // =====================================================
-    // FORMULA
-    // Нагорода = buyPrice * множник рівня
-    // Level  2: 12  * 6.0  =  72 монет  (~7 кубів)
-    // Level  5: 18  * 7.5  = 135 монет  (~7 кубів)
-    // Level 10: 28  * 10.0 = 280 монет  (~10 кубів)
-    // Level 20: 48  * 15.0 = 720 монет  (~15 кубів)
-    // Гравець відчуває ріст але не ламає баланс
-    // =====================================================
+    // ------------------------------------------------------------------------
+    // Formula
+    // Reward = buyPrice × level multiplier
+    //
+    // Level  2:  12 × 6.0  =  72 coins  (~7 cubes)
+    // Level  5:  18 × 7.5  = 135 coins  (~7 cubes)
+    // Level 10:  28 × 10.0 = 280 coins  (~10 cubes)
+    // Level 20:  48 × 15.0 = 720 coins  (~15 cubes)
+    // ------------------------------------------------------------------------
 
-    fun calculateReward(newLevel: Int): Long {
-        val buyPrice   = (8 + newLevel * 2).toLong()
-        val multiplier = 5.0 + newLevel * 0.5
+    fun calculateReward(level: Int): Long {
+        val buyPrice   = (8 + level * 2).toLong()
+        val multiplier = 5.0 + level * 0.5
         return (buyPrice * multiplier).toLong()
     }
 
-    fun collect(newLevel: Int) {
-        playerModel.addCoins(calculateReward(newLevel))
+    fun collect(level: Int) {
+        playerModel.addCoins(calculateReward(level))
     }
 
-    fun collectX2(newLevel: Int) {
-        playerModel.addCoins(calculateReward(newLevel) * 2)
+    fun collectX2(level: Int) {
+        playerModel.addCoins(calculateReward(level) * 2)
     }
 }

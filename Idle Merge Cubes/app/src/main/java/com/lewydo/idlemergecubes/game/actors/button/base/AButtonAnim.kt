@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 
 // Анімована кнопка
@@ -32,30 +31,28 @@ open class AButtonAnim(
 
     override fun press() {
         clearActions()
-        addAction(Actions.parallel(
-            Actions.scaleTo(pressScale, pressScale, pressTime, Interpolation.fastSlow),
-            Actions.color(Color(pressDim, pressDim, pressDim, 1f), pressTime)
-        ))
+        image.clearActions()
+        addAction(Actions.scaleTo(pressScale, pressScale, pressTime, Interpolation.fastSlow))
+        image.addAction(Actions.color(Color(pressDim, pressDim, pressDim, 1f), pressTime))
     }
 
     override fun unpress() {
         clearActions()
-        addAction(Actions.parallel(
-            Actions.scaleTo(1f, 1f, unpressTime, Interpolation.fastSlow),
-            Actions.color(Color.WHITE, unpressTime)
-        ))
+        image.clearActions()
+        addAction(Actions.scaleTo(1f, 1f, unpressTime, Interpolation.fastSlow))
+        image.addAction(Actions.color(Color.WHITE, unpressTime))
     }
 
     override fun disable() {
         touchable = Touchable.disabled
-        clearActions()
-        addAction(Actions.color(Color(0.5f, 0.5f, 0.5f, 1f), 0.15f))
+        image.clearActions()
+        image.addAction(Actions.color(Color(0.5f, 0.5f, 0.5f, 1f), 0.15f))
     }
 
     override fun enable() {
         touchable = Touchable.enabled
-        clearActions()
-        addAction(Actions.color(Color.WHITE, 0.15f))
+        image.clearActions()
+        image.addAction(Actions.color(Color.WHITE, 0.15f))
         unpress()
     }
 }
