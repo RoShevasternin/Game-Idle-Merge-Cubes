@@ -17,14 +17,13 @@ android {
         applicationId = "com.lewydo.idlemergecubes"
         minSdk = 24
         targetSdk = 36
-        versionCode = 13
-        versionName = "1.0.13-demo"
+        versionCode = 15
+        versionName = "2.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Field ------------------------------------------------------------------------
-        buildConfigField("String", "TIKTOK_APP_SECRET", "\"TT0bEVmoSXeW766VqfhNHCEmDlGsUEfc\"")
-        buildConfigField("String", "TIKTOK_APP_ID", "\"7634158979790340116\"")
+        //buildConfigField("String", "TIKTOK_APP_SECRET", "\"aaa\"")
     }
 
     buildTypes {
@@ -36,7 +35,7 @@ android {
             // Field ------------------------------------------------------------------------
             manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
             buildConfigField("String", "ADMOB_BANNER_ID", "\"ca-app-pub-3940256099942544/9214589741\"")
-            //buildConfigField("String", "ADMOB_REWARDED_ID", "ca-app-pub-3940256099942544/5354046379")
+            buildConfigField("String", "ADMOB_REWARDED_ID", "\"ca-app-pub-3940256099942544/5224354917\"")
         }
         release {
             isMinifyEnabled = true
@@ -46,7 +45,7 @@ android {
             // Field ------------------------------------------------------------------------
             manifestPlaceholders["admobAppId"] = "ca-app-pub-4052300465234748~1065877728"
             buildConfigField("String", "ADMOB_BANNER_ID", "\"ca-app-pub-4052300465234748/7968396645\"")
-            //buildConfigField("String", "ADMOB_REWARDED_ID", "\"твій_реальний_rewarded_id\"")
+            buildConfigField("String", "ADMOB_REWARDED_ID", "\"ca-app-pub-4052300465234748/2555968037\"")
         }
     }
     compileOptions {
@@ -89,7 +88,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.2.1")
 
     // LibGDX ------------------------------------------------------------------------
-    val gdxVersion = "1.14.0"
+    val gdxVersion = "1.14.1"
     implementation("com.badlogicgames.gdx:gdx-backend-android:$gdxVersion")
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a")
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a")
@@ -106,21 +105,24 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.13.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.14.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
 
     // TikTok
-    implementation("com.github.tiktok:tiktok-business-android-sdk:1.6.0")
+    implementation("com.github.tiktok:tiktok-business-android-sdk:1.6.1")
+
+    // Billing
+    implementation("com.android.billingclient:billing-ktx:9.0.0")
 
     // Install Referrer
     implementation("com.android.installreferrer:installreferrer:2.2")
 
-    // Billing
-    implementation("com.android.billingclient:billing-ktx:8.3.0")
-
     // AdMob
-    implementation("com.google.android.gms:play-services-ads:25.2.0")
+    implementation("com.google.android.gms:play-services-ads:25.3.0")
+
+    // Gson (парсинг JSON з Gist)
+    implementation("com.google.code.gson:gson:2.14.0")
 }
 
 tasks.register("copyAndroidNatives") {

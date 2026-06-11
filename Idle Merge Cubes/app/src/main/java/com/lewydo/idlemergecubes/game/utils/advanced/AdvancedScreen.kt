@@ -26,13 +26,13 @@ import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.game.utils.font.FontGenerator
 import com.lewydo.idlemergecubes.game.utils.font.FontGenerator.Companion.FontPath
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.vfx.RenderPipeline
 import com.lewydo.idlemergecubes.util.cancelCoroutinesAll
 import com.lewydo.idlemergecubes.util.currentClassName
 import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlin.text.toFloat
 
 abstract class AdvancedScreen(
     val WIDTH : Float = WIDTH_UI,
@@ -45,16 +45,16 @@ abstract class AdvancedScreen(
     val viewportUI by lazy { ExtendViewport(WIDTH, HEIGHT) }
     val stageUI    by lazy { AdvancedStage(viewportUI) }
 
-    val safeTopPX    get() = MainActivity.statusBarHeight
-    val safeBottomPX get() = MainActivity.navBarHeight
+    val safeStatusBarPX get() = MainActivity.statusBarHeight
+    val safeNavBarPX    get() = MainActivity.navBarHeight
 
     val screenWidthPX  get() = Gdx.graphics.width
     val screenHeightPX get() = Gdx.graphics.height
 
     private val scaleScreenToUiY: Float get() = (viewportUI.worldHeight / screenHeightPX)
 
-    val safeTopUI    get() = safeTopPX * scaleScreenToUiY
-    val safeBottomUI get() = safeBottomPX * scaleScreenToUiY
+    val safeStatusBarUI get() = safeStatusBarPX * scaleScreenToUiY
+    val safeNavBarUI    get() = safeNavBarPX * scaleScreenToUiY
 
     val inputMultiplexer = InputMultiplexer()
 
@@ -129,6 +129,8 @@ abstract class AdvancedScreen(
         inputMultiplexer.clear()
         cancelCoroutinesAll(coroutine)
         coroutine = null
+
+        GlobalStagePositions.clear()
     }
 
     override fun keyDown(keycode: Int): Boolean {

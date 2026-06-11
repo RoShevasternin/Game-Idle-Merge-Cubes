@@ -50,13 +50,13 @@ class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
     }
 
     private fun showBuyHint() {
-        val pos = GlobalStagePositions.get(GlobalStagePositions.Position.BUY_BTN)
+        val pos = GlobalStagePositions.get(GlobalStagePositions.Key.BUY_BTN)
         aHand.showTap(pos.x, pos.y)
     }
 
     private fun showMergeHint() {
-        val from = GlobalStagePositions.get(GlobalStagePositions.Position.CUBE_0)
-        val to   = GlobalStagePositions.get(GlobalStagePositions.Position.CUBE_1)
+        val from = GlobalStagePositions.get(GlobalStagePositions.Key.CUBE_0)
+        val to   = GlobalStagePositions.get(GlobalStagePositions.Key.CUBE_1)
         if (from.isZero || to.isZero) return
         aHand.showDrag(from, to)
     }

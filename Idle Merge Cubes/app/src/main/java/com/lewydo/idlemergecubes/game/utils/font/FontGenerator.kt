@@ -1,33 +1,52 @@
 package com.lewydo.idlemergecubes.game.utils.font
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.PixmapPacker
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.utils.Disposable
 import com.lewydo.idlemergecubes.game.utils.disposeAll
 
-class FontGenerator(fontPath: FontPath): FreeTypeFontGenerator(Gdx.files.internal(fontPath.path)) {
+class FontGenerator(fontPath: FontPath) : FreeTypeFontGenerator(Gdx.files.internal(fontPath.path)) {
 
     private val fontCache = mutableMapOf<String, BitmapFont>()
 
     override fun generateFont(parameter: FreeTypeFontParameter): BitmapFont {
-        // захист від розміру < 4
+        // Захист від розміру < 4
         if (parameter.size < 4) parameter.size = 4
 
-        // захист від відсутності великої літери
+        // Захист від відсутності великої літери
         if (!parameter.characters.any { it in 'A'..'Z' }) {
             parameter.characters += "A"
         }
 
-        val key  = buildCacheKey(parameter)  // ← після модифікації
-        val font = fontCache.getOrPut(key) { super.generateFont(parameter) }
+        val key = buildCacheKey(parameter)
 
-        return font
+        return fontCache.getOrPut(key) {
+            // LibGDX дефолт = 512×512 — для великих шрифтів цього мало.
+            // Гліф 264px + shadow 10px + border 3px ≈ 290px — не влізає в 512.
+            val pageSize = when {
+                parameter.size >= 200 -> 4096
+                parameter.size >= 80  -> 2048
+                else                  -> 1024
+            }
+
+            val packer = PixmapPacker(pageSize, pageSize, Pixmap.Format.RGBA8888, 2, false)
+            parameter.packer = packer
+
+            val font = super.generateFont(parameter)
+
+            // Після генерації дані скопійовані в текстури — packer більше не потрібен
+            packer.dispose()
+            parameter.packer = null
+
+            font
+        }
     }
 
-    private fun buildCacheKey(p: FreeTypeFontParameter): String {
-        return "${p.size}_${p.borderWidth}_${p.borderColor}_${p.shadowOffsetX}_${p.shadowOffsetY}_${p.characters.length}"
-    }
+    private fun buildCacheKey(p: FreeTypeFontParameter): String =
+        "${p.size}_${p.borderWidth}_${p.borderColor}_${p.shadowOffsetX}_${p.shadowOffsetY}_${p.characters.length}"
 
     override fun dispose() {
         super.dispose()
@@ -45,5 +64,4 @@ class FontGenerator(fontPath: FontPath): FreeTypeFontGenerator(Gdx.files.interna
             Nunito_SemiBold  ("font/Nunito-SemiBold.ttf"),
         }
     }
-
 }

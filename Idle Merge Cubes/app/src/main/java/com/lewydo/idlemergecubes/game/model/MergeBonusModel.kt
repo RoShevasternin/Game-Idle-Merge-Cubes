@@ -61,17 +61,17 @@ class MergeBonusModel(
     fun collect() {
         val reward = currentReward
         if (reward <= 0) return
-        gdxGame.analytics.collectIdle(reward.toLong())
         playerModel.addCoins(reward.toLong())
         reset()
+        gdxGame.analytics.collectMergeBonus(reward.toLong())
     }
 
     fun collectX2() {
         val reward = currentReward
         if (reward <= 0) return
-        gdxGame.analytics.collectIdleX2((reward * 2).toLong())
         playerModel.addCoins((reward * 2).toLong())
         reset()
+        gdxGame.analytics.collectMergeBonusX2(reward.toLong() * 2)
     }
 
     // ------------------------------------------------------------------------

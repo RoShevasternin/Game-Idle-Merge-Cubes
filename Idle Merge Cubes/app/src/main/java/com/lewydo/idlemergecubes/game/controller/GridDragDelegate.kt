@@ -1,10 +1,10 @@
 package com.lewydo.idlemergecubes.game.controller
 
 import com.badlogic.gdx.math.Vector2
-import com.lewydo.idlemergecubes.game.actors.panelGrid.ACell
-import com.lewydo.idlemergecubes.game.actors.panelGrid.ACellLayer
-import com.lewydo.idlemergecubes.game.actors.panelGrid.ACube
-import com.lewydo.idlemergecubes.game.actors.panelGrid.ACubeLayer
+import com.lewydo.idlemergecubes.game.actors.panel.grid.ACell
+import com.lewydo.idlemergecubes.game.actors.panel.grid.ACellLayer
+import com.lewydo.idlemergecubes.game.actors.panel.grid.ACube
+import com.lewydo.idlemergecubes.game.actors.panel.grid.ACubeLayer
 import com.lewydo.idlemergecubes.game.utils.currentTimeMinus
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 

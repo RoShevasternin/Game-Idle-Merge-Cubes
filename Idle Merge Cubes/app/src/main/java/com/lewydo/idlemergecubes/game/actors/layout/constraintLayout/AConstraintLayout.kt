@@ -6,33 +6,75 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 
 // ═════════════════════════════════════════════════════════════════════════════
-//  AConstraintLayout
+//  AConstraintLayout  —  оптимізована версія (push-модель + кешовані anchors)
 //
-//  ConstraintLayout для libGDX.
-//  Підтримує: позиціонування, розміри (FIXED / MATCH_PARENT / PERCENT),
-//  snapshot-detection (реагує на зміну розміру anchor-ів і самого layout).
+//  ОПТИМІЗАЦІЇ:
+//    1. anyDirty прапорець     — act() виходить за 1 перевірку якщо нічого не змінилось
+//    2. Node.anchors кеш       — allAnchors() не створює новий List кожен виклик
+//    3. anchorSnapshots        — відстежуємо тільки зовнішні anchor-и, не всіх акторів
+//    4. hasExternalAnchors     — checkAnchors() пропускається якщо нема зовнішніх anchor-ів
+//    5. markDependentsDirty    — dirty тільки залежні від зміненого anchor
+//    6. isLayouting guard      — захист від рекурсії layout() → setSize → sizeChanged → layout()
+//    7. node.dirty = false ДО resolveNode — якщо resolve знову помітить dirty, він піде в чергу
+//    8. Нуль алокацій hot path — ArrayList reuse, removeNodesWithAnchor без filter/map
+//    9. childSnapshots         — відстежуємо розміри дітей (для HUG дітей типу AAutoLayout)
 //
 //  ПОРЯДОК LAYOUT ДЛЯ КОЖНОГО АКТОРА:
 //    1. Виставити розмір (dimension resolution)
 //    2. Виставити позицію (constraint resolution)
 //
 //  ВАЖЛИВО: якщо B залежить від A → add(A) перед add(B).
+//  PUBLIC API — ідентичний попередній версії, клієнтський код не треба міняти.
 // ═════════════════════════════════════════════════════════════════════════════
 
 open class AConstraintLayout(override val screen: AdvancedScreen) : AdvancedGroup() {
 
-    private val rules           = LinkedHashMap<Actor, CLParams>()
-    private val snapshots       = HashMap<Actor, FloatArray>()
-    private var snapshotEntries = emptyList<Pair<Actor, FloatArray>>()
+    // ── Внутрішній вузол ──────────────────────────────────────────────────────
+    private class Node(val actor: Actor, val params: CLParams) {
+        var dirty: Boolean = true
 
-    init { watch(this) }
+        // Кешований список anchor-ів — оновлюється тільки в add() і update()
+        // В hot path (markDependentsDirty, isUsedAsAnchor) — нуль алокацій
+        var anchors: List<Actor> = params.allAnchors()
+            private set
+
+        fun refreshAnchors() {
+            anchors = params.allAnchors()
+        }
+    }
+
+    // LinkedHashMap — зберігає порядок додавання (важливо: B залежить від A)
+    private val nodes = LinkedHashMap<Actor, Node>()
+
+    // Черга вузлів що потребують перерахунку
+    private val dirtyQueue = ArrayDeque<Node>()
+
+    // Швидкий прапорець — чи є взагалі що обробляти цього кадру
+    private var anyDirty = false
+
+    // Захист від рекурсії: layout() → resolveNode → setSize → sizeChanged → layout()
+    private var isLayouting = false
+
+    // Snapshot-и тільки для ЗОВНІШНІХ anchor-ів (не this)
+    // layout (this) відстежується через sizeChanged() — без snapshot
+    private val anchorSnapshots = HashMap<Actor, FloatArray>()
+    private val anchorActorsList = ArrayList<Actor>()
+    private val anchorArraysList = ArrayList<FloatArray>()
+
+    // Оптимізація: якщо нема зовнішніх anchor-ів — checkAnchors() не викликається взагалі
+    private var hasExternalAnchors = false
+
+    // Snapshot-и для дітей layout — відстежуємо зміни їх розміру.
+    // Потрібно для HUG дітей (наприклад AAutoLayout) — коли дитина змінює розмір,
+    // її позиція (center, topToBottom тощо) має автоматично перерахуватись.
+    private val childSnapActors = ArrayList<Actor>()
+    private val childSnapArrays = ArrayList<FloatArray>()
 
     // ── Public API ────────────────────────────────────────────────────────────
 
     fun add(actor: Actor, block: CLParams.() -> Unit): Actor {
         val params = CLParams(this).apply(block)
 
-        // Розмір потрібен тільки якщо FIXED — інакше він виставляється в layout()
         if (params.widthMode == Dimension.FIXED && params.heightMode == Dimension.FIXED) {
             require(actor.width > 0f || actor.height > 0f) {
                 "AConstraintLayout.add(): встанови setSize() або використай fillParent()/fillWidth()/fillHeight().\n" +
@@ -40,115 +82,131 @@ open class AConstraintLayout(override val screen: AdvancedScreen) : AdvancedGrou
             }
         }
 
-        rules[actor] = params
+        val node = Node(actor, params)
+        nodes[actor] = node
+
+        // Реєструємо тільки зовнішні anchor-и (this відстежується через sizeChanged)
+        node.anchors.forEach { anchor ->
+            if (anchor !== this) watchAnchor(anchor)
+        }
+
         addActor(actor)
-        watch(actor)
-        params.allAnchors().forEach { watch(it) }
-        rebuildSnapshotEntries()
+        watchChild(actor) // відстежуємо розмір дитини
 
         // Виставляємо розмір і позицію одразу — без кадру затримки
-        applyDimension(actor, params)
-        applyPosition(actor, params)
+        resolveNode(node)
+        node.dirty = false
+
         return actor
     }
 
     fun update(actor: Actor, block: CLParams.() -> Unit) {
-        val params = rules[actor] ?: CLParams(this)
-        params.apply(block)
-        rules[actor] = params
-        params.allAnchors().forEach { watch(it) }
-        rebuildSnapshots()
-        applyDimension(actor, params)
-        applyPosition(actor, params)
+        val node = nodes[actor] ?: return
+        node.params.apply(block)
+        node.refreshAnchors()
+        node.anchors.forEach { anchor ->
+            if (anchor !== this) watchAnchor(anchor)
+        }
+        resolveNode(node)
+        node.dirty = false
     }
 
     fun detach(actor: Actor) {
-        rules.remove(actor)
-        rebuildSnapshots()
+        nodes.remove(actor)
+        // Не викликаємо markDependentsDirty — actor вже видалений,
+        // залежні від нього отримають некоректну позицію однаково.
+        // Якщо потрібно — caller сам оновить залежних через update().
     }
 
     fun clearConstrained() {
-        rules.clear()
-        snapshots.clear()
-        snapshotEntries = emptyList()
-        watch(this)
+        nodes.clear()
+        dirtyQueue.clear()
+        anyDirty = false
+        anchorSnapshots.clear()
+        anchorActorsList.clear()
+        anchorArraysList.clear()
+        hasExternalAnchors = false
+        childSnapActors.clear()
+        childSnapArrays.clear()
         clearChildren()
     }
 
-    // ── removeActor — каскадне очищення ──────────────────────────────────────
-
     override fun removeActor(actor: Actor): Boolean {
-        if (isUsedAsAnchor(actor)) removeRulesWithAnchor(actor)
-        rules.remove(actor)
-        rebuildSnapshots()
+        if (isUsedAsAnchor(actor)) removeNodesWithAnchor(actor)
+        nodes.remove(actor)
+        unWatchChild(actor)
         return super.removeActor(actor)
     }
 
     override fun addActorsOnGroup() {}
 
-    // ── act(): snapshot detection ─────────────────────────────────────────────
+    // ── sizeChanged: розмір layout змінився ──────────────────────────────────
+
+    override fun sizeChanged() {
+        super.sizeChanged()
+        if (isLayouting) return
+        if (nodes.isNotEmpty()) {
+            nodes.values.forEach { scheduleDirty(it) }
+        }
+    }
+
+    // ── act(): тільки dirty вузли ─────────────────────────────────────────────
 
     override fun act(delta: Float) {
         super.act(delta)
-        if (rules.isEmpty()) return
 
-        var dirty = false
-        for ((actor, snap) in snapshotEntries) {
-            if (snap[0] != actor.x     || snap[1] != actor.y ||
-                snap[2] != actor.width || snap[3] != actor.height) {
-                snap[0] = actor.x;     snap[1] = actor.y
-                snap[2] = actor.width; snap[3] = actor.height
-                dirty = true
-            }
+        // Перевіряємо чи змінився розмір якоїсь дитини (наприклад AAutoLayout з HUG)
+        checkChildren()
+
+        if (hasExternalAnchors) checkAnchors()
+
+        if (!anyDirty) return
+
+        isLayouting = true
+        while (dirtyQueue.isNotEmpty()) {
+            val node = dirtyQueue.removeFirst()
+            if (!node.dirty) continue
+            node.dirty = false
+            resolveNode(node)
         }
-        if (dirty) invalidate()
+        isLayouting = false
+
+        anyDirty = dirtyQueue.isNotEmpty()
     }
 
-    // ── layout(): розмір → позиція ────────────────────────────────────────────
-    //
-    // Порядок важливий:
-    //   1. applyDimension — актор отримує правильний розмір
-    //   2. applyPosition  — позиція рахується вже з правильним розміром
-
+    // layout() — LibGDX може викликати після invalidate() або зміни розміру.
     override fun layout() {
-        rules.forEach { (actor, params) ->
-            applyDimension(actor, params)
-            applyPosition(actor, params)
+        if (isLayouting) return
+        isLayouting = true
+        nodes.values.forEach { node ->
+            node.dirty = false
+            resolveNode(node)
         }
+        dirtyQueue.clear()
+        anyDirty = false
+        isLayouting = false
+    }
 
-        GlobalEvents.emit(GlobalEvents.EventType.CONSTRAINT_LAYOUT_COMPLETE)
+    // ── Resolve: розмір → позиція ─────────────────────────────────────────────
+
+    private fun resolveNode(node: Node) {
+        applyDimension(node.actor, node.params)
+        applyPosition(node.actor, node.params)
     }
 
     // ── Dimension resolution ──────────────────────────────────────────────────
-    //
-    // MATCH_CONSTRAINT: розмір = відстань між двома anchor-ами.
-    //
-    //   matchHeight() + topToBottom(A) + bottomToBottom():
-    //     top boundary  = edgeBottom(A) - marginTop
-    //     bottom boundary = edgeBottom(layout) + marginBottom = 0 + marginBottom
-    //     height = top boundary - bottom boundary
-    //
-    //   matchWidth() + startToStart() + endToEnd(margin=40):
-    //     left boundary  = edgeLeft(layout) + marginStart = 0 + marginStart
-    //     right boundary = edgeRight(layout) - marginEnd
-    //     width = right boundary - left boundary
-    //
-    // ВАЖЛИВО: applyDimension викликається ДО applyPosition.
-    //   Тому margin з constraint-ів враховуються і в розмірі і в позиції.
-    //   Не треба дублювати margin — вони застосовуються один раз в applyDimension,
-    //   а applyPosition просто виставляє x/y від anchor без margin (бо розмір вже вірний).
 
     private fun applyDimension(actor: Actor, p: CLParams) {
         val newW = when (p.widthMode) {
-            Dimension.FIXED            -> actor.width
-            Dimension.MATCH_PARENT     -> width
-            Dimension.PERCENT          -> width * p.widthPercent
+            Dimension.FIXED -> actor.width
+            Dimension.MATCH_PARENT -> width
+            Dimension.PERCENT -> width * p.widthPercent
             Dimension.MATCH_CONSTRAINT -> resolveMatchWidth(p)
         }
         val newH = when (p.heightMode) {
-            Dimension.FIXED            -> actor.height
-            Dimension.MATCH_PARENT     -> height
-            Dimension.PERCENT          -> height * p.heightPercent
+            Dimension.FIXED -> actor.height
+            Dimension.MATCH_PARENT -> height
+            Dimension.PERCENT -> height * p.heightPercent
             Dimension.MATCH_CONSTRAINT -> resolveMatchHeight(p)
         }
         if (newW != actor.width || newH != actor.height) {
@@ -156,32 +214,30 @@ open class AConstraintLayout(override val screen: AdvancedScreen) : AdvancedGrou
         }
     }
 
-    // Ширина між startTo* і endTo* anchor-ами з урахуванням margin
     private fun resolveMatchWidth(p: CLParams): Float {
         val left = when {
-            p.startToStartActor != null -> edgeLeft(p.startToStartActor!!)  + p.marginStart
-            p.startToEndActor   != null -> edgeRight(p.startToEndActor!!)   + p.marginStart
-            else                        -> p.marginStart
+            p.startToStartActor != null -> edgeLeft(p.startToStartActor!!) + p.marginStart
+            p.startToEndActor != null -> edgeRight(p.startToEndActor!!) + p.marginStart
+            else -> p.marginStart
         }
         val right = when {
-            p.endToEndActor   != null -> edgeRight(p.endToEndActor!!)  - p.marginEnd
+            p.endToEndActor != null -> edgeRight(p.endToEndActor!!) - p.marginEnd
             p.endToStartActor != null -> edgeLeft(p.endToStartActor!!) - p.marginEnd
-            else                      -> width - p.marginEnd
+            else -> width - p.marginEnd
         }
         return (right - left).coerceAtLeast(0f)
     }
 
-    // Висота між topTo* і bottomTo* anchor-ами з урахуванням margin
     private fun resolveMatchHeight(p: CLParams): Float {
         val top = when {
-            p.topToTopActor    != null -> edgeTop(p.topToTopActor!!)       - p.marginTop
+            p.topToTopActor != null -> edgeTop(p.topToTopActor!!) - p.marginTop
             p.topToBottomActor != null -> edgeBottom(p.topToBottomActor!!) - p.marginTop
-            else                       -> height - p.marginTop
+            else -> height - p.marginTop
         }
         val bottom = when {
             p.bottomToBottomActor != null -> edgeBottom(p.bottomToBottomActor!!) + p.marginBottom
-            p.bottomToTopActor    != null -> edgeTop(p.bottomToTopActor!!)       + p.marginBottom
-            else                          -> p.marginBottom
+            p.bottomToTopActor != null -> edgeTop(p.bottomToTopActor!!) + p.marginBottom
+            else -> p.marginBottom
         }
         return (top - bottom).coerceAtLeast(0f)
     }
@@ -195,114 +251,167 @@ open class AConstraintLayout(override val screen: AdvancedScreen) : AdvancedGrou
     private fun resolveX(actor: Actor, p: CLParams): Float {
         val w = actor.width
 
-        // MATCH_CONSTRAINT: x = left_boundary
-        // Розмір вже = right_boundary - left_boundary, тому просто ставимо від лівого краю
         if (p.widthMode == Dimension.MATCH_CONSTRAINT) {
             return when {
-                p.startToStartActor != null -> edgeLeft(p.startToStartActor!!)  + p.marginStart
-                p.startToEndActor   != null -> edgeRight(p.startToEndActor!!)   + p.marginStart
-                else                        -> p.marginStart
+                p.startToStartActor != null -> edgeLeft(p.startToStartActor!!) + p.marginStart
+                p.startToEndActor != null -> edgeRight(p.startToEndActor!!) + p.marginStart
+                else -> p.marginStart
             }
         }
 
-        // FIXED / MATCH_PARENT / PERCENT — стандартна логіка
         val startX: Float? = when {
-            p.startToStartActor != null -> edgeLeft(p.startToStartActor!!)  + p.marginStart
-            p.startToEndActor   != null -> edgeRight(p.startToEndActor!!)   + p.marginStart
+            p.startToStartActor != null -> edgeLeft(p.startToStartActor!!) + p.marginStart
+            p.startToEndActor != null -> edgeRight(p.startToEndActor!!) + p.marginStart
             else -> null
         }
         val endX: Float? = when {
-            p.endToEndActor   != null -> edgeRight(p.endToEndActor!!)  - w - p.marginEnd
+            p.endToEndActor != null -> edgeRight(p.endToEndActor!!) - w - p.marginEnd
             p.endToStartActor != null -> edgeLeft(p.endToStartActor!!) - w - p.marginEnd
             else -> null
         }
         return when {
             startX != null && endX != null -> startX + (endX - startX) * p.horizontalBias
-            startX != null                 -> startX
-            endX   != null                 -> endX
-            else                           -> actor.x
+            startX != null -> startX
+            endX != null -> endX
+            else -> actor.x
         }
     }
 
     private fun resolveY(actor: Actor, p: CLParams): Float {
         val h = actor.height
 
-        // MATCH_CONSTRAINT: y = bottom_boundary
-        // Розмір вже = top_boundary - bottom_boundary, тому просто ставимо від нижнього краю
         if (p.heightMode == Dimension.MATCH_CONSTRAINT) {
             return when {
                 p.bottomToBottomActor != null -> edgeBottom(p.bottomToBottomActor!!) + p.marginBottom
-                p.bottomToTopActor    != null -> edgeTop(p.bottomToTopActor!!)       + p.marginBottom
-                else                          -> p.marginBottom
+                p.bottomToTopActor != null -> edgeTop(p.bottomToTopActor!!) + p.marginBottom
+                else -> p.marginBottom
             }
         }
 
-        // FIXED / MATCH_PARENT / PERCENT — стандартна логіка
         val bottomY: Float? = when {
             p.bottomToBottomActor != null -> edgeBottom(p.bottomToBottomActor!!) + p.marginBottom
-            p.bottomToTopActor    != null -> edgeTop(p.bottomToTopActor!!)       + p.marginBottom
+            p.bottomToTopActor != null -> edgeTop(p.bottomToTopActor!!) + p.marginBottom
             else -> null
         }
         val topY: Float? = when {
-            p.topToTopActor    != null -> edgeTop(p.topToTopActor!!)       - h - p.marginTop
+            p.topToTopActor != null -> edgeTop(p.topToTopActor!!) - h - p.marginTop
             p.topToBottomActor != null -> edgeBottom(p.topToBottomActor!!) - h - p.marginTop
             else -> null
         }
         return when {
             bottomY != null && topY != null -> bottomY + (topY - bottomY) * p.verticalBias
-            bottomY != null                 -> bottomY
-            topY    != null                 -> topY
-            else                            -> actor.y
+            bottomY != null -> bottomY
+            topY != null -> topY
+            else -> actor.y
         }
     }
 
     // ── Edge helpers ──────────────────────────────────────────────────────────
 
-    private fun edgeLeft(a: Actor)   = if (a === this) 0f     else a.x
-    private fun edgeRight(a: Actor)  = if (a === this) width  else a.x + a.width
-    private fun edgeBottom(a: Actor) = if (a === this) 0f     else a.y
-    private fun edgeTop(a: Actor)    = if (a === this) height else a.y + a.height
+    private fun edgeLeft(a: Actor) = if (a === this) 0f else a.x
+    private fun edgeRight(a: Actor) = if (a === this) width else a.x + a.width
+    private fun edgeBottom(a: Actor) = if (a === this) 0f else a.y
+    private fun edgeTop(a: Actor) = if (a === this) height else a.y + a.height
 
-    // ── Snapshot management ───────────────────────────────────────────────────
+    // ── Anchor watching ───────────────────────────────────────────────────────
 
-    private fun watch(actor: Actor) {
-        snapshots.getOrPut(actor) {
-            floatArrayOf(actor.x, actor.y, actor.width, actor.height)
+    private fun watchAnchor(anchor: Actor) {
+        if (anchor in anchorSnapshots) return
+        val snap = floatArrayOf(anchor.x, anchor.y, anchor.width, anchor.height)
+        anchorSnapshots[anchor] = snap
+        anchorActorsList.add(anchor)
+        anchorArraysList.add(snap)
+        hasExternalAnchors = true
+    }
+
+    private fun checkAnchors() {
+        for (i in anchorActorsList.indices) {
+            val anchor = anchorActorsList[i]
+            val snap = anchorArraysList[i]
+            if (snap[0] != anchor.x || snap[1] != anchor.y ||
+                snap[2] != anchor.width || snap[3] != anchor.height
+            ) {
+                snap[0] = anchor.x; snap[1] = anchor.y
+                snap[2] = anchor.width; snap[3] = anchor.height
+                markDependentsDirty(anchor)
+            }
         }
     }
 
-    private fun rebuildSnapshots() {
-        snapshots.clear()
-        watch(this)
-        rules.forEach { (actor, params) ->
-            watch(actor)
-            params.allAnchors().forEach { watch(it) }
-        }
-        rebuildSnapshotEntries()
+    // ── Child watching ────────────────────────────────────────────────────────
+    // Відстежуємо зміни розміру дітей — необхідно коли дитина сама змінює свій
+    // розмір (наприклад AAutoLayout з sizingW/H = HUG). В такому разі позиція
+    // дитини (center, topToBottom тощо) має автоматично перерахуватись.
+
+    private fun watchChild(actor: Actor) {
+        if (actor in childSnapActors) return
+        childSnapActors.add(actor)
+        childSnapArrays.add(floatArrayOf(actor.width, actor.height))
     }
 
-    private fun rebuildSnapshotEntries() {
-        snapshotEntries = snapshots.entries.map { it.key to it.value }
+    private fun unWatchChild(actor: Actor) {
+        val i = childSnapActors.indexOf(actor)
+        if (i >= 0) {
+            childSnapActors.removeAt(i); childSnapArrays.removeAt(i)
+        }
+    }
+
+    private fun checkChildren() {
+        for (i in childSnapActors.indices) {
+            val actor = childSnapActors[i]
+            val snap = childSnapArrays[i]
+            if (snap[0] != actor.width || snap[1] != actor.height) {
+                snap[0] = actor.width
+                snap[1] = actor.height
+                // Помічаємо цей actor dirty — його позиція залежить від його розміру
+                nodes[actor]?.let { scheduleDirty(it) }
+                // Помічаємо всіх хто використовує цей actor як anchor
+                markDependentsDirty(actor)
+            }
+        }
+    }
+
+    // ── Dirty propagation ─────────────────────────────────────────────────────
+
+    private fun markDependentsDirty(changedAnchor: Actor) {
+        nodes.values.forEach { node ->
+            if (changedAnchor in node.anchors) scheduleDirty(node)
+        }
+    }
+
+    private fun scheduleDirty(node: Node) {
+        if (!node.dirty) {
+            node.dirty = true
+            dirtyQueue.addLast(node)
+            anyDirty = true
+        }
     }
 
     // ── Anchor safety ─────────────────────────────────────────────────────────
 
     private fun isUsedAsAnchor(actor: Actor): Boolean =
-        rules.values.any { actor in it.allAnchors() }
+        nodes.values.any { actor in it.anchors }
 
-    private fun removeRulesWithAnchor(anchor: Actor) {
-        rules.entries
-            .filter { (_, p) -> anchor in p.allAnchors() }
-            .map    { it.key }
-            .forEach { rules.remove(it) }
+    private fun removeNodesWithAnchor(anchor: Actor) {
+        val toRemove = ArrayList<Actor>()
+        nodes.forEach { (key, node) ->
+            if (anchor in node.anchors) toRemove.add(key)
+        }
+        toRemove.forEach { nodes.remove(it) }
     }
 
     // ── Dispose ───────────────────────────────────────────────────────────────
 
     override fun dispose() {
-        rules.clear()
-        snapshots.clear()
-        snapshotEntries = emptyList()
+        nodes.clear()
+        dirtyQueue.clear()
+        anchorSnapshots.clear()
+        anchorActorsList.clear()
+        anchorArraysList.clear()
+        anyDirty = false
+        hasExternalAnchors = false
+        childSnapActors.clear()
+        childSnapArrays.clear()
         super.dispose()
     }
 }

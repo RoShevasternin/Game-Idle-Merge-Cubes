@@ -403,36 +403,6 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">idle_progress.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>387,15,774,29</rect>
-                <key>scale9Paddings</key>
-                <rect>387,15,774,29</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">idle_progress_background.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>393,20,787,39</rect>
-                <key>scale9Paddings</key>
-                <rect>393,20,787,39</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
             <key type="filename">lock.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -511,6 +481,21 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">progress_background_merge_bonus.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>197,10,393,19</rect>
+                <key>scale9Paddings</key>
+                <rect>197,10,393,19</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">progress_buy_hint.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -538,6 +523,21 @@
                 <rect>255,5,510,10</rect>
                 <key>scale9Paddings</key>
                 <rect>255,5,510,10</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">progress_merge_bonus.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>194,8,387,15</rect>
+                <key>scale9Paddings</key>
+                <rect>194,8,387,15</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

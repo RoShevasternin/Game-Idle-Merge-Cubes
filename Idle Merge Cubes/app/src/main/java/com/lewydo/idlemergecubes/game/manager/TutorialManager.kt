@@ -32,7 +32,6 @@ class TutorialManager(private val playerModel: PlayerModel) {
     fun onMergeDone() {
         if (currentStep != Step.MERGE) return
         gdxGame.analytics.tutorialComplete()
-        TikTokManager.tutorialComplete()
         saveStep(Step.DONE)
     }
 

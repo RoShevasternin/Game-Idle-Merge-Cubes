@@ -166,7 +166,7 @@ class LoaderScreen : AdvancedScreen() {
     }
 
     private fun isFinish() {
-        if (isFinishProgress) {
+        if (isFinishLoading && isFinishProgress) {
             isFinishProgress = false
 
             gdxGame.musicUtil.apply { currentMusic = MAIN.apply {

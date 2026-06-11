@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.utils.Disposable
+import com.lewydo.idlemergecubes.game.utils.actor.disable
 
 open class AParticleEffectActor(
     val particleEffect: ParticleEffect,
@@ -192,6 +193,8 @@ open class AParticleEffectActor(
     // ------------------------------------------------------------------------
 
     fun start(isResetOnStart: Boolean = false) {
+        disable()
+
         resetOnStart = isResetOnStart
         if (resetOnStart) {
             particleEffect.reset(false)

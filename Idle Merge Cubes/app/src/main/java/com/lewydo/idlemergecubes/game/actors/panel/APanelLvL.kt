@@ -63,15 +63,10 @@ class APanelLvL(override val screen: AdvancedScreen) : AdvancedGroup() {
 
         collectLevel()
         collectXp()
-        collectLayoutComplete()
         collectShakeEvent()
         handleClick()
-    }
 
-    // Реєструємо позицію коли наш батько APanelTop змінює нашу локальну позицію
-    override fun positionChanged() {
-        super.positionChanged()
-        if (stage != null) registerStagePosition()
+        registerStagePosition()
     }
 
     // ------------------------------------------------------------------------
@@ -129,15 +124,6 @@ class APanelLvL(override val screen: AdvancedScreen) : AdvancedGroup() {
         }
     }
 
-    // Після resize → AConstraintLayout.layout() → позиції оновились → перереєстровуємо
-    private fun collectLayoutComplete() {
-        coroutine?.launch {
-            GlobalEvents.events
-                .filter { it == GlobalEvents.EventType.CONSTRAINT_LAYOUT_COMPLETE }
-                .collect { runGDX { registerStagePosition() } }
-        }
-    }
-
     private fun collectShakeEvent() {
         coroutine?.launch {
             GlobalEvents.events
@@ -157,10 +143,12 @@ class APanelLvL(override val screen: AdvancedScreen) : AdvancedGroup() {
     }
 
     private fun registerStagePosition() {
-        val pos = aPanelLvLImg.localToStageCoordinates(
-            Vector2(aPanelLvLImg.width / 2f, aPanelLvLImg.height / 2f)
+        GlobalStagePositions.register(
+            key      = GlobalStagePositions.Key.XP,
+            actor    = aPanelLvLImg,
+            offsetX  = aPanelLvLImg.width  / 2f,
+            offsetY  = aPanelLvLImg.height / 2f,
         )
-        GlobalStagePositions.register(GlobalStagePositions.Position.XP, pos.x, pos.y)
     }
 
     // ------------------------------------------------------------------------

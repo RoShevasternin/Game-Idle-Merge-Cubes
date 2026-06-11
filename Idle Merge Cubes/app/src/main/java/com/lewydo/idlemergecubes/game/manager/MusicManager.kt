@@ -18,6 +18,7 @@ class MusicManager(var assetManager: AssetManager) {
 
     enum class EnumMusic(val data: MusicData) {
         MAIN(MusicData("music/main.mp3")),
+        //NEW(MusicData("music/Supersub.mp3")),
     }
 
     data class MusicData(

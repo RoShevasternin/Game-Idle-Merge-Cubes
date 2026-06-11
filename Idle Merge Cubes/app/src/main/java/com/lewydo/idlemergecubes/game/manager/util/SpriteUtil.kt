@@ -78,10 +78,10 @@ class SpriteUtil {
         val progress_buy_hint       = getAllRegion("progress_buy_hint")
         val progress_frame_buy_hint = getAllRegion("progress_frame_buy_hint")
 
-        // Idle
-        val bag_coins                = getAllRegion("bag_coins")
-        val idle_progress            = getAllRegion("idle_progress")
-        val idle_progress_background = getAllRegion("idle_progress_background")
+        // Merge Bonus
+        val bag_coins                       = getAllRegion("bag_coins")
+        val progress_merge_bonus            = getAllRegion("progress_merge_bonus")
+        val progress_background_merge_bonus = getAllRegion("progress_background_merge_bonus")
 
         val listGlarePanelGame = List(4) { getAllRegion("glare_panel_game_${it.inc()}") }
 
@@ -130,6 +130,7 @@ class SpriteUtil {
         val progress_dialog_lvl_background = get9Patch("progress_dialog_lvl_background")
         val panel_settings                 = get9Patch("panel_settings")
         val panel_who                      = get9Patch("panel_who")
+        val panel_merge_bonus              = get9Patch("panel_merge_bonus")
         val separator                      = get9Patch("separator")
         val separator_2                    = get9Patch("separator_2")
 
@@ -156,16 +157,15 @@ class SpriteUtil {
         val VELDAN      = SpriteManager.EnumTexture.VELDAN.data.texture
 
         // MASK
-        val MASK_DIALOG_PROGRESS_LVL = SpriteManager.EnumTexture.MASK_DIALOG_PROGRESS_LVL.data.texture
-        val MASK_PROGRESS_IDLE       = SpriteManager.EnumTexture.MASK_PROGRESS_IDLE.data.texture
-        val MASK_DIALOG_OFFLINE      = SpriteManager.EnumTexture.MASK_DIALOG_OFFLINE.data.texture
-        val MASK_DIALOG_LEVEL_UP     = SpriteManager.EnumTexture.MASK_DIALOG_LEVEL_UP.data.texture
-        val MASK_PROGRESS_BUY_HINT   = SpriteManager.EnumTexture.MASK_PROGRESS_BUY_HINT.data.texture
+        val MASK_DIALOG_PROGRESS_LVL  = SpriteManager.EnumTexture.MASK_DIALOG_PROGRESS_LVL.data.texture
+        val MASK_PROGRESS_MERGE_BONUS = SpriteManager.EnumTexture.MASK_PROGRESS_MERGE_BONUS.data.texture
+        val MASK_DIALOG_OFFLINE       = SpriteManager.EnumTexture.MASK_DIALOG_OFFLINE.data.texture
+        val MASK_DIALOG_LEVEL_UP      = SpriteManager.EnumTexture.MASK_DIALOG_LEVEL_UP.data.texture
+        val MASK_PROGRESS_BUY_HINT    = SpriteManager.EnumTexture.MASK_PROGRESS_BUY_HINT.data.texture
 
         // PANEL
         val PANEL_TOP                = SpriteManager.EnumTexture.PANEL_TOP.data.texture
         val PANEL_GAME               = SpriteManager.EnumTexture.PANEL_GAME.data.texture
-        val PANEL_IDLE               = SpriteManager.EnumTexture.PANEL_IDLE.data.texture
         val PANEL_MENU               = SpriteManager.EnumTexture.PANEL_MENU.data.texture
         val PANEL_LEVEL_UP_BONUS     = SpriteManager.EnumTexture.PANEL_LEVEL_UP_BONUS.data.texture
 

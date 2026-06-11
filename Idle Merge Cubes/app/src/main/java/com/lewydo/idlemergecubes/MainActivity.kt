@@ -10,8 +10,12 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication
+import com.google.gson.Gson
 import com.lewydo.idlemergecubes.services.ads.AdManager
 import com.lewydo.idlemergecubes.databinding.ActivityMainBinding
+import com.lewydo.idlemergecubes.game.utils.GIST
+import com.lewydo.idlemergecubes.services.tiktok.RemoteConfigModel
+import com.lewydo.idlemergecubes.services.tiktok.TikTokManager
 import com.lewydo.idlemergecubes.util.OneTime
 import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.CoroutineScope
@@ -84,6 +88,7 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
         setContentView(binding.root)
 
         initializeAds()
+        fetchRemoteConfig { log("COMPLETE gist...") }
     }
 
     // ------------------------------------------------------------------------
@@ -136,6 +141,45 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
     private fun initializeAds() {
         adManager = AdManager(this, binding)
         adManager.initialize()
+    }
+
+    // ------------------------------------------------------------------------
+    // Services
+    // ------------------------------------------------------------------------
+    private fun fetchRemoteConfig(onComplete: (success: Boolean) -> Unit) {
+        Thread {
+            runCatching {
+                val url = java.net.URL(GIST)
+                val connection = url.openConnection() as java.net.HttpURLConnection
+                connection.connectTimeout = 5000
+                connection.readTimeout    = 5000
+                connection.requestMethod  = "GET"
+
+                val json = connection.inputStream.bufferedReader().readText()
+                connection.disconnect()
+
+                val model = Gson().fromJson(json, RemoteConfigModel::class.java)
+
+                if (BuildConfig.DEBUG) log("GIST JSON = $json")
+
+                runOnUiThread {
+                    initTikTok(model)
+                    onComplete(true)
+                }
+            }.onFailure {
+                log("Failed to fetch config: $it")
+                runOnUiThread { onComplete(false) }
+            }
+        }.start()
+    }
+
+    private fun initTikTok(model: RemoteConfigModel) {
+        val tiktok = model.tiktok
+        if (tiktok == null || !tiktok.isValid) {
+            log("TikTok config missing/invalid — skip init")
+            return
+        }
+        TikTokManager.initialize(application, tiktok.appIds, tiktok.secret!!)
     }
 
 }

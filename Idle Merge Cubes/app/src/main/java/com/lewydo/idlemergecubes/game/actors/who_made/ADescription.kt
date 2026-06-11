@@ -6,8 +6,7 @@ import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.R
 import com.lewydo.idlemergecubes.game.actors.AScrollPane
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
-import com.lewydo.idlemergecubes.game.actors.layout.AlignH
-import com.lewydo.idlemergecubes.game.actors.layout.linear.AVerticalGroup
+import com.lewydo.idlemergecubes.game.actors.layout.autoLayout.AAutoLayout
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
 import com.lewydo.idlemergecubes.game.utils.actor.setOnTouchListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
@@ -31,11 +30,12 @@ class ADescription(override val screen: AdvancedScreen): AdvancedGroup() {
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aVerticalGroup = AVerticalGroup(
-        screen = screen,
-        gap    = 126f,
-        alignH = AlignH.CENTER,
-        wrap   = true
+    private val aVerticalGroup = AAutoLayout(
+        screen     = screen,
+        direction  = AAutoLayout.Direction.VERTICAL,
+        gapMain    = 126f,
+        alignCross = AAutoLayout.AlignCross.CENTER,
+        sizingH    = AAutoLayout.Sizing.HUG
     )
     private val aBackgroundImg = Image(gdxGame.assetsAll.panel_who)
     private val aScrollPane    = AScrollPane(aVerticalGroup)
@@ -75,15 +75,14 @@ class ADescription(override val screen: AdvancedScreen): AdvancedGroup() {
         aSpaceTop.setSize(126f, 126f)
         aSpaceBottom.setSize(126f, 126f)
 
-        aVerticalGroup.addActors(
-            aSpaceTop,
+        aVerticalGroup.add(aSpaceTop)
 
-            aVeldanGroup,
-            aSeparatorImg,
-            aLilyGroup,
+        aVerticalGroup.add(aVeldanGroup)
+        aVerticalGroup.add(aSeparatorImg)
+        aVerticalGroup.add(aLilyGroup)
 
-            aSpaceBottom,
-        )
+        aVerticalGroup.add(aSpaceBottom)
+
     }
 
     private fun setUpVeldanGroup() {

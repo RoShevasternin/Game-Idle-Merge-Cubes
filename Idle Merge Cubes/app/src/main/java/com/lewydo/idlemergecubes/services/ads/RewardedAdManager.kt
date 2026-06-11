@@ -3,40 +3,65 @@ package com.lewydo.idlemergecubes.services.ads
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.MainActivity
 import com.lewydo.idlemergecubes.R
+import com.lewydo.idlemergecubes.util.log
 
 class RewardedAdManager(private val activity: MainActivity) {
+
+    companion object {
+        private const val REWARDED_ID = BuildConfig.ADMOB_REWARDED_ID
+    }
 
     private var rewardedAd: RewardedAd? = null
 
     val isReady: Boolean get() = rewardedAd != null
 
     fun load() {
-//        RewardedAd.load(activity, activity.getString(R.string.admob_banner_id), AdRequest.Builder().build(),
-//            object : RewardedAdLoadCallback() {
-//                override fun onAdLoaded(ad: RewardedAd) {
-//                    rewardedAd = ad
-//                }
-//                override fun onAdFailedToLoad(error: LoadAdError) {
-//                    rewardedAd = null
-//                }
-//            }
-//        )
+        activity.runOnUiThread {
+            RewardedAd.load(
+                activity, REWARDED_ID,
+                AdRequest.Builder().build(),
+                object : RewardedAdLoadCallback() {
+                    override fun onAdLoaded(ad: RewardedAd) {
+                        rewardedAd = ad
+                        log("Rewarded ad loaded")
+                    }
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        rewardedAd = null
+                        log("Rewarded ad failed: ${error.message}")
+                    }
+                }
+            )
+        }
     }
 
-    fun show(onEarned: () -> Unit, onDismissed: () -> Unit = {}) {
-//        val ad = rewardedAd ?: run { onDismissed(); return }
-//
-//        ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-//            override fun onAdDismissedFullScreenContent() {
-//                rewardedAd = null
-//                load()
-//                onDismissed()
-//            }
-//        }
-//
-//        ad.show(activity) { onEarned() }
+    // onEarned — коли юзер переглянув рекламу (дати нагороду)
+    // onDismissed — коли закрив без перегляду (нагороди немає)
+    // onFailed — реклама не готова
+    fun show(
+        onEarned   : () -> Unit,
+        onDismissed: () -> Unit = {},
+        onFailed   : () -> Unit = {},
+    ) {
+        val ad = rewardedAd ?: run { onFailed(); return }
+
+        activity.runOnUiThread {
+            ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    rewardedAd = null
+                    load()  // одразу завантажуємо наступну
+                    onDismissed()
+                }
+                override fun onAdFailedToShowFullScreenContent(error: AdError) {
+                    rewardedAd = null
+                    load()
+                    onFailed()
+                }
+            }
+            ad.show(activity) { onEarned() }
+        }
     }
 
     fun destroy() { rewardedAd = null }

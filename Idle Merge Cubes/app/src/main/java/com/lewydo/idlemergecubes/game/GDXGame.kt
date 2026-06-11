@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.ScreenUtils
 import com.lewydo.idlemergecubes.MainActivity
-import com.lewydo.idlemergecubes.services.firebase.analytics.AnalyticsManager
+import com.lewydo.idlemergecubes.services.analytics.FirebaseAnalyticsProvider
 import com.lewydo.idlemergecubes.game.manager.MusicManager
 import com.lewydo.idlemergecubes.game.manager.NavigationManager
 import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
@@ -18,6 +18,7 @@ import com.lewydo.idlemergecubes.game.manager.util.SoundUtil
 import com.lewydo.idlemergecubes.game.manager.util.SpriteUtil
 import com.lewydo.idlemergecubes.game.manager.util.VibroUtil
 import com.lewydo.idlemergecubes.game.model.BuyLevelModel
+import com.lewydo.idlemergecubes.game.model.GoalsModel
 import com.lewydo.idlemergecubes.game.model.GridModel
 import com.lewydo.idlemergecubes.game.model.LevelUpRewardModel
 import com.lewydo.idlemergecubes.game.model.MergeBonusModel
@@ -34,6 +35,7 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGame
 import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.game.utils.vfx.Blit
 import com.lewydo.idlemergecubes.game.utils.vfx.VfxShaderCache
+import com.lewydo.idlemergecubes.services.analytics.AnalyticsManager
 import com.lewydo.idlemergecubes.util.currentClassName
 import com.lewydo.idlemergecubes.util.log
 import kotlinx.coroutines.CoroutineScope
@@ -95,6 +97,7 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     val modelOfflineReward = OfflineRewardModel(modelPlayer)
     val modelLevelUp       = LevelUpRewardModel(modelPlayer)
     val modelBuyLevel      = BuyLevelModel(gameState, coroutine)
+    val modelGoals         = GoalsModel(gameState, modelPlayer, modelBuyLevel, coroutine)
 
     // ------------------------------------------------------------------------
     // Services
@@ -142,6 +145,7 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
         log("pause")
         saveManager.save()
         modelOfflineReward.saveLoginTime()
+        modelGoals.pauseTimer()
     }
 
     override fun resume() {

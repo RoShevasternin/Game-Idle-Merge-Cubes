@@ -1,9 +1,12 @@
 package com.lewydo.idlemergecubes.game.state
 
+import com.lewydo.idlemergecubes.game.data.GoalState
 import com.lewydo.idlemergecubes.game.data.PlayerData
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class GameState {
+
+    // ── Flows ─────────────────────────────────────────────────────────────────
 
     val coinsFlow           = MutableStateFlow(0L)
     val xpFlow              = MutableStateFlow(0L)
@@ -11,9 +14,17 @@ class GameState {
     val mergeBonusCountFlow = MutableStateFlow(0)
     val mergeBonusGoalFlow  = MutableStateFlow(0)
 
+    // ── Misc ──────────────────────────────────────────────────────────────────
+
     var lastLoginTime: Long    = 0L
     var adsRemoved   : Boolean = false
     var tutorialStep : Int     = 0
+
+    // ── Goals ─────────────────────────────────────────────────────────────────
+
+    var goalState: GoalState = GoalState()
+
+    // ── Persistence ───────────────────────────────────────────────────────────
 
     fun loadFrom(data: PlayerData) {
         coinsFlow.value           = data.coins
@@ -24,6 +35,7 @@ class GameState {
         lastLoginTime             = data.lastLoginTime
         adsRemoved                = data.adsRemoved
         tutorialStep              = data.tutorialStep
+        goalState                 = data.goalState
     }
 
     fun toPlayerData() = PlayerData(
@@ -35,5 +47,6 @@ class GameState {
         tutorialStep    = tutorialStep,
         mergeBonusCount = mergeBonusCountFlow.value,
         mergeBonusGoal  = mergeBonusGoalFlow.value,
+        goalState       = goalState,
     )
 }

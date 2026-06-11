@@ -80,7 +80,7 @@ class SpriteManager(var assetManager: AssetManager) {
 
         // All | mask
         MASK_DIALOG_PROGRESS_LVL (TextureData("textures/all/mask/mask_dialog_progress_lvl.png")),
-        MASK_PROGRESS_IDLE       (TextureData("textures/all/mask/mask_progress_idle.png")),
+        MASK_PROGRESS_MERGE_BONUS(TextureData("textures/all/mask/mask_progress_merge_bonus.png")),
         MASK_DIALOG_OFFLINE      (TextureData("textures/all/mask/mask_dialog_offline.png")),
         MASK_DIALOG_LEVEL_UP     (TextureData("textures/all/mask/mask_dialog_level_up.png")),
         MASK_PROGRESS_BUY_HINT   (TextureData("textures/all/mask/mask_progress_buy_hint.png")),
@@ -88,7 +88,6 @@ class SpriteManager(var assetManager: AssetManager) {
         // All | panel
         PANEL_TOP           (TextureData("textures/all/panel/panel_top.png")),
         PANEL_GAME          (TextureData("textures/all/panel/panel_game.png")),
-        PANEL_IDLE          (TextureData("textures/all/panel/panel_idle.png")),
         PANEL_MENU          (TextureData("textures/all/panel/panel_menu.png")),
         PANEL_LEVEL_UP_BONUS(TextureData("textures/all/panel/panel_level_up_bonus.png")),
 

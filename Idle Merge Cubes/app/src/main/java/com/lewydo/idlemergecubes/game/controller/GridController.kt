@@ -2,14 +2,13 @@ package com.lewydo.idlemergecubes.game.controller
 
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.lewydo.idlemergecubes.game.actors.panelGrid.ACellLayer
-import com.lewydo.idlemergecubes.game.actors.panelGrid.ACube
-import com.lewydo.idlemergecubes.game.actors.panelGrid.ACubeLayer
+import com.lewydo.idlemergecubes.game.actors.panel.grid.ACellLayer
+import com.lewydo.idlemergecubes.game.actors.panel.grid.ACube
+import com.lewydo.idlemergecubes.game.actors.panel.grid.ACubeLayer
 import com.lewydo.idlemergecubes.game.model.GridModel
 import com.lewydo.idlemergecubes.game.model.PlayerModel
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
-import com.lewydo.idlemergecubes.services.tiktok.TikTokManager
 import kotlinx.coroutines.CoroutineScope
 
 class GridController(
@@ -132,14 +131,17 @@ class GridController(
 
         cubeLayer.mergeCubes(from, to, tmpVec.set(cell.x, cell.y), xp, coins) {
             onMergeExecuted?.invoke(false)
-            gdxGame.analytics.merge(newLevel)
 
             // Перевіряємо підвищення рівня BUY
             val upgrade = gdxGame.modelBuyLevel.checkAndUpgrade()
             if (upgrade != null) {
                 cubeLayer.upgradeCubes(upgrade.upgradedIndices, upgrade.newLevel)
                 GlobalEvents.emit(GlobalEvents.EventType.BUY_LEVEL_UPGRADED)
+                gdxGame.analytics.buyLevelUpgrade(upgrade.newLevel)
             }
+
+            if (newLevel % 5 == 0) gdxGame.analytics.cubeMilestone(newLevel)
+            gdxGame.modelGoals.checkCompletion()
 
             done()
         }
@@ -162,8 +164,7 @@ class GridController(
 
         attachCube(cubeLayer.spawnCube(index, level, bounds))
 
-        gdxGame.analytics.buyCube(price)
-        TikTokManager.spendCredits()
+        gdxGame.modelGoals.checkCompletion()
         done()
     }
 

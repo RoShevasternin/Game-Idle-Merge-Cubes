@@ -22,3 +22,8 @@ const val OFFLINE_EFFICIENCY = 0.35f
 // REMOVE_ADS_PRICE
 // ------------------------------------------------------------------------
 const val REMOVE_ADS_PRICE = 1.99f
+
+// ------------------------------------------------------------------------
+// GIST
+// ------------------------------------------------------------------------
+const val GIST = "https://gist.githubusercontent.com/RoShevasternin/884df53faed1c288b6958efd0c14f31f/raw/IMC.json"

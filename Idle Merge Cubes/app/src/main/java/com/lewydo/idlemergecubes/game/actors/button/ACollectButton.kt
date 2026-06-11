@@ -4,15 +4,13 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
-import com.lewydo.idlemergecubes.game.actors.label.ALabel
 import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoSize
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
+import com.lewydo.idlemergecubes.game.actors.layout.autoLayout.AAutoLayout
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
-import com.lewydo.idlemergecubes.game.actors.layout.linear.AHorizontalGroup
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
@@ -54,11 +52,12 @@ class ACollectButton(
     private val aGlareLeftImg  = Image(gdxGame.assetsAll.glare_collect_left)
     private val aGlareRightImg = Image(gdxGame.assetsAll.glare_collect_right)
 
-    private val aHorizontalGroup = AHorizontalGroup(screen,
-        gap = 16f.toActual,
-        alignH = AlignH.CENTER,
-        alignV = AlignV.CENTER,
-        wrapWidth = true
+    private val aHorizontalGroup = AAutoLayout(
+        screen     = screen,
+        gapMain    = 16f.toActual,
+        alignMain  = AAutoLayout.AlignMain.CENTER,
+        alignCross = AAutoLayout.AlignCross.CENTER,
+        sizingW    = AAutoLayout.Sizing.HUG
     )
 
     private val aIconImg   = Image(currentDataType.icon)
@@ -151,21 +150,21 @@ class ACollectButton(
         }
     }
 
-    private fun AHorizontalGroup.addIconImg() {
+    private fun AAutoLayout.addIconImg() {
         aIconImg.setSize(this.height, this.height)
-        addActor(aIconImg)
+        add(aIconImg)
     }
 
-    private fun AHorizontalGroup.addTitleLbl() {
+    private fun AAutoLayout.addTitleLbl() {
         aTitleLbl.width  = 1f
         aTitleLbl.height = this.height * 0.53f // 53%
-        addActor(aTitleLbl)
+        add(aTitleLbl)
     }
 
-    private fun AHorizontalGroup.addRewardLbl() {
+    private fun AAutoLayout.addRewardLbl() {
         aTitleLbl.width   = 1f
         aRewardLbl.height = this.height * 0.48f // 48%
-        addActor(aRewardLbl)
+        add(aRewardLbl)
     }
 
     // ------------------------------------------------------------------------
