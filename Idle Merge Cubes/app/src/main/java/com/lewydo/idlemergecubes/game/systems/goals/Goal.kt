@@ -1,57 +1,30 @@
 package com.lewydo.idlemergecubes.game.systems.goals
 
-import kotlinx.serialization.Serializable
-
 // ═════════════════════════════════════════════════════════════════════════════
-//  Goal — sealed class, три типи задач
+//  Goal — повна задача: objective + опціональний таймер + нагорода
 //
-//  typeName  = simpleName — для серіалізації, tied до класу а не до рядків
-//  fromState — відновлення після перезапуску без enum
+//  timeLimitSec == null  → звичайна задача
+//  timeLimitSec != null  → та сама задача, але на час (timed-модифікатор)
+//
+//  Тобто "timed" — НЕ окремий тип, а прапорець над будь-яким objective:
+//    ReachLevel на час  | Collect на час  | (майбутні) ... на час
+//
+//  category — для аналітики/UI: "simple" | "combined" | "timed"
+//  (timed має пріоритет над формою objective)
 // ═════════════════════════════════════════════════════════════════════════════
+data class Goal(
+    val objective   : GoalObjective,
+    val reward      : Long,
+    val timeLimitSec: Int? = null,
+) {
+    val isTimed: Boolean get() = timeLimitSec != null
 
-sealed class Goal {
-    abstract val reward: Long
-
-    val typeName: String get() = this::class.simpleName!!
-
-    // ── Simple ────────────────────────────────────────────────────────────────
-    // Досягти рівня куба. Ціль завжди = maxCube + 1 в момент генерації.
-    data class Simple(
-        override val reward: Long,
-        val targetLevel    : Int,
-    ) : Goal()
-
-    // ── Combined ──────────────────────────────────────────────────────────────
-    // Розмістити кілька кубів різних рівнів одночасно на grid.
-    data class Combined(
-        override val reward: Long,
-        val requirements   : List<Requirement>,
-    ) : Goal() {
-        @Serializable
-        data class Requirement(val level: Int, val count: Int)
+    // Категорія для аналітики та вибору бейджа
+    val category: Category get() = when {
+        isTimed                            -> Category.TIMED
+        objective is GoalObjective.Collect -> Category.COMBINED
+        else                               -> Category.SIMPLE
     }
 
-    // ── Timed ─────────────────────────────────────────────────────────────────
-    // Те саме що Combined, але з таймером [30..120]с кратно 5.
-    data class Timed(
-        override val reward : Long,
-        val requirements    : List<Combined.Requirement>,
-        val timeLimitSec    : Int,
-    ) : Goal()
-
-    // ── fromState ─────────────────────────────────────────────────────────────
-    companion object {
-        fun fromState(
-            typeName    : String,
-            reward      : Long,
-            targetLevel : Int,
-            requirements: List<Combined.Requirement>,
-            timeLimitSec: Int,
-        ): Goal? = when (typeName) {
-            Simple  ::class.simpleName -> Simple(reward, targetLevel)
-            Combined::class.simpleName -> Combined(reward, requirements)
-            Timed   ::class.simpleName -> Timed(reward, requirements, timeLimitSec)
-            else                       -> null
-        }
-    }
+    enum class Category { SIMPLE, COMBINED, TIMED }
 }

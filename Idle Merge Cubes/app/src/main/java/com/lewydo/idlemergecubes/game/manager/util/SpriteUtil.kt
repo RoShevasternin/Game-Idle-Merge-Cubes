@@ -29,14 +29,7 @@ class SpriteUtil {
         val BACKGROUND = SpriteManager.EnumTexture.BACKGROUND.data.texture
         val MASK       = SpriteManager.EnumTexture.MASK.data.texture
 
-        private val C1 = SpriteManager.EnumTexture.C1.data.texture
-        private val C2 = SpriteManager.EnumTexture.C2.data.texture
-        private val C3 = SpriteManager.EnumTexture.C3.data.texture
-        private val C4 = SpriteManager.EnumTexture.C4.data.texture
-        private val C5 = SpriteManager.EnumTexture.C5.data.texture
-        private val C6 = SpriteManager.EnumTexture.C6.data.texture
-
-        val listLight = listOf(C1, C2, C3, C4, C5, C6).reversed()
+        val listLight = SpriteManager.EnumTextureGroup.LIGHT_C.data.textures.reversed()
     }
 
     class All {
@@ -50,38 +43,40 @@ class SpriteUtil {
         // ATLAS ALL
         // ------------------------------------------------------------------------------
 
-        val coin                    = getAllRegion("coin")
-        val coin_with_border        = getAllRegion("coin_with_border")
-        val cube_buy                = getAllRegion("cube_buy")
-        val panel_lvl               = getAllRegion("panel_lvl")
-        val settings_def            = getAllRegion("settings_def")
-        val settings_press          = getAllRegion("settings_press")
-        val buy_def                 = getAllRegion("buy_def")
-        val buy_dis                 = getAllRegion("buy_dis")
-        val no_def                  = getAllRegion("no_def")
-        val no_press                = getAllRegion("no_press")
-        val yes_def                 = getAllRegion("yes_def")
-        val yes_press               = getAllRegion("yes_press")
-        val glare_collect_left      = getAllRegion("glare_collect_left")
-        val glare_collect_right     = getAllRegion("glare_collect_right")
-        val x2                      = getAllRegion("x2")
-        val collect_center          = getAllRegion("collect_center")
-        val collect_center_x2       = getAllRegion("collect_center_x2")
-        val collect_frame_def       = getAllRegion("collect_frame_def")
-        val collect_frame_press     = getAllRegion("collect_frame_press")
-        val circle_fill             = getAllRegion("offline_circle_fill")
-        val circle_stroke           = getAllRegion("offline_circle_stroke")
-        val back_def                = getAllRegion("back_def")
-        val back_press              = getAllRegion("back_press")
-        val tutorial_hand           = getAllRegion("tutorial_hand")
-        val lock                    = getAllRegion("lock")
-        val progress_buy_hint       = getAllRegion("progress_buy_hint")
-        val progress_frame_buy_hint = getAllRegion("progress_frame_buy_hint")
-
-        // Merge Bonus
+        val coin                            = getAllRegion("coin")
+        val coin_with_border                = getAllRegion("coin_with_border")
+        val cube_buy                        = getAllRegion("cube_buy")
+        val panel_lvl                       = getAllRegion("panel_lvl")
+        val settings_def                    = getAllRegion("settings_def")
+        val settings_press                  = getAllRegion("settings_press")
+        val buy_def                         = getAllRegion("buy_def")
+        val buy_dis                         = getAllRegion("buy_dis")
+        val no_def                          = getAllRegion("no_def")
+        val no_press                        = getAllRegion("no_press")
+        val yes_def                         = getAllRegion("yes_def")
+        val yes_press                       = getAllRegion("yes_press")
+        val glare_collect_left              = getAllRegion("glare_collect_left")
+        val glare_collect_right             = getAllRegion("glare_collect_right")
+        val x2                              = getAllRegion("x2")
         val bag_coins                       = getAllRegion("bag_coins")
         val progress_merge_bonus            = getAllRegion("progress_merge_bonus")
         val progress_background_merge_bonus = getAllRegion("progress_background_merge_bonus")
+        val collect_center                  = getAllRegion("collect_center")
+        val collect_center_x2               = getAllRegion("collect_center_x2")
+        val collect_frame_def               = getAllRegion("collect_frame_def")
+        val collect_frame_press             = getAllRegion("collect_frame_press")
+        val circle_fill                     = getAllRegion("offline_circle_fill")
+        val circle_stroke                   = getAllRegion("offline_circle_stroke")
+        val back_def                        = getAllRegion("back_def")
+        val back_press                      = getAllRegion("back_press")
+        val tutorial_hand                   = getAllRegion("tutorial_hand")
+        val lock                            = getAllRegion("lock")
+        val progress_buy_hint               = getAllRegion("progress_buy_hint")
+        val progress_frame_buy_hint         = getAllRegion("progress_frame_buy_hint")
+        val icon_timer                      = getAllRegion("icon_timer")
+        val goals_item_done                 = getAllRegion("goals_item_done")
+        val goals_progress                  = getAllRegion("goals_progress")
+        val goals_progress_bg               = getAllRegion("goals_progress_bg")
 
         val listGlarePanelGame = List(4) { getAllRegion("glare_panel_game_${it.inc()}") }
 
@@ -133,6 +128,12 @@ class SpriteUtil {
         val panel_merge_bonus              = get9Patch("panel_merge_bonus")
         val separator                      = get9Patch("separator")
         val separator_2                    = get9Patch("separator_2")
+        val goals_badge                    = get9Patch("goals_badge")
+        val goals_pill_reward              = get9Patch("goals_pill_reward")
+        val goals_pill_timer               = get9Patch("goals_pill_timer")
+        val goals_pill_timer_red           = get9Patch("goals_pill_timer_red")
+        val goals_bg_item_def              = get9Patch("goals_bg_item_def")
+        val goals_bg_item_done             = get9Patch("goals_bg_item_done")
 
         // ------------------------------------------------------------------------------
         // TEXTURES
@@ -162,6 +163,7 @@ class SpriteUtil {
         val MASK_DIALOG_OFFLINE       = SpriteManager.EnumTexture.MASK_DIALOG_OFFLINE.data.texture
         val MASK_DIALOG_LEVEL_UP      = SpriteManager.EnumTexture.MASK_DIALOG_LEVEL_UP.data.texture
         val MASK_PROGRESS_BUY_HINT    = SpriteManager.EnumTexture.MASK_PROGRESS_BUY_HINT.data.texture
+        val MASK_GOALS_PROGRESS       = SpriteManager.EnumTexture.MASK_GOALS_PROGRESS.data.texture
 
         // PANEL
         val PANEL_TOP                = SpriteManager.EnumTexture.PANEL_TOP.data.texture
@@ -173,6 +175,11 @@ class SpriteUtil {
         val DIALOG_CLEAR_GRID = SpriteManager.EnumTexture.DIALOG_CLEAR_GRID.data.texture
         val DIALOG_OFFLINE    = SpriteManager.EnumTexture.DIALOG_OFFLINE.data.texture
         val DIALOG_LEVEL_UP   = SpriteManager.EnumTexture.DIALOG_LEVEL_UP.data.texture
+
+        // All | goals
+        val BG_COMBINED = SpriteManager.EnumTexture.BG_COMBINED.data.texture
+        val BG_SIMPLE   = SpriteManager.EnumTexture.BG_SIMPLE.data.texture
+        val BG_TIMED    = SpriteManager.EnumTexture.BG_TIMED.data.texture
     }
 
 }

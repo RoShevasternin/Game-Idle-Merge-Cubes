@@ -6,6 +6,7 @@ import com.lewydo.idlemergecubes.game.state.GameState
 import com.lewydo.idlemergecubes.game.systems.goals.Goal
 import com.lewydo.idlemergecubes.game.systems.goals.GoalContext
 import com.lewydo.idlemergecubes.game.systems.goals.GoalGenerator
+import com.lewydo.idlemergecubes.game.systems.goals.GoalObjective
 import com.lewydo.idlemergecubes.game.systems.goals.GoalProgress
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
@@ -26,11 +27,15 @@ class GoalsModel(
     private val scope        : CoroutineScope,
 ) {
 
-    // ── State enum ────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // State enum
+    // ------------------------------------------------------------------------
 
     enum class State { ACTIVE, COMPLETED, FAILED }
 
-    // ── Public flows ──────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Public flows
+    // ------------------------------------------------------------------------
 
     private val _currentGoalFlow = MutableStateFlow<Goal?>(null)
     private val _progressFlow    = MutableStateFlow<GoalProgress?>(null)
@@ -46,27 +51,25 @@ class GoalsModel(
 
     val currentGoal: Goal? get() = _currentGoalFlow.value
 
-    // ── Auto-init ─────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Auto-init
+    // ------------------------------------------------------------------------
 
     init {
         scope.launch {
-            state.gridFlow.filter { it.size == 16 }.first()
+            state.gridFlow.first { it.size == 16 }
             initGoal()
         }
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Public API
+    // ------------------------------------------------------------------------
 
     fun checkCompletion() {
         if (_stateFlow.value != State.ACTIVE) return
         refreshProgress()
-
-        val done = when (val p = _progressFlow.value) {
-            is GoalProgress.Simple   -> p.isDone
-            is GoalProgress.Combined -> p.isDone
-            null                     -> false
-        }
-        if (done) completeGoal()
+        if (_progressFlow.value?.isDone == true) completeGoal()
     }
 
     fun pauseTimer() {
@@ -74,7 +77,9 @@ class GoalsModel(
         state.goalState = state.goalState.copy(timerRemaining = _timerFlow.value)
     }
 
-    // ── Init ──────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Init
+    // ------------------------------------------------------------------------
 
     private fun initGoal() {
         _goalCounterFlow.value = state.goalState.counter
@@ -86,54 +91,60 @@ class GoalsModel(
         _stateFlow.value       = State.ACTIVE
         refreshProgress()
 
-        if (goal is Goal.Timed) {
+        if (goal.isTimed) {
             val remaining = state.goalState.timerRemaining
             when {
                 remaining > 0    -> startTimer(remaining)
-                restored != null -> failGoal()
-                else             -> startTimer(goal.timeLimitSec)
+                restored != null -> failGoal()                 // timed відновлено без часу → провал
+                else             -> startTimer(goal.timeLimitSec!!)
             }
         }
     }
 
-    // ── Complete / Fail / Next ────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Complete / Fail / Next
+    // ------------------------------------------------------------------------
 
     private fun completeGoal() {
+        if (_stateFlow.value != State.ACTIVE) return
         stopTimer()
         _stateFlow.value = State.COMPLETED
         playerModel.addCoins(currentGoal?.reward ?: 0L)
         GlobalEvents.emit(GlobalEvents.EventType.GOAL_COMPLETED)
         scope.launch { delay(2000); nextGoal() }
 
-        currentGoal?.let { goal -> gdxGame.analytics.goalCompleted(goal.typeName, goal.reward) }
+        currentGoal?.let { gdxGame.analytics.goalCompleted(it.category.name.lowercase(), it.reward) }
     }
 
     private fun failGoal() {
+        if (_stateFlow.value != State.ACTIVE) return
         stopTimer()
         _stateFlow.value = State.FAILED
         GlobalEvents.emit(GlobalEvents.EventType.GOAL_FAILED)
         scope.launch { delay(1800); nextGoal() }
 
-        currentGoal?.let { goal -> gdxGame.analytics.goalFailed(goal.typeName) }
+        currentGoal?.let { gdxGame.analytics.goalFailed(it.category.name.lowercase()) }
     }
 
     private fun nextGoal() {
         val lastGoal = currentGoal
 
         _goalCounterFlow.value++
-        state.goalState = GoalState(counter = _goalCounterFlow.value)  // зберігаємо тільки counter
+        state.goalState = GoalState(counter = _goalCounterFlow.value)
 
         val next = generateAndSave(lastGoal)
         _currentGoalFlow.value = next
         _stateFlow.value       = State.ACTIVE
         refreshProgress()
 
-        if (next is Goal.Timed) startTimer(next.timeLimitSec)
+        if (next.isTimed) startTimer(next.timeLimitSec!!)
 
         GlobalEvents.emit(GlobalEvents.EventType.GOAL_CHANGED)
     }
 
-    // ── Timer ─────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Timer
+    // ------------------------------------------------------------------------
 
     private var timerJob: Job? = null
 
@@ -157,28 +168,29 @@ class GoalsModel(
         state.goalState = state.goalState.copy(timerRemaining = 0)
     }
 
-    // ── Progress ──────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Progress
+    // ------------------------------------------------------------------------
 
     private fun refreshProgress() {
         val goal = currentGoal ?: run { _progressFlow.value = null; return }
         val grid = state.gridFlow.value
 
-        _progressFlow.value = when (goal) {
-            is Goal.Simple   -> {
+        _progressFlow.value = when (val obj = goal.objective) {
+            is GoalObjective.ReachLevel -> {
                 val maxCube = grid.filter { it > 0 }.maxOrNull() ?: 0
-                GoalProgress.Simple(maxCube, goal.targetLevel)
+                GoalProgress.ReachLevel(maxCube, obj.targetLevel)
             }
-            is Goal.Combined -> buildCombinedProgress(goal.requirements, grid)
-            is Goal.Timed    -> buildCombinedProgress(goal.requirements, grid)
+            is GoalObjective.Collect -> buildCollectProgress(obj.requirements, grid)
         }
     }
 
-    private fun buildCombinedProgress(
-        reqs: List<Goal.Combined.Requirement>,
+    private fun buildCollectProgress(
+        reqs: List<GoalObjective.Collect.Requirement>,
         grid: List<Int>,
-    ): GoalProgress.Combined = GoalProgress.Combined(
+    ): GoalProgress.Collect = GoalProgress.Collect(
         reqs.map { req ->
-            GoalProgress.Combined.Item(
+            GoalProgress.Collect.Item(
                 level    = req.level,
                 current  = grid.count { it == req.level }.coerceAtMost(req.count),
                 required = req.count,
@@ -186,42 +198,55 @@ class GoalsModel(
         }
     )
 
-    // ── Generation ────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Generation
+    // ------------------------------------------------------------------------
 
     private fun generateAndSave(lastGoal: Goal? = null): Goal {
         val grid = state.gridFlow.value
         val ctx  = GoalContext(
-            maxCube     = grid.filter { it > 0 }.maxOrNull() ?: 1,
-            buyLevel    = buyLevelModel.currentBuyLevel,
+            maxCube = grid.filter { it > 0 }.maxOrNull() ?: 1,
+            buyLevel = buyLevelModel.currentBuyLevel,
             playerLevel = playerModel.currentLevel,
         )
         return GoalGenerator.generate(lastGoal, ctx).also { saveToState(it) }
     }
 
-    // ── Persistence ───────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
+    // Persistence
+    // ------------------------------------------------------------------------
+    //
+    // GoalState лишається сумісним зі старим форматом:
+    //   typeName     ← objective::simpleName ("ReachLevel" | "Collect")
+    //   targetLevel  ← ReachLevel.targetLevel
+    //   requirements ← Collect.requirements
+    //   timeLimitSec ← Goal.timeLimitSec (0 = не timed)
 
     private fun restoreFromState(): Goal? {
         val gs = state.goalState
-        return Goal.fromState(
-            typeName     = gs.typeName,
-            reward       = gs.reward,
-            targetLevel  = gs.targetLevel,
-            requirements = gs.requirements.map { Goal.Combined.Requirement(it.level, it.count) },
-            timeLimitSec = gs.timeLimitSec,
-        )
+        if (gs.typeName.isBlank()) return null
+
+        val objective: GoalObjective = when (gs.typeName) {
+            GoalObjective.ReachLevel::class.simpleName ->
+                GoalObjective.ReachLevel(gs.targetLevel)
+            GoalObjective.Collect::class.simpleName ->
+                GoalObjective.Collect(gs.requirements.map { GoalObjective.Collect.Requirement(it.level, it.count) })
+            else -> return null
+        }
+
+        val timeLimit = gs.timeLimitSec.takeIf { it > 0 }
+        return Goal(objective = objective, reward = gs.reward, timeLimitSec = timeLimit)
     }
 
     private fun saveToState(goal: Goal) {
+        val obj = goal.objective
         state.goalState = GoalState(
-            typeName      = goal.typeName,
-            reward        = goal.reward,
-            targetLevel   = if (goal is Goal.Simple) goal.targetLevel  else 0,
-            timeLimitSec  = if (goal is Goal.Timed)  goal.timeLimitSec else 0,
-            requirements  = when (goal) {
-                is Goal.Combined -> goal.requirements.map { GoalRequirement(it.level, it.count) }
-                is Goal.Timed    -> goal.requirements.map { GoalRequirement(it.level, it.count) }
-                else             -> emptyList()
-            },
+            typeName       = obj.typeName,
+            reward         = goal.reward,
+            targetLevel    = (obj as? GoalObjective.ReachLevel)?.targetLevel ?: 0,
+            timeLimitSec   = goal.timeLimitSec ?: 0,
+            requirements   = (obj as? GoalObjective.Collect)?.requirements
+                ?.map { GoalRequirement(it.level, it.count) } ?: emptyList(),
             timerRemaining = 0,
             counter        = _goalCounterFlow.value,
         )

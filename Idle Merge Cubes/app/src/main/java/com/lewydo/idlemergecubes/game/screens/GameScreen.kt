@@ -72,7 +72,6 @@ class GameScreen : AdvancedScreen() {
     private val aPanelTop                 by lazy { APanelTop(this) }
     private val aPanelGrid                by lazy { APanelGrid(this) }
     private val aPanelMergeBonusWithGoals by lazy { APanelMergeBonusWithGoals(this) }
-    private val aPanelGoals               by lazy { APanelGoals(this) }
     private val aBuyBtn                   by lazy { ABuyButton(this) }
     private val aBuyHint                  by lazy { ABuyHint(this) }
     private val aPanelMenu                by lazy { APanelMenu(this) }

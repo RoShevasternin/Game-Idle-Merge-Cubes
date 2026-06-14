@@ -8,7 +8,11 @@ class SpriteManager(var assetManager: AssetManager) {
 
     var loadableAtlasList    = mutableListOf<AtlasData>()
     var loadableTexturesList = mutableListOf<TextureData>()
+    var loadableGroupList    = mutableListOf<TextureGroupData>()
 
+    // ------------------------------------------------------------------------
+    // Atlas
+    // ------------------------------------------------------------------------
     fun loadAtlas() {
         loadableAtlasList.onEach { assetManager.load(it.path, TextureAtlas::class.java) }
     }
@@ -18,7 +22,9 @@ class SpriteManager(var assetManager: AssetManager) {
         loadableAtlasList.clear()
     }
 
+    // ------------------------------------------------------------------------
     // Texture
+    // ------------------------------------------------------------------------
     fun loadTexture() {
         loadableTexturesList.onEach { assetManager.load(it.path, Texture::class.java) }
     }
@@ -28,12 +34,30 @@ class SpriteManager(var assetManager: AssetManager) {
         loadableTexturesList.clear()
     }
 
-    fun initAtlasAndTexture() {
-        initAtlas()
-        initTexture()
+    // ------------------------------------------------------------------------
+    // TextureGroup
+    // ------------------------------------------------------------------------
+    fun loadGroups() {
+        loadableGroupList.onEach { group -> group.paths.forEach { assetManager.load(it, Texture::class.java) } }
     }
 
+    fun initGroups() {
+        loadableGroupList.onEach { group -> group.textures = group.paths.map { assetManager[it, Texture::class.java] } }
+        loadableGroupList.clear()
+    }
 
+    // ------------------------------------------------------------------------
+    // Util
+    // ------------------------------------------------------------------------
+    fun initAll() {
+        initAtlas()
+        initTexture()
+        initGroups()
+    }
+
+    // ------------------------------------------------------------------------
+    // EnumAtlas
+    // ------------------------------------------------------------------------
     enum class EnumAtlas(val data: AtlasData) {
         BRAND(AtlasData("atlas/brand.atlas")),
 
@@ -46,6 +70,9 @@ class SpriteManager(var assetManager: AssetManager) {
         _9_PATCH(AtlasData("atlas/9_patch.atlas")),
     }
 
+    // ------------------------------------------------------------------------
+    // EnumTexture
+    // ------------------------------------------------------------------------
     enum class EnumTexture(val data: TextureData) {
         //bg_test(TextureData("textures/bg_test.png")),
         green(TextureData("textures/green.png")),
@@ -58,13 +85,6 @@ class SpriteManager(var assetManager: AssetManager) {
         // Loader
         BACKGROUND(TextureData("textures/loader/background.png")),
         MASK(TextureData("textures/loader/mask.png")),
-
-        C1(TextureData("textures/loader/light/c1.png")),
-        C2(TextureData("textures/loader/light/c2.png")),
-        C3(TextureData("textures/loader/light/c3.png")),
-        C4(TextureData("textures/loader/light/c4.png")),
-        C5(TextureData("textures/loader/light/c5.png")),
-        C6(TextureData("textures/loader/light/c6.png")),
 
         // All
         LIGHT    (TextureData("textures/all/LIGHT.png")),
@@ -84,6 +104,7 @@ class SpriteManager(var assetManager: AssetManager) {
         MASK_DIALOG_OFFLINE      (TextureData("textures/all/mask/mask_dialog_offline.png")),
         MASK_DIALOG_LEVEL_UP     (TextureData("textures/all/mask/mask_dialog_level_up.png")),
         MASK_PROGRESS_BUY_HINT   (TextureData("textures/all/mask/mask_progress_buy_hint.png")),
+        MASK_GOALS_PROGRESS      (TextureData("textures/all/mask/mask_goals_progress.png")),
 
         // All | panel
         PANEL_TOP           (TextureData("textures/all/panel/panel_top.png")),
@@ -95,6 +116,28 @@ class SpriteManager(var assetManager: AssetManager) {
         DIALOG_CLEAR_GRID   (TextureData("textures/all/dialog/dialog_clear_grid.png")),
         DIALOG_OFFLINE      (TextureData("textures/all/dialog/dialog_offline.png")),
         DIALOG_LEVEL_UP     (TextureData("textures/all/dialog/dialog_level_up.png")),
+
+        // All | goals
+        BG_COMBINED (TextureData("textures/all/goals/bg_combined.png")),
+        BG_SIMPLE   (TextureData("textures/all/goals/bg_simple.png")),
+        BG_TIMED    (TextureData("textures/all/goals/bg_timed.png")),
+    }
+
+    // ------------------------------------------------------------------------
+    // EnumTextureGroup
+    // ------------------------------------------------------------------------
+    enum class EnumTextureGroup(
+        private val folder: String,
+        private val prefix: String,
+        private val count : Int,
+        private val separator: String = "_",
+    ) {
+        LIGHT_C("textures/loader/light/", "c", 6, ""),
+
+        ;
+        val data: TextureGroupData by lazy {
+            TextureGroupData((1..count).map { "$folder/$prefix$separator$it.png" })
+        }
     }
 
     data class AtlasData(val path: String) {
@@ -103,6 +146,10 @@ class SpriteManager(var assetManager: AssetManager) {
 
     data class TextureData(val path: String) {
         lateinit var texture: Texture
+    }
+
+    data class TextureGroupData(val paths: List<String>) {
+        lateinit var textures: List<Texture>
     }
 
 }

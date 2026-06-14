@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "exportDate": "2026-05-23T09:59:09.277Z",
+  "exportDate": "2026-06-14T15:36:48.104Z",
   "categories": [
     {
       "id": 0,
@@ -130,8 +130,28 @@
     },
     {
       "categoryId": 1,
+      "title": "AutoLayout & Constraint з T6 | Skinly",
+      "details": "Заміни і додай AutoLayout, видали linear group horizontal vertical та table"
+    },
+    {
+      "categoryId": 1,
+      "title": "EventManager",
+      "details": "Визнач всі необхідні івенти в грі які хочеш відслідковувати та їх параметри, і шли з одного місця EventManager Firebase Event та TikTok Event"
+    },
+    {
+      "categoryId": 1,
       "title": "Goals System",
       "details": "<div style=\"font-family: Arial, sans-serif; line-height: 1.6; color: #222; max-width: 800px;\">\n\n  <h2>🎯 Система досягнень (Goals System)</h2>\n\n  <p>\n    Планується додати панель задач (Goals Panel), яка буде розміщена між <b>TopPanel</b> та <b>GridPanel</b>.\n    Панель показує поточні задачі гравця та винагороди за їх виконання.\n  </p>\n\n  <hr>\n\n  <h3>📌 Приклади задач</h3>\n\n  <ul>\n    <li>Дійди до куба рівня <b>5️⃣</b></li>\n    <li>Розмісти на панелі <b>4 куба рівня 3️⃣</b></li>\n  </ul>\n\n  <p>\n    Біля кожної задачі відображається винагорода (наприклад: <b>+50 🪙</b>), щоб гравець одразу розумів цінність виконання.\n  </p>\n\n  <hr>\n\n  <h3>✅ Поведінка при виконанні</h3>\n\n  <ul>\n    <li>Задача стає сірою</li>\n    <li>Перекреслюється двома червоними лініями (X)</li>\n    <li>Відтворюється звук нагороди (монети)</li>\n    <li>Монети анімаційно летять у панель балансу</li>\n  </ul>\n\n  <hr>\n\n  <h3>🧩 Типи задач</h3>\n\n  <h4>1. Прості</h4>\n  <p>\n    Досягти певного рівня куба:\n  </p>\n  <ul>\n    <li>Рівні: 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣</li>\n  </ul>\n\n  <h4>2. Комбіновані</h4>\n  <p>\n    Розмістити кілька кубів різних рівнів:\n  </p>\n  <ul>\n    <li>2 куби рівня 4️⃣</li>\n    <li>6 кубів рівня 5️⃣</li>\n    <li>1 куб рівня 2️⃣</li>\n  </ul>\n\n  <h4>3. На час ⏱</h4>\n  <p>\n    Досягти цілі за обмежений час:\n  </p>\n  <ul>\n    <li>Дійди до куба рівня <b>7️⃣</b> за <b>60 секунд</b></li>\n  </ul>\n\n  <p>\n    Для таких задач у панелі <b>GOALS 🎯</b> відображається таймер.\n  </p>\n\n  <hr>\n\n  <h3>💡 Додатково</h3>\n\n  <ul>\n    <li>Показ винагороди біля кожної задачі</li>\n    <li>Можливість комбінування різних типів задач</li>\n    <li>Чіткий візуальний фідбек при завершенні</li>\n  </ul>\n\n</div>\n\n<div style=\"font-family: Arial, sans-serif; color: #ffffff; background: #1a1a2e; padding: 20px; border-radius: 16px; width: 420px;\">\n\n  <!-- HEADER -->\n  <div style=\"font-size: 20px; font-weight: bold; margin-bottom: 12px;\">\n    🎯 GOALS\n  </div>\n\n  <!-- SIMPLE GOAL -->\n  <div style=\"background: #222244; padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;\">\n    <div>\n      Дійди до куба <b>5️⃣</b>\n    </div>\n    <div style=\"color: gold;\">+50 🪙</div>\n  </div>\n\n  <!-- COMBINED GOAL -->\n  <div style=\"background: #222244; padding: 12px; border-radius: 12px; margin-bottom: 10px;\">\n    <div>Розмісти на панелі:</div>\n    <div style=\"margin-top: 6px;\">\n      • 4 куба <b>3️⃣</b><br>\n      • 2 куби <b>4️⃣</b>\n    </div>\n    <div style=\"margin-top: 8px; color: gold;\">+120 🪙</div>\n  </div>\n\n  <!-- TIME GOAL -->\n  <div style=\"background: #222244; padding: 12px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;\">\n    <div>\n      Дійди до куба <b>7️⃣</b><br>\n      <span style=\"color: #ff7675;\">⏱ 60s</span>\n    </div>\n    <div style=\"color: gold;\">+200 🪙</div>\n  </div>\n\n  <!-- COMPLETED GOAL -->\n  <div style=\"background: #333333; padding: 12px; border-radius: 12px; margin-top: 10px; position: relative; color: #888;\">\n    Дійди до куба <b>3️⃣</b>\n    <div style=\"position: absolute; top: 0; left: 0; right: 0; bottom: 0;\">\n      <div style=\"width: 100%; height: 2px; background: red; transform: rotate(10deg); position: absolute; top: 50%;\"></div>\n      <div style=\"width: 100%; height: 2px; background: red; transform: rotate(-10deg); position: absolute; top: 50%;\"></div>\n    </div>\n  </div>\n\n</div>"
+    },
+    {
+      "categoryId": 1,
+      "title": "Goals System v2",
+      "details": "Треба доробити Complete та Failed.\n\n- COMPLETE - треба анімація появи монеток і що б вони летіли в баланс.\n\n- і треба додати звук Fail та Complete"
+    },
+    {
+      "categoryId": 1,
+      "title": "Buy Upgrade | Sound & Vibro",
+      "details": "Додай звуки і вібро на buy UPGRADE"
     },
     {
       "categoryId": 1,
@@ -182,11 +202,6 @@
       "categoryId": 3,
       "title": "Daily Login",
       "details": "<p>7-денний календар винагород</p>"
-    },
-    {
-      "categoryId": 1,
-      "title": "EventManager",
-      "details": "Визнач всі необхідні івенти в грі які хочеш відслідковувати та їх параметри, і шли з одного місця EventManager Firebase Event та TikTok Event"
     }
   ],
   "completedTasks": {
@@ -211,7 +226,12 @@
     "1-3": true,
     "1-4": true,
     "1-5": true,
-    "1-6": true
+    "1-6": true,
+    "1-7": true,
+    "1-8": true,
+    "1-13": false,
+    "1-9": true,
+    "1-10": true
   },
   "collapsedCategories": {
     "0": true,

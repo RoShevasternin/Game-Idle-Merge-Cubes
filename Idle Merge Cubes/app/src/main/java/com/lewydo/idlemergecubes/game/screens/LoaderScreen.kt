@@ -1,30 +1,17 @@
 package com.lewydo.idlemergecubes.game.screens
 
-import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.game.actors.loader.AMainLoader
-import com.lewydo.idlemergecubes.game.actors.label.ALabel
-import com.lewydo.idlemergecubes.game.actors.layout.AlignH
-import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.manager.MusicManager
 import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
 import com.lewydo.idlemergecubes.game.manager.SoundManager
 import com.lewydo.idlemergecubes.game.manager.SpriteManager
 import com.lewydo.idlemergecubes.game.utils.Block
-import com.lewydo.idlemergecubes.game.utils.GameColor
-import com.lewydo.idlemergecubes.game.utils.HEIGHT_UI
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
-import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
-import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import com.lewydo.idlemergecubes.util.log
@@ -89,21 +76,17 @@ class LoaderScreen : AdvancedScreen() {
             loadableTexturesList = mutableListOf(
                 SpriteManager.EnumTexture.BACKGROUND.data,
                 SpriteManager.EnumTexture.MASK.data,
-                SpriteManager.EnumTexture.C1.data,
-                SpriteManager.EnumTexture.C2.data,
-                SpriteManager.EnumTexture.C3.data,
-                SpriteManager.EnumTexture.C4.data,
-                SpriteManager.EnumTexture.C5.data,
-                SpriteManager.EnumTexture.C6.data,
             )
             loadTexture()
+            loadableGroupList = mutableListOf(SpriteManager.EnumTextureGroup.LIGHT_C.data)
+            loadGroups()
         }
         with(gdxGame.particleEffectManager) {
             loadableParticleEffectList = mutableListOf(ParticleEffectManager.EnumParticleEffect.LOADER.data)
             load()
         }
         gdxGame.assetManager.finishLoading()
-        gdxGame.spriteManager.initAtlasAndTexture()
+        gdxGame.spriteManager.initAll()
         gdxGame.particleEffectManager.init()
     }
 
@@ -113,6 +96,8 @@ class LoaderScreen : AdvancedScreen() {
             loadAtlas()
             loadableTexturesList = SpriteManager.EnumTexture.entries.map { it.data }.toMutableList()
             loadTexture()
+            loadableGroupList = SpriteManager.EnumTextureGroup.entries.map { it.data }.toMutableList()
+            loadGroups()
         }
         with(gdxGame.musicManager) {
             loadableMusicList = MusicManager.EnumMusic.entries.map { it.data }.toMutableList()
@@ -129,7 +114,7 @@ class LoaderScreen : AdvancedScreen() {
     }
 
     private fun initAssets() {
-        gdxGame.spriteManager.initAtlasAndTexture()
+        gdxGame.spriteManager.initAll()
         gdxGame.musicManager.init()
         gdxGame.soundManager.init()
         gdxGame.particleEffectManager.init()

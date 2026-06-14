@@ -17,13 +17,13 @@ data class PlayerData(
 
 @Serializable
 data class GoalState(
-    val typeName    : String              = "",
-    val reward      : Long                = 0L,
-    val targetLevel : Int                 = 0,
-    val timeLimitSec: Int                 = 0,
+    val typeName    : String                = "",
+    val reward      : Long                  = 0L,
+    val targetLevel : Int                   = 0,
+    val timeLimitSec: Int                   = 0,
     val requirements: List<GoalRequirement> = emptyList(),
-    val timerRemaining: Int               = 0,
-    val counter     : Int                 = 1,
+    val timerRemaining: Int                 = 0,
+    val counter     : Int                   = 1,
 )
 
 @Serializable

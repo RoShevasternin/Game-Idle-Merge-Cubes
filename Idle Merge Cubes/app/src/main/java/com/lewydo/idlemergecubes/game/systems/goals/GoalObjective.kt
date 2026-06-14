@@ -1,33 +1,29 @@
 package com.lewydo.idlemergecubes.game.systems.goals
 
 // ═════════════════════════════════════════════════════════════════════════════
-//  GoalProgress — поточний прогрес objective (рахується в GoalsModel по grid)
+//  GoalObjective — ЩО гравець має зробити (без таймера, без нагороди)
 //
-//  Дзеркалить GoalObjective:
-//    ReachLevel → GoalProgress.ReachLevel
-//    Collect    → GoalProgress.Collect
+//  Це "форма" задачі. Timed/нагорода/тривалість — окремі обгортки (див. Goal).
+//  Додати новий вид задачі = додати сюди підклас + GoalProgress + body + 1 гілку
+//  у GoalGenerator/маппінгу. Решта системи не змінюється.
+//
+//   ReachLevel → досягти куба рівня N            (одне число)
+//   Collect    → зібрати набір кубів на дошці     (список вимог)
 // ═════════════════════════════════════════════════════════════════════════════
 
-sealed class GoalProgress {
+sealed class GoalObjective {
 
-    abstract val isDone: Boolean
+    val typeName: String get() = this::class.simpleName!!
 
     // ── ReachLevel ──────────────────────────────────────────────────────────
     data class ReachLevel(
-        val current: Int,
-        val target : Int,
-    ) : GoalProgress() {
-        val progress: Float           get() = (current.toFloat() / target).coerceIn(0f, 1f)
-        override val isDone: Boolean  get() = current >= target
-    }
+        val targetLevel: Int,
+    ) : GoalObjective()
 
     // ── Collect ─────────────────────────────────────────────────────────────
     data class Collect(
-        val items: List<Item>,
-    ) : GoalProgress() {
-        data class Item(val level: Int, val current: Int, val required: Int) {
-            val isDone: Boolean get() = current >= required
-        }
-        override val isDone: Boolean get() = items.all { it.isDone }
+        val requirements: List<Requirement>,
+    ) : GoalObjective() {
+        data class Requirement(val level: Int, val count: Int)
     }
 }

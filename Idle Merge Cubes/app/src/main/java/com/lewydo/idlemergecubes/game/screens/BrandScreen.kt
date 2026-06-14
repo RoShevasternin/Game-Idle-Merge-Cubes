@@ -2,22 +2,13 @@ package com.lewydo.idlemergecubes.game.screens
 
 import com.lewydo.idlemergecubes.game.actors.brand.AMainBrand
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
-import com.lewydo.idlemergecubes.game.manager.MusicManager
-import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
-import com.lewydo.idlemergecubes.game.manager.SoundManager
 import com.lewydo.idlemergecubes.game.manager.SpriteManager
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
-import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
-import com.lewydo.idlemergecubes.game.utils.actor.setSize
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
-import com.lewydo.idlemergecubes.game.utils.runGDX
-import com.lewydo.idlemergecubes.util.log
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 class BrandScreen : AdvancedScreen() {
 
@@ -76,7 +67,7 @@ class BrandScreen : AdvancedScreen() {
 //            load()
 //        }
         gdxGame.assetManager.finishLoading()
-        gdxGame.spriteManager.initAtlasAndTexture()
+        gdxGame.spriteManager.initAll()
 //        gdxGame.soundManager.init()
     }
 
