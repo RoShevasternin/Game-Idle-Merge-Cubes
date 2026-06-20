@@ -67,7 +67,7 @@ abstract class AGoalPanelBase(screen: AdvancedScreen) : AConstraintLayout(screen
     private val parameterTimer  = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "s").setSize(56)
 
     private val lsBadge  = FontFactory.create(screen, parameterBadge, screen.fontGenerator_Nunito_Bold, Color.WHITE)
-    private val lsIndex  = FontFactory.create(screen, parameterIndex, screen.fontGenerator_Nunito_Regular, GameColor.green_E5FFE0)
+    private val lsIndex  = FontFactory.create(screen, parameterIndex, screen.fontGenerator_Nunito_Regular, GameColor.white_E5FFE0)
     private val lsReward = FontFactory.create(screen, parameterReward, screen.fontGenerator_Nunito_Bold, GameColor.yellow_FFF858)
     private val lsTimer  = FontFactory.create(screen, parameterTimer, screen.fontGenerator_Nunito_SemiBold, Color.WHITE)
 
@@ -110,6 +110,7 @@ abstract class AGoalPanelBase(screen: AdvancedScreen) : AConstraintLayout(screen
         aGoalsBadge.setText(badgeText)
 
         // Index "#N"
+        aIndexLbl.setSize(1f, 65f)
         add(aIndexLbl) { startToEnd(aGoalsBadge, margin = 18f); centerY(aGoalsBadge) }
 
         // Reward (rightmost)
@@ -145,6 +146,7 @@ abstract class AGoalPanelBase(screen: AdvancedScreen) : AConstraintLayout(screen
 
     fun bindCounter(counter: Int) {
         aIndexLbl.setText("#$counter")
+        aIndexLbl.pack()
     }
 
     open fun bindTimer(seconds: Int) {

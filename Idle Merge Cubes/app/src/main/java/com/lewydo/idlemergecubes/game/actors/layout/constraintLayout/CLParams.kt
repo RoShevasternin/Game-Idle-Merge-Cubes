@@ -168,14 +168,14 @@ class CLParams(internal val layout: AConstraintLayout) {
     fun topToTop(anchor: Actor? = null, margin: Float = 0f) {
         topToTopActor = anchor ?: layout; marginTop = margin
     }
-    fun topToBottom(anchor: Actor, margin: Float = 0f) {
-        topToBottomActor = anchor; marginTop = margin
+    fun topToBottom(anchor: Actor? = null, margin: Float = 0f) {
+        topToBottomActor = anchor ?: layout; marginTop = margin
     }
     fun bottomToBottom(anchor: Actor? = null, margin: Float = 0f) {
         bottomToBottomActor = anchor ?: layout; marginBottom = margin
     }
-    fun bottomToTop(anchor: Actor, margin: Float = 0f) {
-        bottomToTopActor = anchor; marginBottom = margin
+    fun bottomToTop(anchor: Actor? = null, margin: Float = 0f) {
+        bottomToTopActor = anchor ?: layout; marginBottom = margin
     }
 
     // ── Horizontal shortcuts ──────────────────────────────────────────────────
@@ -183,14 +183,14 @@ class CLParams(internal val layout: AConstraintLayout) {
     fun startToStart(anchor: Actor? = null, margin: Float = 0f) {
         startToStartActor = anchor ?: layout; marginStart = margin
     }
-    fun startToEnd(anchor: Actor, margin: Float = 0f) {
-        startToEndActor = anchor; marginStart = margin
+    fun startToEnd(anchor: Actor? = null, margin: Float = 0f) {
+        startToEndActor = anchor ?: layout; marginStart = margin
     }
     fun endToEnd(anchor: Actor? = null, margin: Float = 0f) {
         endToEndActor = anchor ?: layout; marginEnd = margin
     }
-    fun endToStart(anchor: Actor, margin: Float = 0f) {
-        endToStartActor = anchor; marginEnd = margin
+    fun endToStart(anchor: Actor? = null, margin: Float = 0f) {
+        endToStartActor = anchor ?: layout; marginEnd = margin
     }
 
     // ── Internal: всі anchor-и (для snapshot реєстрації) ─────────────────────

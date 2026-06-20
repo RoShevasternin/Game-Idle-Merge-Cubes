@@ -77,6 +77,8 @@ class SpriteUtil {
         val goals_item_done                 = getAllRegion("goals_item_done")
         val goals_progress                  = getAllRegion("goals_progress")
         val goals_progress_bg               = getAllRegion("goals_progress_bg")
+        val goals_icon_done                 = getAllRegion("goals_icon_done")
+        val goals_icon_fail                 = getAllRegion("goals_icon_fail")
 
         val listGlarePanelGame = List(4) { getAllRegion("glare_panel_game_${it.inc()}") }
 
@@ -150,14 +152,14 @@ class SpriteUtil {
         val COIN_BIG = SpriteManager.EnumTexture.COIN_BIG.data.texture
         val CONFETTI = SpriteManager.EnumTexture.CONFETTI.data.texture
 
-        // BRAND
+        // All | brand
         val BRAND       = SpriteManager.EnumTexture.BRAND.data.texture
         val BRAND_BACK  = SpriteManager.EnumTexture.BRAND_BACK.data.texture
         val BRAND_FRONT = SpriteManager.EnumTexture.BRAND_FRONT.data.texture
         val LILY        = SpriteManager.EnumTexture.LILY.data.texture
         val VELDAN      = SpriteManager.EnumTexture.VELDAN.data.texture
 
-        // MASK
+        // All | mask
         val MASK_DIALOG_PROGRESS_LVL  = SpriteManager.EnumTexture.MASK_DIALOG_PROGRESS_LVL.data.texture
         val MASK_PROGRESS_MERGE_BONUS = SpriteManager.EnumTexture.MASK_PROGRESS_MERGE_BONUS.data.texture
         val MASK_DIALOG_OFFLINE       = SpriteManager.EnumTexture.MASK_DIALOG_OFFLINE.data.texture
@@ -165,21 +167,23 @@ class SpriteUtil {
         val MASK_PROGRESS_BUY_HINT    = SpriteManager.EnumTexture.MASK_PROGRESS_BUY_HINT.data.texture
         val MASK_GOALS_PROGRESS       = SpriteManager.EnumTexture.MASK_GOALS_PROGRESS.data.texture
 
-        // PANEL
+        // All | panel
         val PANEL_TOP                = SpriteManager.EnumTexture.PANEL_TOP.data.texture
         val PANEL_GAME               = SpriteManager.EnumTexture.PANEL_GAME.data.texture
         val PANEL_MENU               = SpriteManager.EnumTexture.PANEL_MENU.data.texture
         val PANEL_LEVEL_UP_BONUS     = SpriteManager.EnumTexture.PANEL_LEVEL_UP_BONUS.data.texture
 
-        // DIALOG
+        // All | dialog
         val DIALOG_CLEAR_GRID = SpriteManager.EnumTexture.DIALOG_CLEAR_GRID.data.texture
         val DIALOG_OFFLINE    = SpriteManager.EnumTexture.DIALOG_OFFLINE.data.texture
         val DIALOG_LEVEL_UP   = SpriteManager.EnumTexture.DIALOG_LEVEL_UP.data.texture
 
         // All | goals
-        val BG_COMBINED = SpriteManager.EnumTexture.BG_COMBINED.data.texture
-        val BG_SIMPLE   = SpriteManager.EnumTexture.BG_SIMPLE.data.texture
-        val BG_TIMED    = SpriteManager.EnumTexture.BG_TIMED.data.texture
+        val BG_COMBINED       = SpriteManager.EnumTexture.BG_COMBINED.data.texture
+        val BG_SIMPLE         = SpriteManager.EnumTexture.BG_SIMPLE.data.texture
+        val BG_TIMED          = SpriteManager.EnumTexture.BG_TIMED.data.texture
+        val GOALS_RESULT_DONE = SpriteManager.EnumTexture.GOALS_RESULT_DONE.data.texture
+        val GOALS_RESULT_FAIL = SpriteManager.EnumTexture.GOALS_RESULT_FAIL.data.texture
     }
 
 }

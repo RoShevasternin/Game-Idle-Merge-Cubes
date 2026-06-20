@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.milliseconds
 
 class SaveGameStateManager(
     private val gameState  : GameState,
@@ -35,7 +36,7 @@ class SaveGameStateManager(
                 PlayerData() // ← дефолтні значення з PlayerData
             }
             gameState.loadFrom(data)
-            logLoad(data)
+            logState("GAME STATE LOADED", data)
         }
     }
 
@@ -49,7 +50,7 @@ class SaveGameStateManager(
                 val data = gameState.toPlayerData()
                 val json = Json.encodeToString(PlayerData.serializer(), data)
                 dataStore.update { json }
-                logSave(data)
+                logState("GAME STATE SAVED", data)
             }
         }
     }
@@ -62,12 +63,12 @@ class SaveGameStateManager(
         autoSaveJob?.cancel()
         autoSaveJob = scope.launch(Dispatchers.IO) {
             while (true) {
-                delay(intervalSec * 1000L)
+                delay((intervalSec * 1000L).milliseconds)
                 mutex.withLock {
                     val data = gameState.toPlayerData()
                     val json = Json.encodeToString(PlayerData.serializer(), data)
                     dataStore.update { json }
-                    log("SaveGameStateManager: auto-save ✓")
+                    logState("GAME STATE AUTO-SAVED", data)
                 }
             }
         }
@@ -82,33 +83,40 @@ class SaveGameStateManager(
     // Log
     // ------------------------------------------------------------------------
 
-    private fun logLoad(data: PlayerData) {
-        log("""
-        
-        ╔══════════════════════════════╗
-        ║  GAME STATE LOADED
-        ╠══════════════════════════════╣
-        ║  Coins:        ${data.coins}
-        ║  XP:           ${data.xp}
-        ║  AdsRemoved:   ${data.adsRemoved}
-        ║  TutorialStep: ${data.tutorialStep}
-        ║  MergeBonus:   ${data.mergeBonusCount} / ${data.mergeBonusGoal}
-        ╚══════════════════════════════╝
-    """.trimIndent())
-    }
+    private fun logState(title: String, data: PlayerData) {
+        val gs = data.goalState
 
-    private fun logSave(data: PlayerData) {
+        // тип задачі + її суть у читабельному вигляді
+        val goalDesc = when {
+            gs.typeName.isBlank()        -> "—"
+            gs.typeName == "ReachLevel"  -> "ReachLevel(target=${gs.targetLevel})"
+            gs.typeName == "Collect"     -> "Collect(${gs.requirements.joinToString { "lvl${it.level}x${it.count}" }})"
+            else                         -> gs.typeName
+        }
+        val timed = if (gs.timeLimitSec > 0) "${gs.timerRemaining}/${gs.timeLimitSec}s" else "—"
+
+        // grid у компактному вигляді: непорожні клітинки
+        val gridCells = data.grid.count { it > 0 }
+        val gridMax   = data.grid.maxOrNull() ?: 0
+
         log("""
         
-        ╔══════════════════════════════╗
-        ║  GAME STATE SAVED
-        ╠══════════════════════════════╣
-        ║  Coins:        ${data.coins}
-        ║  XP:           ${data.xp}
-        ║  AdsRemoved:   ${data.adsRemoved}
-        ║  TutorialStep: ${data.tutorialStep}
-        ║  MergeBonus:   ${data.mergeBonusCount} / ${data.mergeBonusGoal}
-        ╚══════════════════════════════╝
+        ╔════════════════════════════════════════════╗
+        ║  $title
+        ╠════════════════════════════════════════════╣
+        ║  Coins        : ${data.coins}
+        ║  XP           : ${data.xp}
+        ║  AdsRemoved   : ${data.adsRemoved}
+        ║  TutorialStep : ${data.tutorialStep}
+        ║  MergeBonus   : ${data.mergeBonusCount} / ${data.mergeBonusGoal}
+        ║  Grid         : $gridCells cells, max lvl $gridMax
+        ╠═══════════════ GOALS ═══════════════════════╣
+        ║  Goal #       : ${gs.counter}
+        ║  Type         : ${gs.typeName.ifBlank { "—" }}
+        ║  Objective    : $goalDesc
+        ║  Reward       : ${gs.reward}
+        ║  Timer        : $timed
+        ╚════════════════════════════════════════════╝
     """.trimIndent())
     }
 }

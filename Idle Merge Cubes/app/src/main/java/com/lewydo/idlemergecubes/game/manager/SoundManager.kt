@@ -21,15 +21,18 @@ class SoundManager(var assetManager: AssetManager) {
         CHECK_BOX (SoundData("sound/check_box.mp3")),
 
         BUY            (SoundData("sound/buy.mp3")),
+        BUY_UPGRADE    (SoundData("sound/buy_upgrade.mp3")),
         COLLECT        (SoundData("sound/collect.mp3")),
         SHOW_COLLECT   (SoundData("sound/show_collect.mp3")),
         CUBE_TOUCH     (SoundData("sound/cube_touch.mp3")),
         LEVEL_UP       (SoundData("sound/level_up.mp3")),
 
-
         MERGE_1(SoundData("sound/merge_1.mp3")),
         MERGE_2(SoundData("sound/merge_2.mp3")),
         MERGE_3(SoundData("sound/merge_3.mp3")),
+
+        GOALS_DONE(SoundData("sound/goals_done.mp3")),
+        GOALS_FAIL(SoundData("sound/goals_fail.mp3")),
     }
 
     data class SoundData(

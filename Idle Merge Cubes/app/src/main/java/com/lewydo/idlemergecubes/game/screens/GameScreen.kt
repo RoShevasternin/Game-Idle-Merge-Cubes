@@ -113,6 +113,13 @@ class GameScreen : AdvancedScreen() {
         }
 
         animShowScreen()
+
+        gdxGame.modelGoals.resumeTimer()
+    }
+
+    override fun hide() {
+        super.hide()
+        gdxGame.modelGoals.pauseTimer()
     }
 
     override fun render(delta: Float) {

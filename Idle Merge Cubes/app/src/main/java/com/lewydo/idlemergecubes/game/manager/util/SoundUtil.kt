@@ -10,6 +10,7 @@ class SoundUtil {
     val CHECK_BOX = AdvancedSound(SoundManager.EnumSound.CHECK_BOX.data.sound, 1f)
 
     val BUY             = AdvancedSound(SoundManager.EnumSound.BUY.data.sound, 0.45f)
+    val BUY_UPGRADE     = AdvancedSound(SoundManager.EnumSound.BUY_UPGRADE.data.sound, 0.45f)
     val COLLECT         = AdvancedSound(SoundManager.EnumSound.COLLECT.data.sound, 1f)
     val SHOW_COLLECT    = AdvancedSound(SoundManager.EnumSound.SHOW_COLLECT.data.sound, 1f)
     val CUBE_TOUCH      = AdvancedSound(SoundManager.EnumSound.CUBE_TOUCH.data.sound, 1f)
@@ -19,6 +20,9 @@ class SoundUtil {
     val MERGE_1 = AdvancedSound(SoundManager.EnumSound.MERGE_1.data.sound, 1f)
     val MERGE_2 = AdvancedSound(SoundManager.EnumSound.MERGE_2.data.sound, 1f)
     val MERGE_3 = AdvancedSound(SoundManager.EnumSound.MERGE_3.data.sound, 1f)
+
+    val GOALS_DONE = AdvancedSound(SoundManager.EnumSound.GOALS_DONE.data.sound, 0.8f)
+    val GOALS_FAIL = AdvancedSound(SoundManager.EnumSound.GOALS_FAIL.data.sound, 1f)
 
     // 0..100
     var volumeLevel = AudioManager.volumeLevelPercent

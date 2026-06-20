@@ -5,12 +5,14 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
-import com.lewydo.idlemergecubes.game.utils.actor.disable
+import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.enable
+import com.lewydo.idlemergecubes.game.utils.actor.setOrigin
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
@@ -26,31 +28,39 @@ import com.lewydo.idlemergecubes.game.utils.gdxGame
 class AGoalResultOverlay(override val screen: AdvancedScreen) : AConstraintLayout(screen) {
 
     // ------------------------------------------------------------------------
-    // Color
+    // Regions
     // ------------------------------------------------------------------------
-    private val COLOR_COMPLETED = Color.valueOf("158040")
-    private val COLOR_FAILED    = Color.valueOf("8B1020")
+    private val regionBgCompleted = TextureRegionDrawable(gdxGame.assetsAll.GOALS_RESULT_DONE)
+    private val regionBgFailed    = TextureRegionDrawable(gdxGame.assetsAll.GOALS_RESULT_FAIL)
+
+    private val regionIconCompleted = TextureRegionDrawable(gdxGame.assetsAll.goals_icon_done)
+    private val regionIconFailed    = TextureRegionDrawable(gdxGame.assetsAll.goals_icon_fail)
 
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val fResult = FontParameter().setCharacters(FontParameter.CharType.ALL).setSize(78).setBorder(3f, Color.BLACK)
+    private val parameterResult = FontParameter()
+        .setCharacters(FontParameter.CharType.ALL)
+        .setSize(72)
+        .setBorder(2f, Color.BLACK)
+        .setShadow(2, 0, Color.BLACK)
+
+    private val lsResult = FontFactory.create(screen, parameterResult, screen.fontGenerator_Nunito_Bold, Color.WHITE)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aBg     = Image(screen.drawerUtil.getTexture(GameColor.green_98FF68))
-    private val aIconOk = Image(gdxGame.assetsAll.coin)
-    private val aIconX  = Image(gdxGame.assetsAll.bag_coins)
-    private val aLbl    = Label("", FontFactory.create(screen, fResult, screen.fontGenerator_Nunito_Black, Color.WHITE))
+    private val aBgImg     = Image()
+    private val aIconImg   = Image()
+    private val aResultLbl = Label("", lsResult)
 
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
-        addBg()
-        addIcons()
-        addLbl()
+        addBgImg()
+        addIconImg()
+        addResultLbl()
 
         hideImmediate()
     }
@@ -59,25 +69,20 @@ class AGoalResultOverlay(override val screen: AdvancedScreen) : AConstraintLayou
     // Add Actors
     // ------------------------------------------------------------------------
 
-    private fun addBg() {
-        add(aBg) { fillParent() }
-        aBg.color.a = 0f
+    private fun addBgImg() {
+        add(aBgImg) { fillParent() }
     }
 
-    private fun addIcons() {
-        aIconOk.setSize(160f, 160f)
-        add(aIconOk) { centerX(); centerY() }
-        aIconOk.isVisible = false
-
-        aIconX.setSize(160f, 160f)
-        add(aIconX) { centerX(); centerY() }
-        aIconX.isVisible = false
+    private fun addIconImg() {
+        aIconImg.setSize(213f, 213f)
+        add(aIconImg) { centerX(); topToTop(margin = 41f) }
+        aIconImg.setOrigin(Align.center)
     }
 
-    private fun addLbl() {
-        aLbl.setSize(width, 90f)
-        add(aLbl) { centerX(); bottomToBottom(margin = 60f) }
-        aLbl.setAlignment(Align.center)
+    private fun addResultLbl() {
+        aResultLbl.setSize(width, 98f)
+        add(aResultLbl) { centerX(); topToBottom(aIconImg, 24f) }
+        aResultLbl.setAlignment(Align.center)
     }
 
     // ------------------------------------------------------------------------
@@ -85,30 +90,23 @@ class AGoalResultOverlay(override val screen: AdvancedScreen) : AConstraintLayou
     // ------------------------------------------------------------------------
 
     fun showCompleted(reward: Long) {
-        aBg.color.set(COLOR_COMPLETED); aBg.color.a = 0f
-        aIconOk.isVisible = true
-        aIconX.isVisible  = false
-        aLbl.setText("+${NumberFormatter.format(reward)}")
+        aBgImg.drawable   = regionBgCompleted
+        aIconImg.drawable = regionIconCompleted
+        aResultLbl.setText("+${NumberFormatter.format(reward)}")
         animShow()
     }
 
     fun showFailed() {
-        aBg.color.set(COLOR_FAILED); aBg.color.a = 0f
-        aIconOk.isVisible = false
-        aIconX.isVisible  = true
-        aLbl.setText("Failed!")
+        aBgImg.drawable   = regionBgFailed
+        aIconImg.drawable = regionIconFailed
+        aResultLbl.setText("Failed!")
         animShow()
     }
 
     fun hideImmediate() {
         clearActions()
-        isVisible = false
-        disable()
-        aBg.color.a = 0f
-        aIconOk.isVisible = false
-        aIconX.isVisible  = false
-        aIconOk.setScale(1f)
-        aIconX.setScale(1f)
+        color.a = 0f
+        aIconImg.setScale(1f)
     }
 
     // ------------------------------------------------------------------------
@@ -116,19 +114,15 @@ class AGoalResultOverlay(override val screen: AdvancedScreen) : AConstraintLayou
     // ------------------------------------------------------------------------
 
     private fun animShow() {
-        isVisible = true
-        enable()
-
         // Фон fade-in
-        aBg.clearActions()
-        aBg.addAction(Actions.fadeIn(0.3f))
+        clearActions()
+        animShowAndEnable(0.3f)
 
         // Іконка — bounce
-        val icon = if (aIconOk.isVisible) aIconOk else aIconX
-        icon.setScale(0f)
-        icon.clearActions()
-        icon.addAction(Actions.sequence(
-            Actions.delay(0.1f),
+        aIconImg.setScale(0f)
+        aIconImg.clearActions()
+        aIconImg.addAction(Actions.sequence(
+            Actions.delay(0.3f),
             Actions.scaleTo(1.25f, 1.25f, 0.22f, Interpolation.swingOut),
             Actions.scaleTo(1.0f,  1.0f,  0.14f, Interpolation.sineOut),
         ))

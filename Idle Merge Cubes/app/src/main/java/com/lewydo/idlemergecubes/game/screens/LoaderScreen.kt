@@ -1,5 +1,6 @@
 package com.lewydo.idlemergecubes.game.screens
 
+import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.game.actors.loader.AMainLoader
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.manager.MusicManager

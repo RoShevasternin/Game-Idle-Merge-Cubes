@@ -118,9 +118,11 @@ class SpriteManager(var assetManager: AssetManager) {
         DIALOG_LEVEL_UP     (TextureData("textures/all/dialog/dialog_level_up.png")),
 
         // All | goals
-        BG_COMBINED (TextureData("textures/all/goals/bg_combined.png")),
-        BG_SIMPLE   (TextureData("textures/all/goals/bg_simple.png")),
-        BG_TIMED    (TextureData("textures/all/goals/bg_timed.png")),
+        BG_COMBINED      (TextureData("textures/all/goals/bg_combined.png")),
+        BG_SIMPLE        (TextureData("textures/all/goals/bg_simple.png")),
+        BG_TIMED         (TextureData("textures/all/goals/bg_timed.png")),
+        GOALS_RESULT_DONE(TextureData("textures/all/goals/goals_result_done.png")),
+        GOALS_RESULT_FAIL(TextureData("textures/all/goals/goals_result_fail.png")),
     }
 
     // ------------------------------------------------------------------------

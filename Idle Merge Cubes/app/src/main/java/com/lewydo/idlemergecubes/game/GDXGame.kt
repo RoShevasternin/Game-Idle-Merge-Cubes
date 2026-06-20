@@ -4,8 +4,8 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.ScreenUtils
+import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.MainActivity
-import com.lewydo.idlemergecubes.services.analytics.FirebaseAnalyticsProvider
 import com.lewydo.idlemergecubes.game.manager.MusicManager
 import com.lewydo.idlemergecubes.game.manager.NavigationManager
 import com.lewydo.idlemergecubes.game.manager.ParticleEffectManager
@@ -129,7 +129,8 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
         saveManager.load()
         saveManager.startAutoSave(intervalSec = 30)
 
-        navigationManager.navigate(LoaderScreen::class.java.name)
+        val firstScreenName = if (BuildConfig.DEBUG) LoaderScreen::class.java.name else BrandScreen::class.java.name
+        navigationManager.navigate(firstScreenName)
 
         ShaderProgram.pedantic = false
     }
@@ -143,15 +144,16 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     override fun pause() {
         super.pause()
         log("pause")
-        saveManager.save()
+        modelGoals.pauseTimer()          // ПЕРШИМ — запис актуального timerRemaining у goalState
         modelOfflineReward.saveLoginTime()
-        modelGoals.pauseTimer()
+        saveManager.save()               // потім зберігаємо вже свіжий стан
     }
 
     override fun resume() {
         super.resume()
         log("resume")
         Blit.dispose()
+        modelGoals.resumeTimer()
     }
 
     override fun dispose() {

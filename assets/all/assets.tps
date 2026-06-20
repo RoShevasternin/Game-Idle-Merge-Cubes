@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>8.0.1</string>
+        <string>8.0.2</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -400,6 +400,22 @@
                 <rect>47,47,94,94</rect>
                 <key>scale9Paddings</key>
                 <rect>47,47,94,94</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">goals_icon_done.png</key>
+            <key type="filename">goals_icon_fail.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>40,40,80,80</rect>
+                <key>scale9Paddings</key>
+                <rect>40,40,80,80</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

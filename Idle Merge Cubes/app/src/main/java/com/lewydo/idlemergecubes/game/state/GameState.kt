@@ -24,18 +24,30 @@ class GameState {
 
     var goalState: GoalState = GoalState()
 
+    // ── Load signal ───────────────────────────────────────────────────────────
+    // Стає true ПІСЛЯ повного loadFrom. Моделі, що залежать від збереженого
+    // стану (напр. GoalsModel), чекають саме його — це усуває race з gridFlow.
+    val isLoadedFlow = MutableStateFlow(false)
+
     // ── Persistence ───────────────────────────────────────────────────────────
 
     fun loadFrom(data: PlayerData) {
+        // goalState ПЕРШИМ — щоб залежні моделі бачили його одразу
+        goalState                 = data.goalState
+
         coinsFlow.value           = data.coins
         xpFlow.value              = data.xp
-        gridFlow.value            = data.grid
         mergeBonusCountFlow.value = data.mergeBonusCount
         mergeBonusGoalFlow.value  = data.mergeBonusGoal
         lastLoginTime             = data.lastLoginTime
         adsRemoved                = data.adsRemoved
         tutorialStep              = data.tutorialStep
-        goalState                 = data.goalState
+
+        // grid — ОСТАННІМ серед flow, бо саме його чекають інші моделі
+        gridFlow.value            = data.grid
+
+        // сигнал "усе завантажено" — після всіх присвоєнь
+        isLoadedFlow.value = true
     }
 
     fun toPlayerData() = PlayerData(

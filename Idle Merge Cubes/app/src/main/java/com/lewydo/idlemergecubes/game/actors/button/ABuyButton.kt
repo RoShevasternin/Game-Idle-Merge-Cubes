@@ -204,6 +204,7 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
                     .filter { it == GlobalEvents.EventType.BUY_LEVEL_UPGRADED }
                     .collect {
                         runGDX {
+                            gdxGame.soundUtil.apply { play(BUY_UPGRADE) }
                             animBuyUpgrade(gdxGame.modelBuyLevel.currentBuyLevel)
 
                             aWaveUpgradeEffectPool.spawn(aContent, thisRoot.width / 2f, thisRoot.height / 2f) {

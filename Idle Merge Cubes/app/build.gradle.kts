@@ -6,19 +6,15 @@ plugins {
 }
 
 android {
-    namespace = "com.lewydo.idlemergecubes"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    namespace  = "com.lewydo.idlemergecubes"
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.lewydo.idlemergecubes"
-        minSdk = 24
-        targetSdk = 36
-        versionCode = 16
-        versionName = "2.2.2"
+        minSdk        = 24
+        targetSdk     = 37
+        versionCode   = 18
+        versionName   = "3.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -80,7 +76,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     // AndroidX ------------------------------------------------------------------------
-    implementation("androidx.core:core-ktx:1.18.0")
+    implementation("androidx.core:core-ktx:1.19.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.activity:activity-ktx:1.13.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
@@ -105,7 +101,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.14.1"))
+    implementation(platform("com.google.firebase:firebase-bom:34.15.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
 
@@ -113,13 +109,13 @@ dependencies {
     implementation("com.github.tiktok:tiktok-business-android-sdk:1.6.1")
 
     // Billing
-    implementation("com.android.billingclient:billing-ktx:9.0.0")
+    implementation("com.android.billingclient:billing-ktx:9.1.0")
 
     // Install Referrer
     implementation("com.android.installreferrer:installreferrer:2.2")
 
     // AdMob
-    implementation("com.google.android.gms:play-services-ads:25.3.0")
+    implementation("com.google.android.gms:play-services-ads:25.4.0")
 
     // Gson (парсинг JSON з Gist)
     implementation("com.google.code.gson:gson:2.14.0")

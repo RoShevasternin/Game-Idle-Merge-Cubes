@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class GoalsModel(
     private val state        : GameState,
@@ -41,7 +42,7 @@ class GoalsModel(
     private val _progressFlow    = MutableStateFlow<GoalProgress?>(null)
     private val _stateFlow       = MutableStateFlow(State.ACTIVE)
     private val _timerFlow       = MutableStateFlow(0)
-    private val _goalCounterFlow = MutableStateFlow(0)
+    private val _goalCounterFlow = MutableStateFlow(1)
 
     val currentGoalFlow : StateFlow<Goal?>         = _currentGoalFlow.asStateFlow()
     val progressFlow    : StateFlow<GoalProgress?> = _progressFlow.asStateFlow()
@@ -57,8 +58,46 @@ class GoalsModel(
 
     init {
         scope.launch {
+            // Чекаємо ПОВНОГО завантаження збереженого стану (goalState + grid),
+            // інакше restoreFromState прочитає дефолтний goalState → race.
+            state.isLoadedFlow.first { it }
             state.gridFlow.first { it.size == 16 }
             initGoal()
+            observeReachability()
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    // Reachability — задача могла стати недосяжною після росту buyLevel
+    // ------------------------------------------------------------------------
+    //
+    // Приклад: задача "зібрати 5 кубів рівня 3" видана при buyLevel=3.
+    // Гравець доростив дошку → buyLevel став 4 → кнопка BUY дає лише рівень 4,
+    // а рівень 3 більше ніяк не отримати (зі злиття виходять ЛИШЕ вищі рівні).
+    // Якщо потрібних кубів уже немає на полі — задача залипне назавжди → fail.
+
+    private fun observeReachability() {
+        scope.launch {
+            buyLevelModel.buyLevelFlow.collect {
+                if (_stateFlow.value == State.ACTIVE && !isGoalReachable()) {
+                    failGoal()   // нездійсненна → провал + генерація нової
+                }
+            }
+        }
+    }
+
+    private fun isGoalReachable(): Boolean {
+        val goal = currentGoal ?: return true
+        val obj  = goal.objective
+        if (obj !is GoalObjective.Collect) return true   // ReachLevel завжди досяжний (мержимо вгору)
+
+        val grid     = state.gridFlow.value
+        val buyLevel = buyLevelModel.currentBuyLevel
+
+        // Вимога недосяжна, якщо її рівень нижчий за buyLevel І на полі вже
+        // недостатньо таких кубів (доукомплектувати нізвідки).
+        return obj.requirements.none { req ->
+            req.level < buyLevel && grid.count { it == req.level } < req.count
         }
     }
 
@@ -73,8 +112,27 @@ class GoalsModel(
     }
 
     fun pauseTimer() {
+        // Паузимо лише активний timed-goal, що реально йде
+        val goal = currentGoal ?: return
+        if (!goal.isTimed || _stateFlow.value != State.ACTIVE) return
+        if (timerJob == null) return
+
         timerJob?.cancel()
+        timerJob = null
+        timerPaused = true
+        // remaining уже збережено в goalState на кожному тіку (див. startTimer)
         state.goalState = state.goalState.copy(timerRemaining = _timerFlow.value)
+    }
+
+    fun resumeTimer() {
+        val goal = currentGoal ?: return
+        if (!goal.isTimed || _stateFlow.value != State.ACTIVE) return
+        if (!timerPaused) return            // не на паузі — нічого не робимо
+        if (timerJob != null) return        // вже йде
+
+        timerPaused = false
+        val remaining = _timerFlow.value
+        if (remaining > 0) startTimer(remaining) else failGoal()
     }
 
     // ------------------------------------------------------------------------
@@ -90,6 +148,12 @@ class GoalsModel(
         _currentGoalFlow.value = goal
         _stateFlow.value       = State.ACTIVE
         refreshProgress()
+
+        // Відновлена задача могла стати недосяжною (buyLevel виріс) → нова
+        if (restored != null && !isGoalReachable()) {
+            failGoal()
+            return
+        }
 
         if (goal.isTimed) {
             val remaining = state.goalState.timerRemaining
@@ -111,7 +175,7 @@ class GoalsModel(
         _stateFlow.value = State.COMPLETED
         playerModel.addCoins(currentGoal?.reward ?: 0L)
         GlobalEvents.emit(GlobalEvents.EventType.GOAL_COMPLETED)
-        scope.launch { delay(2000); nextGoal() }
+        scope.launch { delay(2000.milliseconds); nextGoal() }
 
         currentGoal?.let { gdxGame.analytics.goalCompleted(it.category.name.lowercase(), it.reward) }
     }
@@ -121,7 +185,7 @@ class GoalsModel(
         stopTimer()
         _stateFlow.value = State.FAILED
         GlobalEvents.emit(GlobalEvents.EventType.GOAL_FAILED)
-        scope.launch { delay(1800); nextGoal() }
+        scope.launch { delay(1800.milliseconds); nextGoal() }
 
         currentGoal?.let { gdxGame.analytics.goalFailed(it.category.name.lowercase()) }
     }
@@ -147,13 +211,15 @@ class GoalsModel(
     // ------------------------------------------------------------------------
 
     private var timerJob: Job? = null
+    private var timerPaused = false
 
     private fun startTimer(seconds: Int) {
         timerJob?.cancel()
+        timerPaused = false
         _timerFlow.value = seconds
         timerJob = scope.launch {
             while (_timerFlow.value > 0) {
-                delay(1000)
+                delay(1000.milliseconds)
                 _timerFlow.value--
                 state.goalState = state.goalState.copy(timerRemaining = _timerFlow.value)
             }
@@ -164,6 +230,7 @@ class GoalsModel(
     private fun stopTimer() {
         timerJob?.cancel()
         timerJob = null
+        timerPaused = false
         _timerFlow.value = 0
         state.goalState = state.goalState.copy(timerRemaining = 0)
     }
@@ -247,7 +314,9 @@ class GoalsModel(
             timeLimitSec   = goal.timeLimitSec ?: 0,
             requirements   = (obj as? GoalObjective.Collect)?.requirements
                 ?.map { GoalRequirement(it.level, it.count) } ?: emptyList(),
-            timerRemaining = 0,
+            // timed → стартуємо з повного часу (а не 0), щоб restore щойно
+            // згенерованої timed-задачі не провалив її через timerRemaining==0
+            timerRemaining = goal.timeLimitSec ?: 0,
             counter        = _goalCounterFlow.value,
         )
     }

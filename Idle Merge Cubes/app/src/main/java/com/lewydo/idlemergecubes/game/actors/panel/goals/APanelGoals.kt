@@ -8,10 +8,15 @@ import com.lewydo.idlemergecubes.game.actors.panel.goals.panel.AGoalPanelBase
 import com.lewydo.idlemergecubes.game.actors.panel.goals.panel.ASimpleGoalPanel
 import com.lewydo.idlemergecubes.game.actors.panel.goals.panel.ATimedGoalPanel
 import com.lewydo.idlemergecubes.game.controller.GoalsController
-import com.lewydo.idlemergecubes.game.systems.goals.GoalObjective
 import com.lewydo.idlemergecubes.game.systems.goals.GoalProgress
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
+import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
+import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 
 // ═════════════════════════════════════════════════════════════════════════════
 //  APanelGoals — ОРКЕСТРАТОР панелей задач
@@ -31,78 +36,6 @@ import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class APanelGoals(override val screen: AdvancedScreen) : AConstraintLayout(screen) {
 
-
-
-    // ------------------------------------------------------------------------
-    // TODO: DEBUG — циклічне перемикання типів goal по кліку (ПРИБРАТИ В РЕЛІЗІ)
-    // ------------------------------------------------------------------------
-    private val debugGoals = listOf(
-        Goal(GoalObjective.ReachLevel(12), reward = 3000000),
-        Goal(GoalObjective.Collect(listOf(
-            GoalObjective.Collect.Requirement(4, 1),
-            GoalObjective.Collect.Requirement(500, 6000),
-            GoalObjective.Collect.Requirement(15, 40),
-        )), reward = 3),
-        Goal(GoalObjective.Collect(listOf(
-            GoalObjective.Collect.Requirement(4, 1),
-            GoalObjective.Collect.Requirement(5, 6),
-            GoalObjective.Collect.Requirement(2, 6),
-        )), reward = 300, timeLimitSec = 15),
-        Goal(GoalObjective.ReachLevel(50), reward = 50, timeLimitSec = 15),
-    )
-    private var debugIndex = 0
-    private var debugTimerLeft = 0
-
-    private fun enableDebugCycle() {
-        addListener(object : com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            override fun clicked(event: com.badlogic.gdx.scenes.scene2d.InputEvent?, x: Float, y: Float) {
-                val goal = debugGoals[debugIndex % debugGoals.size]
-                debugIndex++
-
-                bindGoal(goal)
-                bindCounter(debugIndex)
-                bindProgress(debugProgressFor(goal))
-                hideResultOverlay()
-
-                startDebugTimer(goal)
-            }
-        })
-    }
-
-    private fun startDebugTimer(goal: Goal) {
-        clearActions()                         // зупиняємо попередній відлік
-        if (!goal.isTimed) return
-
-        debugTimerLeft = goal.timeLimitSec!!   // 15
-        bindTimer(debugTimerLeft)
-
-        addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions.forever(
-            com.badlogic.gdx.scenes.scene2d.actions.Actions.delay(1f,
-                com.badlogic.gdx.scenes.scene2d.actions.Actions.run {
-                    debugTimerLeft--
-                    bindTimer(debugTimerLeft.coerceAtLeast(0))
-                    if (debugTimerLeft <= 0) {
-                        clearActions()
-                        showFailedOverlay()    // показати екран провалу
-                    }
-                }
-            )
-        ))
-    }
-
-    private fun debugProgressFor(goal: Goal): GoalProgress = when (val o = goal.objective) {
-        is GoalObjective.ReachLevel -> GoalProgress.ReachLevel(current = 6, target = o.targetLevel)
-        is GoalObjective.Collect    -> GoalProgress.Collect(o.requirements.map {
-            GoalProgress.Collect.Item(it.level, current = if (it.level == 4) 1 else 0, required = it.count)
-        })
-    }
-    // ------------------------------------------------------------------------
-    // TODO: DEBUG — циклічне перемикання типів goal по кліку (ПРИБРАТИ В РЕЛІЗІ)
-    // ------------------------------------------------------------------------
-
-
-
-
     // ------------------------------------------------------------------------
     // Panels & Overlay
     // ------------------------------------------------------------------------
@@ -113,6 +46,17 @@ class APanelGoals(override val screen: AdvancedScreen) : AConstraintLayout(scree
     private val aResultOverlay = AGoalResultOverlay(screen)
 
     private val allPanels = listOf(aSimplePanel, aCombinedPanel, aTimedPanel)
+
+    // ------------------------------------------------------------------------
+    // Reward coins pool — переюзабельні монетки для польоту в баланс
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // Reward coins — монетки летять у баланс при completed (на stage, поверх усього)
+    // ------------------------------------------------------------------------
+    private val COIN_MIN_COUNT = 10
+    private val COIN_MAX_COUNT = 15
+    private val COIN_MIN_SIZE  = 60f
+    private val COIN_MAX_SIZE  = 100f
 
     // ------------------------------------------------------------------------
     // Controller & State
@@ -130,8 +74,7 @@ class APanelGoals(override val screen: AdvancedScreen) : AConstraintLayout(scree
 
         allPanels.forEach { it.isVisible = false }
 
-        //controller.bind()
-        enableDebugCycle()   //TODO: ← DEBUG: прибрати в релізі
+        controller.bind()
     }
 
     // ------------------------------------------------------------------------
@@ -157,6 +100,7 @@ class APanelGoals(override val screen: AdvancedScreen) : AConstraintLayout(scree
         activePanel = panel
 
         panel.bindGoal(goal)
+        panel.bindCounter(lastCounter)   // застосовуємо актуальний номер одразу
         showOnlyActivePanel()
     }
 
@@ -168,7 +112,10 @@ class APanelGoals(override val screen: AdvancedScreen) : AConstraintLayout(scree
         activePanel?.bindTimer(seconds)
     }
 
+    private var lastCounter = 1
+
     fun bindCounter(counter: Int) {
+        lastCounter = counter            // кешуємо — застосується і при наступному bindGoal
         activePanel?.bindCounter(counter)
     }
 
@@ -191,11 +138,75 @@ class APanelGoals(override val screen: AdvancedScreen) : AConstraintLayout(scree
     }
 
     fun showCompletedOverlay(reward: Long) {
+        gdxGame.soundUtil.apply { play(GOALS_DONE) }
         aResultOverlay.showCompleted(reward)
+        flyRewardCoins()
     }
 
     fun showFailedOverlay() {
+        gdxGame.soundUtil.apply { play(GOALS_FAIL) }
         aResultOverlay.showFailed()
+    }
+
+    // ------------------------------------------------------------------------
+    // Flying coins → balance
+    // ------------------------------------------------------------------------
+    //
+    // При completed монетки створюються на stageUI.root (поверх УСЬОГО),
+    // розлітаються з центру панелі й летять у баланс, у кінці self-remove.
+    // Лише ВІЗУАЛ — нарахування робить GoalsModel.completeGoal.
+    // END_FLY_COIN тригерить shake балансу.
+
+    private fun flyRewardCoins() {
+        val target = GlobalStagePositions.get(GlobalStagePositions.Key.COIN)
+        if (target == Vector2.Zero) return
+
+        // центр панелі у stage-координатах (монетки живуть на stage)
+        val center = localToStageCoordinates(Vector2(width / 2f, height / 2f))
+
+        val count = (COIN_MIN_COUNT..COIN_MAX_COUNT).random()
+
+        // фази таймінгу
+        val scatterTime = 0.30f   // розліт по панелі
+        val restTime    = 0.55f   // лежать (юзер бачить купку)
+        val flyTime     = 0.40f   // політ однієї монетки в баланс
+        val flyStagger  = 0.07f   // інтервал між відльотами (по одній)
+
+        repeat(count) { i ->
+            val size = COIN_MIN_SIZE + Math.random().toFloat() * (COIN_MAX_SIZE - COIN_MIN_SIZE)
+
+            val coin = Image(gdxGame.assetsAll.coin)
+            coin.setSize(size, size)
+            coin.setOrigin(size / 2f, size / 2f)
+            coin.setScale(0f)
+            // старт — щільна купка в центрі
+            coin.setPosition(center.x - size / 2f, center.y - size / 2f)
+            screen.stageUI.root.addActor(coin)
+
+            // куди розлетітись по панелі (навколо центру)
+            val scatterX = center.x + (Math.random().toFloat() * 320f - 160f)
+            val scatterY = center.y + (Math.random().toFloat() * 150f - 50f)
+
+            coin.addAction(Actions.sequence(
+                Actions.delay(i * 0.025f),                         // купка висипається майже разом
+                // 1) поява + розліт по панелі (дугою — трохи вгору)
+                Actions.parallel(
+                    Actions.scaleTo(1f, 1f, scatterTime, Interpolation.swingOut),
+                    Actions.moveTo(scatterX - size / 2f, scatterY - size / 2f, scatterTime, Interpolation.sineOut),
+                ),
+                // 2) лежать — кожна свій час, щоб відліт був "по одній"
+                Actions.delay(restTime + i * flyStagger),
+                // 3) політ у баланс
+                Actions.parallel(
+                    Actions.moveTo(target.x - size / 2f, target.y - size / 2f, flyTime, Interpolation.swingIn),
+                    Actions.scaleTo(0.5f, 0.5f, flyTime, Interpolation.sineIn),
+                ),
+                // 4) поштовх балансу на прильоті
+                Actions.run { GlobalEvents.emit(GlobalEvents.EventType.END_FLY_COIN) },
+                // 5) self-remove зі stage
+                Actions.removeActor(),
+            ))
+        }
     }
 
 }
