@@ -1,12 +1,10 @@
 package com.lewydo.idlemergecubes.game.utils.font
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.PixmapPacker
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
-import com.badlogic.gdx.utils.Disposable
 import com.lewydo.idlemergecubes.game.utils.disposeAll
+import com.lewydo.idlemergecubes.util.log
 
 class FontGenerator(fontPath: FontPath) : FreeTypeFontGenerator(Gdx.files.internal(fontPath.path)) {
 
@@ -24,24 +22,12 @@ class FontGenerator(fontPath: FontPath) : FreeTypeFontGenerator(Gdx.files.intern
         val key = buildCacheKey(parameter)
 
         return fontCache.getOrPut(key) {
-            // LibGDX дефолт = 512×512 — для великих шрифтів цього мало.
-            // Гліф 264px + shadow 10px + border 3px ≈ 290px — не влізає в 512.
-            val pageSize = when {
-                parameter.size >= 200 -> 4096
-                parameter.size >= 80  -> 2048
-                else                  -> 1024
-            }
-
-            val packer = PixmapPacker(pageSize, pageSize, Pixmap.Format.RGBA8888, 2, false)
-            parameter.packer = packer
-
-            val font = super.generateFont(parameter)
-
-            // Після генерації дані скопійовані в текстури — packer більше не потрібен
-            packer.dispose()
-            parameter.packer = null
-
-            font
+            // Атлас керується дефолтним механізмом FreeType. GPU сучасних і навіть
+            // старих пристроїв (перевірено: Redmi 9T має GL_MAX_TEXTURE_SIZE=16384)
+            // легко тягне потрібні розміри, тож штучно обмежувати НЕ треба —
+            // інакше великі шрифти (з border+shadow) не влазять у сторінку і кидають
+            // "Page size too small for pixmap".
+            super.generateFont(parameter)
         }
     }
 

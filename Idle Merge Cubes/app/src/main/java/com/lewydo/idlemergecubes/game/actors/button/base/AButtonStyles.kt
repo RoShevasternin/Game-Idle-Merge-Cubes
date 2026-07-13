@@ -69,6 +69,12 @@ object AButtonStyles {
                 pressed = TextureRegionDrawable(gdxGame.assetsAll.no_press),
                 disabled = TextureRegionDrawable(gdxGame.assetsAll.no_press),
             )
+        val LEADERBOARD
+            get() = Style(
+                default = TextureRegionDrawable(gdxGame.assetsAll.leaderboard_def),
+                pressed = TextureRegionDrawable(gdxGame.assetsAll.leaderboard_press),
+                disabled = TextureRegionDrawable(gdxGame.assetsAll.leaderboard_press),
+            )
     }
 
     // ------------------------------------------------------------------------

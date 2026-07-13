@@ -8,6 +8,7 @@ import com.lewydo.idlemergecubes.game.actors.who_made.ABrand
 import com.lewydo.idlemergecubes.game.actors.who_made.ADescription
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
+import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
@@ -32,43 +33,39 @@ class WhoScreen: AdvancedScreen() {
     // Actors
     // ------------------------------------------------------------------------
 
-    private val aBackBtn      = AButtonTexture(this, AButtonStyles.Texture.BACK)
-    private val aTitleLbl     = Label(textTitle, FontFactory.create(this, parameter, fontGenerator_Nunito_SemiBold))
-    private val aBrand        = ABrand(this)
-    private val aSeparatorImg = Image(gdxGame.assetsAll.separator)
-    private val aDescription  = ADescription(this)
+    private val aBackBtn      by lazy { AButtonTexture(this, AButtonStyles.Texture.BACK) }
+    private val aTitleLbl     by lazy { Label(textTitle, FontFactory.create(this, parameter, fontGenerator_Nunito_SemiBold)) }
+    private val aBrand        by lazy { ABrand(this) }
+    private val aSeparatorImg by lazy { Image(gdxGame.assetsAll.separator) }
+    private val aDescription  by lazy { ADescription(this) }
 
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun show() {
-        setBackBackground(gdxGame.assetsLoader.BACKGROUND)
+        rootConstraintLayout.color.a = 0f
+        setBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
+        animShowScreen()
     }
 
-    override fun Group.addActorsOnStageUI() {
-        color.a = 0f
-
+    override fun AConstraintLayout.addActorsOnRootConstraintLayout() {
         addBackBtn()
         addTitleLbl()
         addBrand()
         addSeparatorImg()
         addDescription()
-
-        animShowScreen()
     }
 
     // ------------------------------------------------------------------------
     // Screen Animations
     // ------------------------------------------------------------------------
     override fun animHideScreen(blockEnd: Block) {
-        stageUI.root.animHide(TIME_ANIM_SCREEN)
-        stageUI.root.animDelay(TIME_ANIM_SCREEN) { blockEnd() }
+        rootConstraintLayout.animHide(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     override fun animShowScreen(blockEnd: Block) {
-        stageUI.root.animShow(TIME_ANIM_SCREEN)
-        stageUI.root.animDelay(TIME_ANIM_SCREEN) { blockEnd() }
+        rootConstraintLayout.animShow(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     // ------------------------------------------------------------------------

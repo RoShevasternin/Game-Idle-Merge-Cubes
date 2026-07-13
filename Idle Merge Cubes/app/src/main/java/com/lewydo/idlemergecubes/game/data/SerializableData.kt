@@ -4,6 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PlayerData(
+    // Версія схеми — підвищуй при НЕсумісних змінах (зміна типу поля тощо).
+    // Сумісні зміни (нове поле з дефолтом) версію змінювати НЕ потребують.
+    val schemaVersion  : Int       = PlayerDataMigration.CURRENT_VERSION,
+
     val xp             : Long      = 0L,
     val coins          : Long      = 10_000L,
     val grid           : List<Int> = List(16) { 0 },

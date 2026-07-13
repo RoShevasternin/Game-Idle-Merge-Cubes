@@ -1,6 +1,9 @@
 package com.lewydo.idlemergecubes.game.state
 
 import com.lewydo.idlemergecubes.game.data.PlayerData
+import com.lewydo.idlemergecubes.game.data.AppJson
+import com.lewydo.idlemergecubes.game.data.decodeOrDefault
+import com.lewydo.idlemergecubes.game.data.PlayerDataMigration
 import com.lewydo.idlemergecubes.game.manager.DataStoreManager
 import com.lewydo.idlemergecubes.game.model.PlayerModel
 import com.lewydo.idlemergecubes.util.log
@@ -11,7 +14,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.milliseconds
 
 class SaveGameStateManager(
@@ -29,12 +31,17 @@ class SaveGameStateManager(
 
     fun load() {
         scope.launch(Dispatchers.IO) {
-            val raw  = dataStore.get()
-            val data = if (raw != null) {
-                Json.decodeFromString(PlayerData.serializer(), raw)
-            } else {
-                PlayerData() // ← дефолтні значення з PlayerData
-            }
+            val raw = dataStore.get()
+            // Безпечне декодування: несумісний/пошкоджений save → default (без краху)
+            val decoded = decodeOrDefault(
+                deserializer = PlayerData.serializer(),
+                raw          = raw,
+                default      = PlayerData(),
+                tag          = "SaveGameStateManager",
+            )
+            // Міграція між версіями схеми (за потреби)
+            val data = PlayerDataMigration.migrate(decoded)
+
             gameState.loadFrom(data)
             logState("GAME STATE LOADED", data)
         }
@@ -48,7 +55,7 @@ class SaveGameStateManager(
         scope.launch(Dispatchers.IO) {
             mutex.withLock {
                 val data = gameState.toPlayerData()
-                val json = Json.encodeToString(PlayerData.serializer(), data)
+                val json = AppJson.encodeToString(PlayerData.serializer(), data)
                 dataStore.update { json }
                 logState("GAME STATE SAVED", data)
             }
@@ -66,7 +73,7 @@ class SaveGameStateManager(
                 delay((intervalSec * 1000L).milliseconds)
                 mutex.withLock {
                     val data = gameState.toPlayerData()
-                    val json = Json.encodeToString(PlayerData.serializer(), data)
+                    val json = AppJson.encodeToString(PlayerData.serializer(), data)
                     dataStore.update { json }
                     logState("GAME STATE AUTO-SAVED", data)
                 }

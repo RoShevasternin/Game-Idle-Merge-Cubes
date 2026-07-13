@@ -13,18 +13,13 @@ import com.badlogic.gdx.utils.Disposable
 /**
  * Raw GL fullscreen blit — аналог Unity's Graphics.Blit.
  *
- * SpriteBatch малює спрайти з матрицями і vertex буфером. Для FBO-to-FBO
- * операцій це зайво — нам не потрібні трансформації, нам просто треба
- * "пропустити" пікселі однієї текстури через шейдер у другу.
+ * Один fullscreen quad (2 трикутники) у NDC (-1..1) через шейдер.
+ * Mesh компілюється раз і живе до кінця гри.
  *
- * Blit вирішує це через один fullscreen quad (2 трикутники = весь екран)
- * у NDC координатах (-1..1). Mesh компілюється ОДИН раз при першому виклику
- * і живе до кінця гри. Кожен blit-виклик — це лише shader.bind() + mesh.render().
- *
- * Vertex shader [VERT] оголошує v_color = vec4(1.0) для сумісності з
- * fragment shaders що очікують v_color (всі наші шейдери множать gl_FragColor * v_color).
+ * ─── Nesting-safe ──────────────────────────────────────────────────────────
+ * Використовує FboStack.push/pop замість dst.begin()/end() — щоб blit
+ * всередині вкладеного VfxGroup не зламав прив'язку батьківського FBO.
  */
-
 object Blit : Disposable {
 
     val VERT = """
@@ -38,7 +33,6 @@ object Blit : Disposable {
             gl_Position = a_position;
         }
     """.trimIndent()
-
 
     @Suppress("GDXKotlinStaticResource")
     private var mesh: Mesh? = null
@@ -72,9 +66,10 @@ object Blit : Disposable {
         shader  : ShaderProgram,
         uniforms: (ShaderProgram) -> Unit = {}
     ) {
-        dst.begin()
+        // Nesting-safe: push/pop замість begin/end
+        FboStack.push(dst)
         clearAndRender(src.colorBufferTexture, shader, uniforms)
-        dst.end()
+        FboStack.pop()
     }
 
     fun blit(
@@ -83,9 +78,9 @@ object Blit : Disposable {
         shader  : ShaderProgram,
         uniforms: (ShaderProgram) -> Unit = {}
     ) {
-        dst.begin()
+        FboStack.push(dst)
         clearAndRender(src, shader, uniforms)
-        dst.end()
+        FboStack.pop()
     }
 
     private fun clearAndRender(texture: Texture, shader: ShaderProgram, uniforms: (ShaderProgram) -> Unit) {

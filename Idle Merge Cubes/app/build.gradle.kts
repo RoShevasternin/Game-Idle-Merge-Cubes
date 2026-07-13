@@ -6,6 +6,15 @@ plugins {
 }
 
 android {
+//    signingConfigs {
+//        create("release") {
+//            storeFile = file("D:\\Game-Idle-Merge-Cubes\\release\\keyReleaseIdles")
+//            storePassword = "ujsad7hASgdtegbqe"
+//            keyPassword = "ujsad7hASgdtegbqe"
+//            keyAlias = "passengerToren7sj"
+//        }
+//    }
+
     namespace  = "com.lewydo.idlemergecubes"
     compileSdk = 37
 
@@ -13,19 +22,22 @@ android {
         applicationId = "com.lewydo.idlemergecubes"
         minSdk        = 24
         targetSdk     = 37
-        versionCode   = 18
-        versionName   = "3.0.0"
+        versionCode   = 19
+        versionName   = "3.1.3-test-msdf"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Field ------------------------------------------------------------------------
         //buildConfigField("String", "TIKTOK_APP_SECRET", "\"aaa\"")
+
+//        signingConfig = signingConfigs.getByName("release")
+
     }
 
     buildTypes {
         debug {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 
             // Field ------------------------------------------------------------------------
@@ -119,6 +131,9 @@ dependencies {
 
     // Gson (парсинг JSON з Gist)
     implementation("com.google.code.gson:gson:2.14.0")
+
+    // Google Play Services v2
+    implementation("com.google.android.gms:play-services-games-v2:21.0.0")
 }
 
 tasks.register("copyAndroidNatives") {

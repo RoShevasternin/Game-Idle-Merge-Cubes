@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import kotlin.math.abs
 
@@ -91,38 +92,67 @@ class BlurEffect(var radius: Float = 8f) : VfxEffect() {
         }
         pingPong.swap()  // результат D2-pass тепер в src = фінальний blur
     }
+
+    override fun stateKey(): Long = radius.toRawBits().toLong()
+
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MaskEffect — alpha masking (dual-texture)
-// ─────────────────────────────────────────────────────────────────────────────
+// ============================================================================
+// MaskEffect — ЗАМІНА класу у VfxEffects.kt
+// Додай імпорт угорі файлу: import com.badlogic.gdx.graphics.g2d.TextureRegion
+// ============================================================================
 
 /**
- * Маскування через alpha-текстуру.
+ * Маскування alpha-текстурою. Приймає Texture АБО TextureRegion (з атласу).
  *
- * maskFS.glsl очікує:
- *   uniform sampler2D u_texture;  ← контент (texture unit 0, bind-ить Blit)
- *   uniform sampler2D u_mask;     ← маска  (texture unit 1, bind-имо вручну)
+ * Внутрішньо все зберігається як TextureRegion — для standalone Texture
+ * створюється full-регіон (0,0,1,1), тому шейдер працює однаково.
+ * UV регіону передаються в u_maskUv → семплиться тільки ділянка атласу.
  *
- * maskTexture = null → pass-through.
+ * API назад-сумісний: maskTexture: Texture? працює як раніше.
  */
-class MaskEffect(var maskTexture: Texture? = null) : VfxEffect() {
+class MaskEffect() : VfxEffect() {
+
+    constructor(texture: Texture?) : this() { maskTexture = texture }
+    constructor(region: TextureRegion?) : this() { maskRegion = region }
 
     override val fragmentShader = "shader/mask/maskFS.glsl"
 
+    /** Маска як регіон (атлас або full-текстура). Головне сховище. */
+    var maskRegion: TextureRegion? = null
+
+    /** Назад-сумісний доступ як Texture. set загортає у full-регіон. */
+    var maskTexture: Texture?
+        get()      = maskRegion?.texture
+        set(value) { maskRegion = value?.let { TextureRegion(it) } }
+
     override fun render(pingPong: PingPong, ctx: VfxContext) {
-        val mask = maskTexture ?: return  // pass-through
+        val region = maskRegion ?: return  // pass-through
 
         Blit.blit(pingPong.src, pingPong.dst, shader) { s ->
             s.setUniformi("u_texture", 0)          // unit 0 вже bind-нутий Blit (src)
 
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1)
-            mask.bind(1)
-            s.setUniformi("u_mask", 1)             // unit 1 = маска
+            region.texture.bind(1)
+            s.setUniformi("u_mask", 1)             // unit 1 = сторінка маски
+
+            // UV-межі регіону: для full-текстури це (0,0,1,1) — стара поведінка
+            s.setUniformf("u_maskUv", region.u, region.v, region.u2, region.v2)
 
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0)  // повертаємо активний unit
         }
         pingPong.swap()
+    }
+
+    // autoCache: детектує зміну і текстури, і UV регіону
+    override fun stateKey(): Long {
+        val r = maskRegion ?: return 0L
+        var h = r.texture.hashCode().toLong()
+        h = h * 31 + r.u.toRawBits().toLong()
+        h = h * 31 + r.v.toRawBits().toLong()
+        h = h * 31 + r.u2.toRawBits().toLong()
+        h = h * 31 + r.v2.toRawBits().toLong()
+        return h
     }
 }
 
@@ -201,6 +231,14 @@ class HslEffect(
         }.let { if (it < 0f) it + 1f else it }
         return Triple(h, s, l)
     }
+
+    override fun stateKey(): Long {
+        var h = hue.toRawBits().toLong()
+        h = h * 31 + saturation.toRawBits().toLong()
+        h = h * 31 + luminance.toRawBits().toLong()
+        return h
+    }
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -221,6 +259,13 @@ class SaturationEffect(var saturation: Float = 1f, var alpha: Float = 1f) : VfxE
         shader.setUniformf("u_saturation", saturation)
         shader.setUniformf("u_alpha",      alpha)
     }
+
+    override fun stateKey(): Long {
+        var h = saturation.toRawBits().toLong()
+        h = h * 31 + alpha.toRawBits().toLong()
+        return h
+    }
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -250,6 +295,15 @@ class CircleProgressEffect(
         shader.setUniformf("u_colorStart", colorStart.r, colorStart.g, colorStart.b, colorStart.a)
         shader.setUniformf("u_colorEnd",   colorEnd.r,   colorEnd.g,   colorEnd.b,   colorEnd.a)
     }
+
+    override fun stateKey(): Long {
+        var h = progress.toRawBits().toLong()
+        h = h * 31 + startAngle.toRawBits().toLong()
+        h = h * 31 + innerEmpty.toRawBits().toLong()
+        h = h * 31 + roundness.toRawBits().toLong()
+        return h
+    }
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -264,6 +318,9 @@ class BagCoinsEffect(var fillPercent: Float = 0f) : VfxEffect() {
     override fun setUniforms(shader: ShaderProgram, ctx: VfxContext) {
         shader.setUniformf("u_fillPercent", fillPercent)
     }
+
+    override fun stateKey(): Long = fillPercent.toRawBits().toLong()
+
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -284,4 +341,12 @@ class LavaProgressEffect(
         shader.setUniformf("u_edgeDeform",  edgeDeform)
         shader.setUniformf("u_finishFlash", finishFlash)
     }
+
+    override fun stateKey(): Long {
+        var h = time.toRawBits().toLong()
+        h = h * 31 + edgeDeform.toRawBits().toLong()
+        h = h * 31 + finishFlash.toRawBits().toLong()
+        return h
+    }
+
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
+import com.lewydo.idlemergecubes.game.data.AppJson
 
 abstract class DataStoreJsonUtil<T>(
     protected val serializer  : KSerializer<T>,
@@ -28,17 +28,20 @@ abstract class DataStoreJsonUtil<T>(
     protected val mutex = Mutex()
 
     open fun initialize() {
-        /*coroutine.launch(Dispatchers.IO) {
-            dataStore.get()?.let { value -> flow.update { Json.decodeFromString(deserializer, value) } }
-            log("Store $simpleName = ${flow.value}")
-        }*/
 
         coroutine.launch(Dispatchers.IO) {
 
             val raw = dataStore.get()
 
             if (raw != null) {
-                val decoded = Json.decodeFromString(deserializer, raw)
+                // Безпечне декодування: несумісний/пошкоджений save не крашить —
+                // fallback на поточний flow.value (дефолт стора).
+                val decoded = try {
+                    AppJson.decodeFromString(deserializer, raw)
+                } catch (e: Exception) {
+                    log("[$simpleName] decode failed → default. ${e.message}")
+                    flow.value
+                }
                 flow.value = decoded
                 logInit(decoded)
             } else {
@@ -49,12 +52,6 @@ abstract class DataStoreJsonUtil<T>(
     }
 
     open fun update(block: (T) -> T) {
-        /*coroutine.launch(Dispatchers.IO) {
-            flow.update { block(flow.value) }
-
-            log("Store $simpleName update = ${flow.value}")
-            dataStore.update { Json.encodeToString(serializer, flow.value) }
-        }*/
 
         coroutine.launch(Dispatchers.IO) {
             mutex.withLock {
@@ -62,7 +59,7 @@ abstract class DataStoreJsonUtil<T>(
                 val newValue = block(oldValue)
 
                 flow.value = newValue
-                dataStore.update { Json.encodeToString(serializer, newValue) }
+                dataStore.update { AppJson.encodeToString(serializer, newValue) }
 
                 logUpdate(oldValue, newValue)
             }

@@ -55,6 +55,11 @@ class ABlurBack(
         get()      = maskEffect.maskTexture
         set(value) { maskEffect.maskTexture = value; rerenderOnce() }
 
+    /** Маска як TextureRegion (атлас) */
+    var maskRegion: TextureRegion?
+        get()      = maskEffect.maskRegion
+        set(value) { maskEffect.maskRegion = value; rerenderOnce() }
+
     private var isScreenshotCaptured = false
 
     // Перевизначаємо isStaticEffect щоб скидати isScreenshotCaptured при false
@@ -64,6 +69,8 @@ class ABlurBack(
             if (!value) isScreenshotCaptured = false
             super.isStaticEffect = value
         }
+
+    override var autoCache = false
 
     private val vecTmp           = Vector2()
     private val vecGroupPosition = Vector2()

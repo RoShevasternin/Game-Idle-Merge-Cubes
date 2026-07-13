@@ -59,6 +59,15 @@ abstract class VfxEffect {
     abstract val fragmentShader: String
 
     open fun setUniforms(shader: ShaderProgram, ctx: VfxContext) {}
+
+    /**
+     * Хеш параметрів ефекту для autoCache у VfxGroup.
+     * За замовчуванням 0 = "статичний, кешується".
+     * Анімовані ефекти (lava time, progress fill) перевизначають це —
+     * тоді autoCache авто-перемальовує коли параметр змінюється,
+     * і НЕ кешує коли він міняється щокадру (лава не застигає).
+     */
+    open fun stateKey(): Long = 0L
     open val isEnabled: Boolean get() = true
 
     // ─── Shader для VfxGroup (Blit — NDC quad) ────────────────────────────

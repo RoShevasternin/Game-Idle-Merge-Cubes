@@ -3,38 +3,32 @@ package com.lewydo.idlemergecubes.game.utils.vfx
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Disposable
-
-// ─────────────────────────────────────────────────────────────────────────────
-// VfxShaderCache — глобальний кеш шейдерів
-// ─────────────────────────────────────────────────────────────────────────────
+import com.lewydo.idlemergecubes.util.log
 
 /**
- * Централізований кеш ShaderProgram об'єктів.
+ * Централізований кеш ShaderProgram.
  *
- * Ключ = шлях до fragment shader файлу (наприклад "shader/blur/gaussianBlurFS.glsl").
- * Значення = скомпільований ShaderProgram.
+ * ─── ВИПРАВЛЕНО: ключ = fragmentPath + vertexSrc ────────────────────────────
  *
- * Перший виклик get() для певного шляху компілює шейдер (одноразова операція).
- * Всі наступні виклики з тим самим шляхом повертають той самий об'єкт — без
- * перекомпіляції, без дублювання в GPU пам'яті.
+ * Раніше ключем був ТІЛЬКИ fragmentPath. Але один фрагмент може
+ * компілюватись з різними vertex shaders:
+ *   effect.shader      → Blit.VERT   (NDC, для FBO ефектів у VfxGroup)
+ *   effect.batchShader → BATCH_VERT  (world→NDC, для VfxImage через SpriteBatch)
  *
- * Vertex shader за замовчуванням = Blit.VERT (NDC quad, v_color=1.0).
- * Якщо потрібен кастомний vertex shader — передай у get() окремо.
+ * Зі старим ключем: хто перший запитав фрагмент — той vertex і закешувався,
+ * другий отримував ЧУЖИЙ vertex shader мовчки → поламаний рендер без помилки.
  *
- * ВАЖЛИВО: ніколи не dispose шейдери через VfxEffect.dispose() — вони shared.
- * Dispose відбувається один раз при виході з гри через VfxShaderCache.dispose().
+ * Тепер ключ враховує обидва → кожна пара (fragment, vertex) має свій
+ * скомпільований ShaderProgram. Компіляція все одно одноразова на пару.
  */
-object VfxShaderCache: Disposable {
+object VfxShaderCache : Disposable {
 
     private val cache = HashMap<String, ShaderProgram>()
 
-    /**
-     * Отримати ShaderProgram за шляхом до fragment shader.
-     * Якщо шейдер ще не компілювався — компілює і кешує.
-     * Якщо вже компілювався — повертає кешований об'єкт.
-     */
-    fun get(fragmentPath: String, vertexSrc: String = Blit.VERT): ShaderProgram =
-        cache.getOrPut(fragmentPath) {
+    fun get(fragmentPath: String, vertexSrc: String = Blit.VERT): ShaderProgram {
+        // Ключ = фрагмент + хеш vertex source (стабільний, не залежить від довжини)
+        val key = fragmentPath + "#" + vertexSrc.hashCode()
+        return cache.getOrPut(key) {
             val fragSrc = Gdx.files.internal(fragmentPath).readString()
             ShaderProgram(vertexSrc, fragSrc).also { shader ->
                 if (!shader.isCompiled) {
@@ -42,10 +36,14 @@ object VfxShaderCache: Disposable {
                         "VfxShaderCache: не вдалось скомпілювати '$fragmentPath':\n${shader.log}"
                     )
                 }
+                // Лог попереджень навіть якщо скомпілювалось (unused varyings тощо)
+                if (shader.log.isNotBlank()) {
+                    log("$fragmentPath:\n${shader.log}")
+                }
             }
         }
+    }
 
-    /** Dispose всіх шейдерів. Викликати тільки при виході з гри. */
     override fun dispose() {
         cache.values.forEach { runCatching { it.dispose() } }
         cache.clear()

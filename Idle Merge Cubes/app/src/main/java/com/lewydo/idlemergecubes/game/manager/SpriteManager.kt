@@ -64,9 +64,6 @@ class SpriteManager(var assetManager: AssetManager) {
         LOADER(AtlasData("atlas/loader.atlas")),
 
         ALL     (AtlasData("atlas/all.atlas")),
-        GRID    (AtlasData("atlas/grid.atlas")),
-        MENU    (AtlasData("atlas/menu.atlas")),
-
         _9_PATCH(AtlasData("atlas/9_patch.atlas")),
     }
 

@@ -1,26 +1,28 @@
 package com.lewydo.idlemergecubes.game.actors.panel.mergeBonus
 
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class APanelProgressMergeBonus(override val screen: AdvancedScreen) : AConstraintLayout(screen) {
 
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "/ merges").setSize(56)
+    private val msdf by lazy { gdxGame.msdfManager }
+
+    private val styleCounter = MsdfStyle(msdf, msdf.fontNunitoMedium, 56f)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
     private val aProgressMergeBonus = AProgressMergeBonus(screen)
     private val aBagCoins           = ABagCoins(screen)
-    private val aCounterLbl         = Label("0 / 10 merges", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Medium))
+    private val aCounterLbl         = MsdfLabel("0 / 10 merges", styleCounter)
 
     // ------------------------------------------------------------------------
     // Callback

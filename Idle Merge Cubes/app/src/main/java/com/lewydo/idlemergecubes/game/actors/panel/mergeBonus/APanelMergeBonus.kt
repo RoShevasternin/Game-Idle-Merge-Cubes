@@ -12,6 +12,7 @@ import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraint
 import com.lewydo.idlemergecubes.game.actors.panel.mergeBonus.state.FillingState
 import com.lewydo.idlemergecubes.game.actors.panel.mergeBonus.state.ReadyState
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectActor
+import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
@@ -21,6 +22,8 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import com.lewydo.idlemergecubes.game.utils.stateMachine.StateMachine
@@ -46,19 +49,17 @@ class APanelMergeBonus(override val screen: AdvancedScreen): AConstraintLayout(s
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val parameter      = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "," + textTitle)
-    private val parameterTitle = parameter.copy().setSize(72)
-    private val parameterCoins = parameter.copy().setSize(64)
+    private val styleTitle = MsdfStyle(msdf, msdf.fontNunitoBold, 72f)
+    private val styleCoins = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 64f)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aTitleLbl = Label(textTitle, FontFactory.create(screen, parameterTitle, screen.fontGenerator_Nunito_Bold))
+    private val aTitleLbl = MsdfLabel(textTitle, styleTitle)
     private val aCoinImg  = Image(gdxGame.assetsAll.coin)
-    private val aCoinLbl  = Label("0", FontFactory.create(screen, parameterCoins, screen.fontGenerator_Nunito_SemiBold))
-
-    //private val aPanelMergeBonusImg = Image(gdxGame.assetsAll.PANEL_IDLE)
+    private val aCoinLbl  = MsdfLabel("0", styleCoins)
 
     private val aPanelProgressMergeBonus = APanelProgressMergeBonus(screen)
     private val aPanelCollectMergeBonus  = APanelCollectMergeBonus(screen)

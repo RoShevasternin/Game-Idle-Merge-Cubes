@@ -2,7 +2,10 @@ package com.lewydo.idlemergecubes
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
@@ -14,6 +17,7 @@ import com.google.gson.Gson
 import com.lewydo.idlemergecubes.services.ads.AdManager
 import com.lewydo.idlemergecubes.databinding.ActivityMainBinding
 import com.lewydo.idlemergecubes.game.utils.GIST
+import com.lewydo.idlemergecubes.services.leaderboard.LeaderboardManager
 import com.lewydo.idlemergecubes.services.tiktok.RemoteConfigModel
 import com.lewydo.idlemergecubes.services.tiktok.TikTokManager
 import com.lewydo.idlemergecubes.util.OneTime
@@ -23,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
+import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
 
@@ -43,19 +48,23 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
     lateinit var adManager: AdManager
         private set
 
+    lateinit var leaderboardManager: LeaderboardManager
+        private set
+
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         initialize()
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             onceSystemBarHeight.use {
-                statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-                navBarHeight = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+                statusBarHeight = insets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.statusBars()).top
+                navBarHeight    = insets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.navigationBars()).bottom
 
                 log("statusBarHeight = $statusBarHeight | navBarHeight = $navBarHeight")
 
@@ -73,7 +82,7 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
             log("exit")
             coroutine.launch(Dispatchers.Main) {
                 finishAndRemoveTask()
-                delay(100)
+                delay(100.milliseconds)
                 exitProcess(0)
             }
         }
@@ -88,6 +97,8 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
         setContentView(binding.root)
 
         initializeAds()
+        initializeLeaderboard()
+
         fetchRemoteConfig { log("COMPLETE gist...") }
     }
 
@@ -141,6 +152,23 @@ class MainActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks {
     private fun initializeAds() {
         adManager = AdManager(this, binding)
         adManager.initialize()
+    }
+
+    // ------------------------------------------------------------------------
+    // Leaderboard
+    // ------------------------------------------------------------------------
+
+    private fun initializeLeaderboard() {
+        leaderboardManager = LeaderboardManager(this, getString(R.string.leaderboard_id))
+        leaderboardManager.initialize()
+    }
+
+    fun submitXp(xp: Long) {
+        leaderboardManager.submitScore(xp)
+    }
+
+    fun showLeaderboard() {
+        leaderboardManager.showLeaderboard()
     }
 
     // ------------------------------------------------------------------------

@@ -3,7 +3,6 @@ package com.lewydo.idlemergecubes.game.actors.panel
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.gdxGame
@@ -14,23 +13,26 @@ class APanelTop(override val screen: AdvancedScreen): AdvancedGroup() {
     // Actors
     // ------------------------------------------------------------------------
     private val aPanelTopImg      = Image(gdxGame.assetsAll.PANEL_TOP)
-    private val aSettingsBtn      = AButtonTexture(screen, AButtonStyles.Texture.SETTINGS)
     private val aPanelBalanceCoin = APanelBalanceCoin(screen)
     private val aPanelLvL         = APanelLvL(screen)
+    private val aSettingsBtn      = AButtonTexture(screen, AButtonStyles.Texture.SETTINGS)
+    private val aLeaderboardBtn   = AButtonTexture(screen, AButtonStyles.Texture.LEADERBOARD)
 
     // ------------------------------------------------------------------------
     // Callback
     // ------------------------------------------------------------------------
-    var onClickSettingsBtn = {}
+    var onClickSettingsBtn    = {}
+    var onClickLeaderboardBtn = {}
 
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun addActorsOnGroup() {
         addPanelTopImg()
-        addSettingsBtn()
         addPanelBalanceCoinGroup()
         addPanelLvL()
+        addSettingsBtn()
+        addLeaderboardBtn()
     }
 
     // ------------------------------------------------------------------------
@@ -38,12 +40,6 @@ class APanelTop(override val screen: AdvancedScreen): AdvancedGroup() {
     // ------------------------------------------------------------------------
     private fun addPanelTopImg() {
         addAndFillActor(aPanelTopImg)
-    }
-
-    private fun addSettingsBtn() {
-        addActor(aSettingsBtn)
-        aSettingsBtn.setBounds(1796f, 87f, 236f, 236f)
-        aSettingsBtn.setOnClickListener { onClickSettingsBtn() }
     }
 
     private fun addPanelBalanceCoinGroup() {
@@ -54,6 +50,18 @@ class APanelTop(override val screen: AdvancedScreen): AdvancedGroup() {
     private fun addPanelLvL() {
         addActor(aPanelLvL)
         aPanelLvL.setBounds(107f, 69f, 270f, 270f)
+    }
+
+    private fun addSettingsBtn() {
+        addActor(aSettingsBtn)
+        aSettingsBtn.setBounds(1796f, 87f, 236f, 236f)
+        aSettingsBtn.setOnClickListener { onClickSettingsBtn() }
+    }
+
+    private fun addLeaderboardBtn() {
+        addActor(aLeaderboardBtn)
+        aLeaderboardBtn.setBounds(1536f, 87f, 236f, 236f)
+        aLeaderboardBtn.setOnClickListener { onClickLeaderboardBtn() }
     }
 
 }

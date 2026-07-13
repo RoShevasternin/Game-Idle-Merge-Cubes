@@ -33,9 +33,6 @@ open class ALeaderboardButton(override val screen: AdvancedScreen) : AButtonText
 
         addIconImg()
         addTitleLbl()
-
-        // todo: remove
-        addAndFillActor(Image(gdxGame.assetsAll.ComingSoon))
     }
 
     // ------------------------------------------------------------------------

@@ -33,6 +33,7 @@ import com.lewydo.idlemergecubes.game.utils.Settings
 import com.lewydo.idlemergecubes.game.utils.ShaderClock
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGame
 import com.lewydo.idlemergecubes.game.utils.disposeAll
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfManager
 import com.lewydo.idlemergecubes.game.utils.vfx.Blit
 import com.lewydo.idlemergecubes.game.utils.vfx.VfxShaderCache
 import com.lewydo.idlemergecubes.services.analytics.AnalyticsManager
@@ -73,6 +74,7 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     lateinit var musicManager         : MusicManager          private set
     lateinit var soundManager         : SoundManager          private set
     lateinit var particleEffectManager: ParticleEffectManager private set
+    lateinit var msdfManager          : MsdfManager           private set
 
     // ------------------------------------------------------------------------
     // Coroutine
@@ -124,6 +126,7 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
         musicManager          = MusicManager(assetManager)
         soundManager          = SoundManager(assetManager)
         particleEffectManager = ParticleEffectManager(assetManager)
+        msdfManager           = MsdfManager()
         navigationManager     = NavigationManager(this)
 
         saveManager.load()
@@ -144,9 +147,10 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
     override fun pause() {
         super.pause()
         log("pause")
-        modelGoals.pauseTimer()          // ПЕРШИМ — запис актуального timerRemaining у goalState
+        modelGoals.pauseTimer()                  // ПЕРШИМ — запис актуального timerRemaining у goalState
         modelOfflineReward.saveLoginTime()
-        saveManager.save()               // потім зберігаємо вже свіжий стан
+        saveManager.save()                       // потім зберігаємо вже свіжий стан
+        activity.submitXp(modelPlayer.currentXp) // оновлюємо рахунок у лідерборді
     }
 
     override fun resume() {
@@ -163,7 +167,7 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
         try {
             coroutine.cancel()
             disposableSet.disposeAll()
-            disposeAll(assetManager, musicUtil, VfxShaderCache, Blit)
+            disposeAll(assetManager, musicUtil, VfxShaderCache, Blit, msdfManager)
             modelOfflineReward.saveLoginTime()
             log("dispose $currentClassName")
             super.dispose()

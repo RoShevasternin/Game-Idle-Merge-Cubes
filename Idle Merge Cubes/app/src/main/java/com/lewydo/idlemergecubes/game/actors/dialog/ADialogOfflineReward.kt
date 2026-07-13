@@ -127,6 +127,7 @@ class ADialogOfflineReward(override val screen: AdvancedScreen): AdvancedGroup()
 
     private fun addMask() {
         addAndFillActor(aMask)
+        aMask.autoCache = false
         aMask.addEffectConfetti()
     }
 

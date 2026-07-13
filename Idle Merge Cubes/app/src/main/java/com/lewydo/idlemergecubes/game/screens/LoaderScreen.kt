@@ -1,6 +1,5 @@
 package com.lewydo.idlemergecubes.game.screens
 
-import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.game.actors.loader.AMainLoader
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.manager.MusicManager
@@ -34,10 +33,9 @@ class LoaderScreen : AdvancedScreen() {
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun show() {
-        stageUI.root.color.a = 0f
-
+        rootConstraintLayout.color.a = 0f
         loadSplashAssets()
-        setBackBackground(gdxGame.assetsLoader.BACKGROUND)
+        setBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
 
         animShowScreen()
@@ -60,11 +58,11 @@ class LoaderScreen : AdvancedScreen() {
     // Screen Animations
     // ------------------------------------------------------------------------
     override fun animHideScreen(blockEnd: Block) {
-        stageUI.root.animHide(TIME_ANIM_SCREEN) { blockEnd() }
+        rootConstraintLayout.animHide(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     override fun animShowScreen(blockEnd: Block) {
-        stageUI.root.animShow(TIME_ANIM_SCREEN) { blockEnd() }
+        rootConstraintLayout.animShow(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     // ------------------------------------------------------------------------
@@ -162,9 +160,9 @@ class LoaderScreen : AdvancedScreen() {
 
             gdxGame.activity.adManager.banner.show()
 
-            stageUI.root.animDelay(1f) {
+            rootConstraintLayout.animDelay(1f) {
                 aMain.aCenterContentLoader.aLightLoader.onLoaderFinish()
-                animHideScreen { gdxGame.navigationManager.navigate(GameScreen::class.java.name) } //TestShaderScreen::class.java.name) }
+                animHideScreen { gdxGame.navigationManager.navigate(GameScreen::class.java.name) }
             }
         }
     }

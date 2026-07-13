@@ -161,7 +161,7 @@ class TestShaderScreen: AdvancedScreen() {
     }
 
     override fun animHideScreen(blockEnd: Block) {
-        stageBack.root.animHide(TIME_ANIM_SCREEN) { blockEnd() }
+        stageUI.root.animHide(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     override fun animShowScreen(blockEnd: Block) {}

@@ -7,18 +7,20 @@ import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class AGoalsBadge(
     override val screen: AdvancedScreen,
-    labelStyle: Label.LabelStyle,
+    style: MsdfStyle,
 ): AConstraintLayout(screen) {
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
     private val aBgImg = Image(gdxGame.assetsAll.goals_badge)
-    private val aLbl   = Label("", labelStyle)
+    private val aLbl   = MsdfLabel("", style)
 
     // ------------------------------------------------------------------------
     // Lifecycle

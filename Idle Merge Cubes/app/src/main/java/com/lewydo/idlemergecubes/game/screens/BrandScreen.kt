@@ -21,17 +21,15 @@ class BrandScreen : AdvancedScreen() {
     // Lifecycle
     // ------------------------------------------------------------------------
     override fun show() {
-        stageUI.root.color.a = 0f
+        rootConstraintLayout.color.a = 0f
 
         loadBandAssets()
-        setBackBackground(gdxGame.assetsBrand.BACKGROUND)
+        setBackground(gdxGame.assetsBrand.BACKGROUND)
         super.show()
 
         animShowScreen {
             aMain.playIntroAnimation {
-                //stageUI.root.animDelay(1f) {
-                    animHideScreen { gdxGame.navigationManager.navigate(LoaderScreen::class.java.name) }
-                //}
+                animHideScreen { gdxGame.navigationManager.navigate(LoaderScreen::class.java.name) }
             }
         }
     }
@@ -45,11 +43,11 @@ class BrandScreen : AdvancedScreen() {
     // Screen Animations
     // ------------------------------------------------------------------------
     override fun animHideScreen(blockEnd: Block) {
-        stageUI.root.animHide(TIME_ANIM_SCREEN) { blockEnd() }
+        rootConstraintLayout.animHide(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     override fun animShowScreen(blockEnd: Block) {
-        stageUI.root.animShow(TIME_ANIM_SCREEN) { blockEnd() }
+        rootConstraintLayout.animShow(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     // ------------------------------------------------------------------------
@@ -62,13 +60,8 @@ class BrandScreen : AdvancedScreen() {
             loadableTexturesList = mutableListOf(SpriteManager.EnumTexture.BRAND_BACKGROUND.data)
             loadTexture()
         }
-//        with(gdxGame.soundManager) {
-//            loadableSoundList = SoundManager.EnumSound.entries.map { it.data }.toMutableList()
-//            load()
-//        }
         gdxGame.assetManager.finishLoading()
         gdxGame.spriteManager.initAll()
-//        gdxGame.soundManager.init()
     }
 
 

@@ -115,28 +115,25 @@ fun Actor.setSize(vector: Vector2) {
 // ------------------------------------------------------------------------
 // Animations
 // ------------------------------------------------------------------------
-fun Actor.animShow(time: Float = 0f, block: () -> Unit = {}) {
-    addAction(Actions.sequence(
-        Actions.fadeIn(time),
-        Actions.run(block)
-    ))
+fun Actor.animShow(time: Float = 0f, clearPrevious: Boolean = true, block: () -> Unit = {}) {
+    if (clearPrevious) clearActions()
+    isVisible = true
+    addAction(Actions.sequence(Actions.fadeIn(time), Actions.run(block)))
 }
-fun Actor.animHide(time: Float = 0f, block: () -> Unit = {}) {
-    addAction(Actions.sequence(
-        Actions.fadeOut(time),
-        Actions.run(block)
-    ))
+
+fun Actor.animHide(time: Float = 0f, clearPrevious: Boolean = true, block: () -> Unit = {}) {
+    if (clearPrevious) clearActions()
+    addAction(Actions.sequence(Actions.fadeOut(time), Actions.run { isVisible = false; block() }))
 }
+
 fun Actor.animShowAndEnable(time: Float = 0f, block: () -> Unit = {}) {
-    animShow(time) {
-        enable()
-        block.invoke()
-    }
+    enable()
+    animShow(time) { block() }
 }
 
 fun Actor.animHideAndDisable(time: Float = 0f, block: () -> Unit = {}) {
     disable()
-    animHide(time) { block.invoke() }
+    animHide(time) { block() }
 }
 fun Actor.animMoveTo(
     x: Float, y: Float,

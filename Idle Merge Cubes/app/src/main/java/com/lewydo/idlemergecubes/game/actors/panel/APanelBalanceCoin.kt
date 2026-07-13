@@ -12,6 +12,7 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
@@ -22,20 +23,15 @@ import kotlinx.coroutines.launch
 class APanelBalanceCoin(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     // ------------------------------------------------------------------------
-    // Font
+    // Fields
     // ------------------------------------------------------------------------
-
-    private val parameter = FontParameter()
-        .setCharacters(FontParameter.CharType.NUMBERS.chars + ",")
-        .setSize(83)
-        .setShadow(7, 7, GameColor.purple_350080)
+    private val msdf by lazy { gdxGame.msdfManager }
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-
     private val aPanelCoinImg = Image(gdxGame.assetsAll.panel_coin)
-    private val aCoinLbl      = Label("", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Bold, GameColor.yellow_FFF858))
+    private val aCoinLbl      = MsdfLabel(msdf, msdf.fontNunitoBold, "", 83f, GameColor.yellow_FFF858).addEffect(msdf.dropShadow(7f, 7f, 4f, GameColor.purple_350080))
     private val aCoinImg      = Image(gdxGame.assetsAll.coin)
 
     // ------------------------------------------------------------------------
@@ -63,6 +59,7 @@ class APanelBalanceCoin(override val screen: AdvancedScreen) : AdvancedGroup() {
     }
 
     private fun addCoinLbl() {
+        aCoinLbl.debug()
         addActor(aCoinLbl)
         aCoinLbl.setPosition(236f, 37f)
         aCoinLbl.setSize(1f, 114f)

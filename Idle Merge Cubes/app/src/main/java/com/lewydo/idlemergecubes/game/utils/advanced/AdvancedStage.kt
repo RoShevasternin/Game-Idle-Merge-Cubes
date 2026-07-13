@@ -3,10 +3,28 @@ package com.lewydo.idlemergecubes.game.utils.advanced
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.Viewport
-import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
-import com.lewydo.idlemergecubes.game.utils.vfx.renderPreRenderables
+import com.lewydo.idlemergecubes.game.utils.vfx.FboStack
 
+/**
+ * Stage без pre-pass.
+ *
+ * ─── ЩО ЗМІНИЛОСЬ ──────────────────────────────────────────────────────────
+ *
+ * Видалено реєстр PreRenderable і весь pre-pass блок. Раніше:
+ *
+ *   render() {
+ *     act()
+ *     // PRE-PASS: batch.begin() → preRender ВСІХ VfxGroup → batch.end()
+ *     //          купа begin/end циклів + FBO bind/unbind на початку кадру
+ *     draw()  // обхід дерева ВДРУГЕ
+ *   }
+ *
+ * Тепер VfxGroup робить FBO-роботу inline у власному draw() в природному
+ * z-порядку. Один обхід дерева. Статичні ефекти кешуються.
+ *
+ * setScreen() задає FboStack екранний viewport — щоб FboStack.pop() при
+ * порожньому стеку коректно повертався на екран (а не на весь backbuffer).
+ */
 open class AdvancedStage(viewport: Viewport) : Stage(viewport) {
 
     fun update(screenWidth: Int, screenHeight: Int, centerCamera: Boolean) {
@@ -18,10 +36,15 @@ open class AdvancedStage(viewport: Viewport) : Stage(viewport) {
         viewport.apply()
         act()
 
-        batch.begin()
-        actors.forEach { renderPreRenderables(it, batch, root.color.a) } // 🧠 Попередній рендеринг FBO-груп
-        batch.end()
+        // Задаємо екранний viewport для FboStack (куди повертатись після FBO)
+        FboStack.setScreen(
+            viewport.screenX,
+            viewport.screenY,
+            viewport.screenWidth,
+            viewport.screenHeight
+        )
 
+        // Один обхід дерева. VfxGroup роблять FBO-роботу inline у своєму draw().
         draw()
     }
 
@@ -29,5 +52,4 @@ open class AdvancedStage(viewport: Viewport) : Stage(viewport) {
         actors.onEach { actor -> if (actor is Disposable) actor.dispose() }
         super.dispose()
     }
-
 }

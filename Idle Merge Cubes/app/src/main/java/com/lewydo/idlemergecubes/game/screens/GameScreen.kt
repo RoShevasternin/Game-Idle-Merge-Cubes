@@ -2,6 +2,7 @@ package com.lewydo.idlemergecubes.game.screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.profiling.GLProfiler
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -10,8 +11,9 @@ import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogLevelUp
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogOfflineReward
-import com.lewydo.idlemergecubes.game.actors.panel.goals.APanelGoals
 import com.lewydo.idlemergecubes.game.actors.hint.ABuyHint
+import com.lewydo.idlemergecubes.game.actors.layout.AlignH
+import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.panel.APanelMergeBonusWithGoals
 import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
@@ -23,6 +25,7 @@ import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
+import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
@@ -33,14 +36,12 @@ import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.overlay.OverlayManager
 import com.lewydo.idlemergecubes.game.utils.runGDX
-import com.lewydo.idlemergecubes.services.tiktok.TikTokManager
 import com.lewydo.idlemergecubes.util.log
-import com.tiktok.TikTokBusinessSdk
-import com.tiktok.appevents.base.TTBaseEvent
 import kotlinx.coroutines.launch
 
 class GameScreen : AdvancedScreen() {
@@ -61,8 +62,8 @@ class GameScreen : AdvancedScreen() {
     private enum class Overlay { MENU, CLEAR_GRID, OFFLINE_REWARD, LEVEL_UP }
 
     private val overlayManager = OverlayManager(
-        onShowDim = { aDimImg.clearActions(); aDimImg.animShowAndEnable(timeShow) },
-        onHideDim = { aDimImg.clearActions(); aDimImg.animHideAndDisable(timeHide) },
+        onShowDim = { aDimImg.animShowAndEnable(timeShow) },
+        onHideDim = { aDimImg.animHideAndDisable(timeHide) },
     )
 
     // ------------------------------------------------------------------------
@@ -89,23 +90,29 @@ class GameScreen : AdvancedScreen() {
     private val timeShow = 0.3f
     private val timeHide = 0.25f
 
+    private val msdf by lazy { gdxGame.msdfManager }
+
     // ------------------------------------------------------------------------
     // Debug
     // ------------------------------------------------------------------------
+    private val fpsLabel = MsdfLabel(msdf, msdf.fontNunitoBlack, "FPS", 100f)
 
-    private val fpsFont  = fontGenerator_Nunito_Black.generateFont(FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100))
-    private val fpsLabel = Label("FPS", Label.LabelStyle(fpsFont, Color.WHITE))
+    // PERF_DIAG: вимір навантаження рендеру ЩОКАДРУ (тимчасово, прибрати потім)
+    private val perfProfiler by lazy { GLProfiler(Gdx.graphics).apply { enable() } }
+    private var perfFrameCounter = 0
+    private val PERF_LOG_EVERY = 1   // 1 = кожен кадр; більше = рідше (throttle)
 
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
 
     override fun show() {
-        stageUI.root.color.a = 0f
-        setBackBackground(gdxGame.assetsLoader.BACKGROUND)
+        rootConstraintLayout.color.a = 0f
+        setBackground(gdxGame.assetsLoader.BACKGROUND)
         super.show()
 
         if (IS_FPS_DEBUG) {
+            fpsLabel.debug()
             rootConstraintLayout.add(fpsLabel) {
                 endToEnd(margin = 550f)
                 topToTop(margin = 244f)
@@ -124,7 +131,33 @@ class GameScreen : AdvancedScreen() {
 
     override fun render(delta: Float) {
         super.render(delta)
-        if (IS_FPS_DEBUG) fpsLabel.setText("${Gdx.graphics.framesPerSecond} FPS")
+        if (IS_FPS_DEBUG) {
+            fpsLabel.setText("${Gdx.graphics.framesPerSecond} FPS")
+
+            // Лічильники ЗА ЦЕЙ КАДР (накопичені з reset() у кінці минулого кадру)
+            val draw   = perfProfiler.drawCalls
+            val binds  = perfProfiler.textureBindings
+            val shader = perfProfiler.shaderSwitches
+            val gl     = perfProfiler.calls
+            val frameMs = delta * 1000f
+
+            perfFrameCounter++
+            if (perfFrameCounter >= PERF_LOG_EVERY) {
+                perfFrameCounter = 0
+                log(
+                    "PERF_DIAG/frame:" +
+                            " fps=${Gdx.graphics.framesPerSecond}" +
+                            " ms=${"%.1f".format(frameMs)}" +
+                            " draw=$draw" +
+                            " binds=$binds" +
+                            " shader=$shader" +
+                            " gl=$gl"
+                )
+            }
+
+            // КРИТИЧНО: reset у КІНЦІ кадру → наступний кадр рахується з нуля
+            perfProfiler.reset()
+        }
     }
 
     override fun AConstraintLayout.addActorsOnRootConstraintLayout() {
@@ -149,13 +182,13 @@ class GameScreen : AdvancedScreen() {
     // ------------------------------------------------------------------------
 
     override fun animHideScreen(blockEnd: Block) {
-        stageUI.root.animHide(TIME_ANIM_SCREEN)
-        stageUI.root.animDelay(TIME_ANIM_SCREEN) { blockEnd() }
+        rootConstraintLayout.animHide(TIME_ANIM_SCREEN)
+        rootConstraintLayout.animDelay(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     override fun animShowScreen(blockEnd: Block) {
-        stageUI.root.animShow(TIME_ANIM_SCREEN)
-        stageUI.root.animDelay(TIME_ANIM_SCREEN) { blockEnd() }
+        rootConstraintLayout.animShow(TIME_ANIM_SCREEN)
+        rootConstraintLayout.animDelay(TIME_ANIM_SCREEN) { blockEnd() }
     }
 
     // ------------------------------------------------------------------------
@@ -164,11 +197,9 @@ class GameScreen : AdvancedScreen() {
 
     private fun AConstraintLayout.addPanelTop() {
         aPanelTop.setSize(2160f, 467f)
-        add(aPanelTop) {
-            centerX()
-            topToTop()
-        }
-        aPanelTop.onClickSettingsBtn = { overlayManager.show(Overlay.MENU) }
+        add(aPanelTop) { centerX(); topToTop(margin = -safeStatusBarUI) }
+        aPanelTop.onClickSettingsBtn    = { overlayManager.show(Overlay.MENU) }
+        aPanelTop.onClickLeaderboardBtn = { openLeaderboard() }
     }
 
     private fun AConstraintLayout.addPanelGame() {
@@ -232,7 +263,10 @@ class GameScreen : AdvancedScreen() {
 
     private fun AConstraintLayout.addDimImg() {
         aDimImg.animHideAndDisable()
-        add(aDimImg) { fillParent() }
+        add(aDimImg) {
+            matchConstraint()
+            centerX(); bottomToBottom(); topToTop(margin = -safeStatusBarUI)
+        }
         aDimImg.setOnClickListener(null) {
             if (overlayManager.isClosable) overlayManager.close()
         }
@@ -244,8 +278,9 @@ class GameScreen : AdvancedScreen() {
         add(aPanelMenu) { centerX() }
         aPanelMenu.y = -aPanelMenu.height
 
-        aPanelMenu.blockClose     = { overlayManager.close() }
-        aPanelMenu.blockClearGrid = { overlayManager.show(Overlay.CLEAR_GRID) }
+        aPanelMenu.blockLeaderboard = { openLeaderboard() }
+        aPanelMenu.blockClose       = { overlayManager.close() }
+        aPanelMenu.blockClearGrid   = { overlayManager.show(Overlay.CLEAR_GRID) }
 
         overlayManager.register(Overlay.MENU, OverlayManager.Config(
             showDim    = true,
@@ -403,6 +438,13 @@ class GameScreen : AdvancedScreen() {
                 }
             }
         }
+    }
+
+    // ------------------------------------------------------------------------
+    // Helper
+    // ------------------------------------------------------------------------
+    private fun openLeaderboard() {
+        animHideScreen { gdxGame.navigationManager.navigate(LeaderboardScreen::class.java.name, GameScreen::class.java.name) }
     }
 
 }

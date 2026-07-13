@@ -34,8 +34,6 @@ class SpriteUtil {
 
     class All {
         private fun getAllRegion(name: String): TextureRegion = SpriteManager.EnumAtlas.ALL.data.atlas.findRegion(name)
-        private fun getGridRegion(name: String): TextureRegion = SpriteManager.EnumAtlas.GRID.data.atlas.findRegion(name)
-        private fun getMenuRegion(name: String): TextureRegion = SpriteManager.EnumAtlas.MENU.data.atlas.findRegion(name)
 
         private fun get9Patch(name: String): NinePatch = SpriteManager.EnumAtlas._9_PATCH.data.atlas.createPatch(name)
 
@@ -79,43 +77,36 @@ class SpriteUtil {
         val goals_progress_bg               = getAllRegion("goals_progress_bg")
         val goals_icon_done                 = getAllRegion("goals_icon_done")
         val goals_icon_fail                 = getAllRegion("goals_icon_fail")
+        val leaderboard_def                 = getAllRegion("leaderboard_def")
+        val leaderboard_press               = getAllRegion("leaderboard_press")
+        val cell_def                        = getAllRegion("cell_def")
+        val cell_green                      = getAllRegion("cell_green")
+        val cell_red                        = getAllRegion("cell_red")
+        val cell_tint                       = getAllRegion("cell_tint")
+        val cube                            = getAllRegion("cube")
+        val close_def                       = getAllRegion("close_def")
+        val close_press                     = getAllRegion("close_press")
+        val expand                          = getAllRegion("expand")
+        val menu_icon_leaderboard           = getAllRegion("menu_icon_leaderboard")
+        val menu_icon_settings              = getAllRegion("menu_icon_settings")
+        val menu_item_section_def           = getAllRegion("menu_item_section_def")
+        val menu_item_section_press         = getAllRegion("menu_item_section_press")
+        val reset_game_def                  = getAllRegion("reset_game_def")
+        val reset_game_press                = getAllRegion("reset_game_press")
+        val settings_separator              = getAllRegion("settings_separator")
+        val box_off                         = getAllRegion("box_off")
+        val icons_alarm                     = getAllRegion("icons_alarm")
+        val icons_info                      = getAllRegion("icons_info")
+        val icons_music                     = getAllRegion("icons_music")
+        val icons_sound                     = getAllRegion("icons_sound")
+        val icons_vibro                     = getAllRegion("icons_vibro")
+        val settings_item                   = getAllRegion("settings_item")
+        val music_box_on                    = getAllRegion("music_box_on")
+        val sound_box_on                    = getAllRegion("sound_box_on")
+        val vibro_box_on                    = getAllRegion("vibro_box_on")
+        val alarm_box_on                    = getAllRegion("alarm_box_on")
 
         val listGlarePanelGame = List(4) { getAllRegion("glare_panel_game_${it.inc()}") }
-
-        // ------------------------------------------------------------------------------
-        // ATLAS GRID
-        // ------------------------------------------------------------------------------
-        val cell_def   = getGridRegion("cell_def")
-        val cell_green = getGridRegion("cell_green")
-        val cell_red   = getGridRegion("cell_red")
-        val cell_tint  = getGridRegion("cell_tint")
-
-        val cube = getGridRegion("cube")
-
-        // ------------------------------------------------------------------------------
-        // ATLAS MENU
-        // ------------------------------------------------------------------------------
-        val close_def               = getMenuRegion("close_def")
-        val close_press             = getMenuRegion("close_press")
-        val expand                  = getMenuRegion("expand")
-        val menu_icon_leaderboard   = getMenuRegion("menu_icon_leaderboard")
-        val menu_icon_settings      = getMenuRegion("menu_icon_settings")
-        val menu_item_section_def   = getMenuRegion("menu_item_section_def")
-        val menu_item_section_press = getMenuRegion("menu_item_section_press")
-        val reset_game_def          = getMenuRegion("reset_game_def")
-        val reset_game_press        = getMenuRegion("reset_game_press")
-        val settings_separator      = getMenuRegion("settings_separator")
-        val box_off                 = getMenuRegion("box_off")
-        val icons_alarm             = getMenuRegion("icons_alarm")
-        val icons_info              = getMenuRegion("icons_info")
-        val icons_music             = getMenuRegion("icons_music")
-        val icons_sound             = getMenuRegion("icons_sound")
-        val icons_vibro             = getMenuRegion("icons_vibro")
-        val settings_item           = getMenuRegion("settings_item")
-        val music_box_on            = getMenuRegion("music_box_on")
-        val sound_box_on            = getMenuRegion("sound_box_on")
-        val vibro_box_on            = getMenuRegion("vibro_box_on")
-        val alarm_box_on            = getMenuRegion("alarm_box_on")
 
         // ------------------------------------------------------------------------------
         // ATLAS 9_PATCH

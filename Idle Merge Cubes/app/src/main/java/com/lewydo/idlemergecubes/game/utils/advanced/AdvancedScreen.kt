@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.lewydo.idlemergecubes.MainActivity
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
@@ -21,6 +20,7 @@ import com.lewydo.idlemergecubes.game.utils.ShapeDrawerUtil
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
+import com.lewydo.idlemergecubes.game.utils.actor.setSize
 import com.lewydo.idlemergecubes.game.utils.addProcessors
 import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.game.utils.font.FontGenerator
@@ -39,9 +39,6 @@ abstract class AdvancedScreen(
     val HEIGHT: Float = HEIGHT_UI
 ) : ScreenAdapter(), IInputAdapter {
 
-    val viewportBack by lazy { ScreenViewport() }
-    val stageBack    by lazy { AdvancedStage(viewportBack) }
-
     val viewportUI by lazy { ExtendViewport(WIDTH, HEIGHT) }
     val stageUI    by lazy { AdvancedStage(viewportUI) }
 
@@ -51,6 +48,9 @@ abstract class AdvancedScreen(
     val screenWidthPX  get() = Gdx.graphics.width
     val screenHeightPX get() = Gdx.graphics.height
 
+    val worldWidth  get() = viewportUI.worldWidth
+    val worldHeight get() = viewportUI.worldHeight
+
     private val scaleScreenToUiY: Float get() = (viewportUI.worldHeight / screenHeightPX)
 
     val safeStatusBarUI get() = safeStatusBarPX * scaleScreenToUiY
@@ -58,8 +58,7 @@ abstract class AdvancedScreen(
 
     val inputMultiplexer = InputMultiplexer()
 
-    val backBackgroundImage = Image()
-    val uiBackgroundImage   = Image()
+    val backgroundImage = Image()
 
     val disposableSet = mutableSetOf<Disposable>()
     var coroutine: CoroutineScope? = CoroutineScope(Dispatchers.Default)
@@ -93,21 +92,19 @@ abstract class AdvancedScreen(
         log("show AdvancedScreen: $currentClassName")
         updateSize()
 
-        stageBack.root.addAndFillActor(backBackgroundImage)
-        stageUI.root.addAndFillActor(uiBackgroundImage)
+        stageUI.root.addAndFillActor(backgroundImage)
 
-        stageUI.root.addAndFillActor(rootConstraintLayout)
+        rootConstraintLayout.setSize(worldWidth, worldHeight - safeStatusBarUI)
+        stageUI.root.addActor(rootConstraintLayout)
 
-        stageBack.root.addActorsOnStageBack()
-        stageUI.root.addActorsOnStageUI()
         rootConstraintLayout.addActorsOnRootConstraintLayout()
+        stageUI.root.addActorsOnStageUI()
 
-        Gdx.input.inputProcessor = inputMultiplexer.apply { addProcessors(this@AdvancedScreen, stageUI, stageBack) }
+        Gdx.input.inputProcessor = inputMultiplexer.apply { addProcessors(this@AdvancedScreen, stageUI) }
         Gdx.input.setCatchKey(Input.Keys.BACK, true)
     }
 
     override fun render(delta: Float) {
-        stageBack.render()
         stageUI.render()
         drawerUtil.update()
     }
@@ -115,7 +112,7 @@ abstract class AdvancedScreen(
     override fun dispose() {
         log("dispose AdvancedScreen: $currentClassName")
         disposeAll(
-            stageBack, stageUI, drawerUtil,
+            stageUI, drawerUtil,
             renderPipeline,
 
             fontGenerator_Nunito_Black,
@@ -146,41 +143,23 @@ abstract class AdvancedScreen(
     abstract fun animShowScreen(blockEnd: Block = {})
     abstract fun animHideScreen(blockEnd: Block = {})
 
-    open fun Group.addActorsOnStageBack() {}
     open fun Group.addActorsOnStageUI() {}
     open fun AConstraintLayout.addActorsOnRootConstraintLayout() {}
 
     private fun updateSize() {
-        stageBack.update(Gdx.graphics.width, Gdx.graphics.height, true)
         stageUI.update(screenWidthPX, screenHeightPX, true)
         scalerUItoScreen.calculateScale(scalerVector.set(screenWidthPX.toFloat(), screenHeightPX.toFloat()))
-        rootConstraintLayout.setSize(viewportUI.worldWidth, viewportUI.worldHeight)
+
+        backgroundImage.setSize(worldWidth, worldHeight)
+        rootConstraintLayout.setSize(worldWidth, worldHeight - safeStatusBarUI)
     }
 
-    fun setBackBackground(region: TextureRegion) {
-        backBackgroundImage.drawable = TextureRegionDrawable(region)
+    fun setBackground(region: TextureRegion) {
+        backgroundImage.drawable = TextureRegionDrawable(region)
     }
 
-    fun setBackBackground(texture: Texture) {
-        backBackgroundImage.drawable = TextureRegionDrawable(texture)
-    }
-
-    fun setUIBackground(region: TextureRegion) {
-        uiBackgroundImage.drawable = TextureRegionDrawable(region)
-    }
-
-    fun setUIBackground(texture: Texture) {
-        uiBackgroundImage.drawable = TextureRegionDrawable(texture)
-    }
-
-    fun setBackgrounds(backRegion: TextureRegion, uiRegion: TextureRegion = backRegion) {
-        setBackBackground(backRegion)
-        setUIBackground(uiRegion)
-    }
-
-    fun setBackgrounds(backTexture: Texture, uiTexture: Texture = backTexture) {
-        setBackBackground(backTexture)
-        setUIBackground(uiTexture)
+    fun setBackground(texture: Texture) {
+        backgroundImage.drawable = TextureRegionDrawable(texture)
     }
 
 }

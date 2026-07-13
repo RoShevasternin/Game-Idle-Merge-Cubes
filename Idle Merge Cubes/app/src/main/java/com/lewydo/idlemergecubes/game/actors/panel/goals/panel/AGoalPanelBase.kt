@@ -19,6 +19,8 @@ import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
 import com.lewydo.idlemergecubes.game.utils.font.FontFactory
 import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -61,24 +63,21 @@ abstract class AGoalPanelBase(screen: AdvancedScreen) : AConstraintLayout(screen
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameterBadge  = FontParameter().setCharacters(FontParameter.CharType.ALL).setSize(48)
-    private val parameterIndex  = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "#").setSize(48)
-    private val parameterReward = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + ",").setSize(56)
-    private val parameterTimer  = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "s").setSize(56)
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val lsBadge  = FontFactory.create(screen, parameterBadge, screen.fontGenerator_Nunito_Bold, Color.WHITE)
-    private val lsIndex  = FontFactory.create(screen, parameterIndex, screen.fontGenerator_Nunito_Regular, GameColor.white_E5FFE0)
-    private val lsReward = FontFactory.create(screen, parameterReward, screen.fontGenerator_Nunito_Bold, GameColor.yellow_FFF858)
-    private val lsTimer  = FontFactory.create(screen, parameterTimer, screen.fontGenerator_Nunito_SemiBold, Color.WHITE)
+    private val styleBadge  = MsdfStyle(msdf, msdf.fontNunitoBold, 48f)
+    private val styleReward = styleBadge.copy(size = 56f)
+    private val styleIndex  = MsdfStyle(msdf, msdf.fontNunitoRegular, 48f)
+    private val styleTimer  = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 56f)
 
     // ------------------------------------------------------------------------
     // Actors — Header
     // ------------------------------------------------------------------------
     private val aBg          = Image()
-    private val aGoalsBadge  = AGoalsBadge(screen, lsBadge)
-    private val aIndexLbl    = Label("#1", lsIndex)
-    private val aGoalsReward = AGoalsReward(screen, lsReward)
-    private val aGoalsTimer  = AGoalsTimer(screen, lsTimer)
+    private val aGoalsBadge  = AGoalsBadge(screen, styleBadge)
+    private val aIndexLbl    = MsdfLabel("#1", styleIndex)
+    private val aGoalsReward = AGoalsReward(screen, styleReward)
+    private val aGoalsTimer  = AGoalsTimer(screen, styleTimer)
 
     // ------------------------------------------------------------------------
     // Lifecycle

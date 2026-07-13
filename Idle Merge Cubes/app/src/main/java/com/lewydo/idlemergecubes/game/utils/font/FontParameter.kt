@@ -128,4 +128,5 @@ class FontParameter : FreeTypeFontParameter() {
         ALL           (SYMBOLS.chars.plus(NUMBERS.chars).plus(LATIN.chars).plus(CYRILLIC.chars)),
     }
 
+    // ALL= ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,!?:;`'’"()[]{}+-*/\=%$€#@&~•—…«»<>^|°™❤АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюяІЇЄієїґҐ
 }

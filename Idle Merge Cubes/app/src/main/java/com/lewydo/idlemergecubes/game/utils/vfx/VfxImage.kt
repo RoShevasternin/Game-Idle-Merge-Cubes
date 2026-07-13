@@ -29,17 +29,9 @@ import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
  * BATCH_VERT (effect.batchShader): gl_Position = u_projTrans * a_position
  *   → SpriteBatch підставляє правильну матрицю → нормальний рендер ✓
  *
- * ─── Використання ─────────────────────────────────────────────────────────────
- * ```kotlin
- * val cube = VfxImage(screen, region, HslEffect())
- * cube.setSize(200f, 200f)
- *
- * // Зміна ефекту:
- * (cube.effect as? HslEffect)?.setColor("22D3EE")
- *
- * // Без ефекту — звичайний Image:
- * cube.effect = null
- * ```
+ * ─── GC ───────────────────────────────────────────────────────────────────────
+ * VfxContext перевикористовується (перестворюється лише при зміні розміру),
+ * нуль алокацій у draw() на стабільному розмірі.
  */
 open class VfxImage(
     override val screen: AdvancedScreen,
@@ -64,6 +56,9 @@ open class VfxImage(
 
     init { if (drawable != null) image.drawable = drawable }
 
+    // Перевикористовуваний контекст — оновлюється лише при зміні розміру (0 алокацій/кадр)
+    private var ctx = VfxContext(0f, 0f, 1, 1)
+
     override fun addActorsOnGroup() {
         addAndFillActor(image)
     }
@@ -75,12 +70,15 @@ open class VfxImage(
         if (fx == null)    { super.draw(batch, parentAlpha); return }
         if (!fx.isEnabled) return
 
-        val sp  = fx.batchShader
-        val ctx = VfxContext(
-            width, height,
-            width.toInt().coerceAtLeast(1),
-            height.toInt().coerceAtLeast(1)
-        )
+        val sp = fx.batchShader
+
+        if (ctx.width != width || ctx.height != height) {
+            ctx = VfxContext(
+                width, height,
+                width.toInt().coerceAtLeast(1),
+                height.toInt().coerceAtLeast(1)
+            )
+        }
 
         batch.shader = sp
         fx.setUniforms(sp, ctx)

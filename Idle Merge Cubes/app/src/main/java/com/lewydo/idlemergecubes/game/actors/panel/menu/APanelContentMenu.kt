@@ -36,8 +36,9 @@ class APanelContentMenu(override val screen: AdvancedScreen) : AConstraintLayout
     // ------------------------------------------------------------------------
     var onHeightChanged: ((totalContentHeight: Float) -> Unit)? = null
 
-    var blockClose     = {}
-    var blockClearGrid = {}
+    var blockLeaderboard  = {}
+    var blockClose        = {}
+    var blockClearGrid    = {}
 
     // ------------------------------------------------------------------------
     // Field
@@ -123,6 +124,8 @@ class APanelContentMenu(override val screen: AdvancedScreen) : AConstraintLayout
     private fun AAutoLayout.addLeaderboardBtn() {
         aLeaderboardBtn.setSize(width, itemHeight)
         add(aLeaderboardBtn)
+
+        aLeaderboardBtn.setOnClickListener { blockLeaderboard() }
     }
 
     private fun AAutoLayout.addSettingsSection() {

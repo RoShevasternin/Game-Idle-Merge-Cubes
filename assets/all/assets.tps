@@ -80,9 +80,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>4096</int>
             <key>height</key>
-            <int>2048</int>
+            <int>4096</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -124,7 +124,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../Idle Merge Cubes/app/src/main/assets/atlas/all.atlas</filename>
+                <filename>../../Idle Merge Cubes TEST/app/src/main/assets/atlas/all.atlas</filename>
             </struct>
         </map>
         <key>multiPackMode</key>
@@ -175,8 +175,29 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">alarm_box_on.png</key>
+            <key type="filename">box_off.png</key>
+            <key type="filename">music_box_on.png</key>
+            <key type="filename">sound_box_on.png</key>
+            <key type="filename">vibro_box_on.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>62,29,125,57</rect>
+                <key>scale9Paddings</key>
+                <rect>62,29,125,57</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">back_def.png</key>
             <key type="filename">back_press.png</key>
+            <key type="filename">leaderboard_def.png</key>
+            <key type="filename">leaderboard_press.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -233,6 +254,58 @@
                 <rect>238,48,477,97</rect>
                 <key>scale9Paddings</key>
                 <rect>238,48,477,97</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">cell_def.png</key>
+            <key type="filename">cell_tint.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>61,61,121,121</rect>
+                <key>scale9Paddings</key>
+                <rect>61,61,121,121</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">cell_green.png</key>
+            <key type="filename">cell_red.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>76,77,153,153</rect>
+                <key>scale9Paddings</key>
+                <rect>76,77,153,153</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">close_def.png</key>
+            <key type="filename">close_press.png</key>
+            <key type="filename">menu_item_section_def.png</key>
+            <key type="filename">menu_item_section_press.png</key>
+            <key type="filename">reset_game_def.png</key>
+            <key type="filename">reset_game_press.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>479,69,958,138</rect>
+                <key>scale9Paddings</key>
+                <rect>479,69,958,138</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -298,6 +371,21 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">cube.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>59,59,119,119</rect>
+                <key>scale9Paddings</key>
+                <rect>59,59,119,119</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">cube_buy.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -310,6 +398,21 @@
                 <rect>41,41,83,83</rect>
                 <key>scale9Paddings</key>
                 <rect>41,41,83,83</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">expand.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>21,21,41,41</rect>
+                <key>scale9Paddings</key>
+                <rect>21,21,41,41</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -479,6 +582,25 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">icons_alarm.png</key>
+            <key type="filename">icons_info.png</key>
+            <key type="filename">icons_music.png</key>
+            <key type="filename">icons_sound.png</key>
+            <key type="filename">icons_vibro.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>25,25,50,50</rect>
+                <key>scale9Paddings</key>
+                <rect>25,25,50,50</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">lock.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -491,6 +613,22 @@
                 <rect>11,11,23,23</rect>
                 <key>scale9Paddings</key>
                 <rect>11,11,23,23</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">menu_icon_leaderboard.png</key>
+            <key type="filename">menu_icon_settings.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>33,33,65,65</rect>
+                <key>scale9Paddings</key>
+                <rect>33,33,65,65</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -633,6 +771,36 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">settings_item.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>439,41,878,82</rect>
+                <key>scale9Paddings</key>
+                <rect>439,41,878,82</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">settings_separator.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>441,2,882,5</rect>
+                <key>scale9Paddings</key>
+                <rect>441,2,882,5</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">tutorial_hand.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -679,7 +847,9 @@
         <key>replaceList</key>
         <array/>
         <key>ignoredWarnings</key>
-        <array/>
+        <array>
+            <string>large-max-texture-size</string>
+        </array>
         <key>commonDivisorX</key>
         <uint>1</uint>
         <key>commonDivisorY</key>

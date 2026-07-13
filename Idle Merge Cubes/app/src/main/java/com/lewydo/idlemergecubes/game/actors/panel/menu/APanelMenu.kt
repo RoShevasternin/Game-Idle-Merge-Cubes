@@ -29,8 +29,9 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
     // ------------------------------------------------------------------------
     // Callback
     // ------------------------------------------------------------------------
-    var blockClose     = {}
-    var blockClearGrid = {}
+    var blockLeaderboard  = {}
+    var blockClose        = {}
+    var blockClearGrid    = {}
 
     // ------------------------------------------------------------------------
     // Lifecycle
@@ -83,8 +84,9 @@ class APanelMenu(override val screen: AdvancedScreen) : AConstraintLayout(screen
             bottomToBottom(margin = contentBottomMargin)
         }
 
-        aPanelContentMenu.blockClose = { blockClose() }
-        aPanelContentMenu.blockClearGrid = { blockClearGrid() }
+        aPanelContentMenu.blockLeaderboard = { blockLeaderboard() }
+        aPanelContentMenu.blockClose       = { blockClose() }
+        aPanelContentMenu.blockClearGrid   = { blockClearGrid() }
     }
 
     // ── Height callback ───────────────────────────────────────────────────────

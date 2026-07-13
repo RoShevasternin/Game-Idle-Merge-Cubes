@@ -8,11 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.actor.setFontColor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class AGoalsTimer(
     override val screen: AdvancedScreen,
-    labelStyle: Label.LabelStyle,
+    style: MsdfStyle,
 ): AConstraintLayout(screen) {
 
     // ------------------------------------------------------------------------
@@ -20,7 +22,7 @@ class AGoalsTimer(
     // ------------------------------------------------------------------------
     private val aBgImg    = Image()
     private val aTimerImg = Image(gdxGame.assetsAll.icon_timer)
-    private val aLbl      = Label("", labelStyle)
+    private val aLbl      = MsdfLabel("", style)
 
     // ------------------------------------------------------------------------
     // Lifecycle

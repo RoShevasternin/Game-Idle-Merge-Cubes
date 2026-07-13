@@ -12,9 +12,10 @@ class GDXFragment : AndroidFragmentApplication() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val conf = AndroidApplicationConfiguration().apply {
-            a = 8
+            a                = 8
             useAccelerometer = false
-            useCompass = false
+            useCompass       = false
+            useImmersiveMode = false
         }
 
         return initializeForView(GDXGame(requireActivity() as MainActivity), conf)

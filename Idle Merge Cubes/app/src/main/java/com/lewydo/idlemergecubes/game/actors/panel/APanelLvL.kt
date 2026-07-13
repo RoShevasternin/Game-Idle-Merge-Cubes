@@ -1,20 +1,18 @@
 package com.lewydo.idlemergecubes.game.actors.panel
 
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.popup.ALevelPopup
 import com.lewydo.idlemergecubes.game.actors.progress.ACircleProgress
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
-import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
@@ -22,23 +20,25 @@ import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-class APanelLvL(override val screen: AdvancedScreen) : AdvancedGroup() {
+class APanelLvL(override val screen: AdvancedScreen) : AConstraintLayout(screen) {
 
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val parameter      = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "Level")
-    private val parameterLvL   = parameter.copy().setSize(87).setShadow(8, 7, GameColor.purple_350080)
-    private val parameterLevel = parameter.copy().setSize(45).setShadow(5, 7, GameColor.purple_350080)
+    private val styleLvL = MsdfStyle(msdf, msdf.fontNunitoExtraBold, 87f)
+        .dropShadow(8f, 7f, 4f, GameColor.purple_350080)
+    private val styleLevel = MsdfStyle(msdf, msdf.fontNunitoRegular, 45f)
+        .dropShadow(5f, 7f, 4f, GameColor.purple_350080)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
 
     private val aPanelLvLImg    = Image(gdxGame.assetsAll.panel_lvl)
-    private val aLvLLbl         = Label("1", FontFactory.create(screen, parameterLvL, screen.fontGenerator_Nunito_ExtraBold))
-    private val aLevelLbl       = Label("Level", FontFactory.create(screen, parameterLevel, screen.fontGenerator_Nunito_Regular))
+    private val aLvLLbl         = MsdfLabel("1", styleLvL)
+    private val aLevelLbl       = MsdfLabel("Level", styleLevel)
     private val aCircleProgress = ACircleProgress(screen, 0f, 0f, 90f)
     private val aLvLPopup       = ALevelPopup(screen)
 
@@ -80,13 +80,14 @@ class APanelLvL(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     private fun addLvLLbl() {
         addActor(aLvLLbl)
-        aLvLLbl.setBounds(110f, 101f, 53f, 119f)
+        aLvLLbl.setSize(53f, 119f)
+        add(aLvLLbl) { centerX(); topToTop(margin = 48f) }
         aLvLLbl.setAlignment(Align.center)
     }
 
     private fun addLevelLbl() {
-        addActor(aLevelLbl)
-        aLevelLbl.setBounds(82f, 68f, 109f, 61f)
+        aLevelLbl.setSize(109f, 61f)
+        add(aLevelLbl) { centerX(); topToBottom(aLvLLbl, -28f) }
         aLevelLbl.setAlignment(Align.center)
     }
 
