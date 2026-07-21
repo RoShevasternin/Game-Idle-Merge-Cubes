@@ -3,7 +3,6 @@ package com.lewydo.idlemergecubes.game.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.profiling.GLProfiler
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
@@ -13,11 +12,9 @@ import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfTextRow
 import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfTextRow
-import com.lewydo.idlemergecubes.game.utils.font.msdf.effects.InnerShadowEffect
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.util.log
 
@@ -43,8 +40,8 @@ class TestScreen : AdvancedScreen() {
     private val sClean  by lazy { sTitle.copy(color = Color.WHITE, keepEffects = false) } // copy: без ефектів
 
     // ─── Живі ряди ───────────────────────────────────────────────────────────
-    private lateinit var rowCoins: MsdfTextRow
-    private lateinit var rowTimer: MsdfTextRow
+    private lateinit var rowCoins: AMsdfTextRow
+    private lateinit var rowTimer: AMsdfTextRow
     private var coins = 9
     private var tick = 0f
 
@@ -54,11 +51,9 @@ class TestScreen : AdvancedScreen() {
     // ------------------------------------------------------------------------
     // Debug
     // ------------------------------------------------------------------------
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoBlack, 100f)
 
-    private val fpsFont = fontGenerator_Nunito_Black.generateFont(
-        FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "FPS").setSize(100)
-    )
-    private val fpsLabel = Label("FPS", Label.LabelStyle(fpsFont, Color.WHITE))
+    private val fpsLabel = AMsdfLabel("FPS", styleDef)
 
     private val perfProfiler by lazy { GLProfiler(Gdx.graphics).apply { enable() } }
     private var perfFrameCounter = 0
@@ -108,24 +103,24 @@ class TestScreen : AdvancedScreen() {
             "Medium"    to msdf.fontNunitoMedium,
             "Regular"   to msdf.fontNunitoRegular,
         ).forEach { (name, f) ->
-            add(MsdfLabel(msdf, f, "$name Ago Щур 15", 58f).apply { setPosition(LX, fy) })
+            add(AMsdfLabel(msdf, f, "$name Ago Щур 15", 58f).apply { setPosition(LX, fy) })
             fy -= 105f
         }
 
         // ═══ 2. СТИЛІ + COPY (права колонка зверху) ═══
         val RX = 1150f
         section("— СТИЛІ + copy() —", RX, 3680f)
-        add(MsdfLabel("TITLE стиль", sTitle).apply { setPosition(RX, 3540f) })
-        add(MsdfLabel("copy(70)", sReward).apply { setPosition(RX, 3380f) })
-        add(MsdfLabel("copy без еф.", sClean).apply { setPosition(RX, 3250f) })
-        add(MsdfLabel("hint regular", sHint).apply { setPosition(RX, 3140f) })
+        add(AMsdfLabel("TITLE стиль", sTitle).apply { setPosition(RX, 3540f) })
+        add(AMsdfLabel("copy(70)", sReward).apply { setPosition(RX, 3380f) })
+        add(AMsdfLabel("copy без еф.", sClean).apply { setPosition(RX, 3250f) })
+        add(AMsdfLabel("hint regular", sHint).apply { setPosition(RX, 3140f) })
 
         // ═══ 3. ЕФЕКТИ: всі три + комбо ═══
         section("— ЕФЕКТИ —", RX, 3020f)
-        add(MsdfLabel(msdf, msdf.fontNunitoBlack, "INNER", 75f, Color.valueOf("CCCCCC"))
+        add(AMsdfLabel(msdf, msdf.fontNunitoBlack, "INNER", 75f, Color.valueOf("CCCCCC"))
             .addEffect(msdf.innerShadow(0f, 5f, 3f, Color(0f, 0f, 0f, 0.7f)))
             .apply { setPosition(RX, 2880f) })
-        add(MsdfLabel(msdf, msdf.fontNunitoBlack, "FULL 3", 85f, Color.valueOf("FFD34D"))
+        add(AMsdfLabel(msdf, msdf.fontNunitoBlack, "FULL 3", 85f, Color.valueOf("FFD34D"))
             .addEffect(msdf.dropShadow(0f, 6f, 4f, Color(0f, 0f, 0f, 0.55f)))
             .addEffect(msdf.stroke(4f, Color.valueOf("5A2D00")))
             .addEffect(msdf.innerShadow(0f, 4f, 3f, Color(0.4f, 0.2f, 0f, 0.5f)))
@@ -133,44 +128,44 @@ class TestScreen : AdvancedScreen() {
 
         // ═══ 4. SPACING + LINEHEIGHT + FIGMABOX ═══
         section("— spacing / lineHeight / рамки —", LX, 2820f)
-        add(MsdfLabel(msdf, msdf.fontNunitoBold, "spacing 10 gp", 58f)
-            .setLetterSpacing(10f).apply { setPosition(LX, 2700f) })
-        add(MsdfLabel(msdf, msdf.fontNunitoBold, "рядок 1\nрядок 2 gp", 55f)
+        add(AMsdfLabel(msdf, msdf.fontNunitoBold, "spacing 10 gp", 58f)
+            .setLetterSpacing(40f).apply { setPosition(LX, 2700f) })
+        add(AMsdfLabel(msdf, msdf.fontNunitoBold, "рядок 1\nрядок 2 gp", 55f)
             .setLineHeight(140f).apply { setPosition(LX, 2440f) })
         // поруч: figmaBox off (щільна) — рамки різні, порівняй
-        add(MsdfLabel(msdf, msdf.fontNunitoBold, "tight gp", 58f, Color.valueOf("B7FF9E"))
-            .figmaBox(false).apply { setPosition(650f, 2700f) })
+        add(AMsdfLabel(msdf, msdf.fontNunitoBold, "tight gp", 58f, Color.valueOf("B7FF9E"))
+            .figmaBox(false).apply { setPosition(650f, 2500f) })
 
         // ═══ 5. ROW: різні шрифти/розміри по baseline + ЖИВІ оновлення ═══
         section("— ROW: мікс шрифтів + живе —", LX, 2280f)
-        rowCoins = MsdfTextRow(gap = 12f)
-            .add(MsdfLabel("9", sReward))                              // стиль з ефектами
-            .add(MsdfLabel("монет", sHint))                            // інший шрифт/розмір
+        rowCoins = AMsdfTextRow()
+            .add(AMsdfLabel("9", sReward))                              // стиль з ефектами
+            .add(AMsdfLabel("монет", sHint))                            // інший шрифт/розмір
         rowCoins.setPosition(LX, 2120f); stageUI.root.addActor(rowCoins)
 
-        rowTimer = MsdfTextRow(gap = 10f)
-            .add(MsdfLabel("00:00", sTimer))
-            .add(MsdfLabel("до бонусу", sHint))
+        rowTimer = AMsdfTextRow()
+            .add(AMsdfLabel("00:00", sTimer))
+            .add(AMsdfLabel("до бонусу", sHint))
         rowTimer.setPosition(LX, 1980f); stageUI.root.addActor(rowTimer)
 
         // драбинка baseline: 3 шрифти, 3 розміри — одна лінія письма
-        val ladder = MsdfTextRow(gap = 18f)
-            .add(MsdfLabel(msdf, msdf.fontNunitoRegular, "Agp", 42f))
-            .add(MsdfLabel(msdf, msdf.fontNunitoBold, "Agp", 75f))
-            .add(MsdfLabel(msdf, msdf.fontNunitoBlack, "Agp", 115f))
-            .add(MsdfLabel(msdf, msdf.fontNunitoBold, "Agp", 75f))
+        val ladder = AMsdfTextRow(0f, 10f)
+            .add(AMsdfLabel(msdf, msdf.fontNunitoRegular, "Agp", 42f))
+            .add(AMsdfLabel(msdf, msdf.fontNunitoBold, "Agp", 75f))
+            .add(AMsdfLabel(msdf, msdf.fontNunitoBlack, "Agp", 115f))
+            .add(AMsdfLabel(msdf, msdf.fontNunitoBold, "Agp", 75f))
         ladder.setPosition(LX, 1760f); stageUI.root.addActor(ladder)
 
         // ═══ 6. MARKUP-кольори ═══
         section("— MARKUP —", LX, 1600f)
         msdf.fontNunitoBold.enableColorMarkup()
-        add(MsdfLabel(msdf, msdf.fontNunitoBold,
+        add(AMsdfLabel(msdf, msdf.fontNunitoBold,
             "Зібрано [#FFD34D]1500[] з [#${GameColor.white_55}]2000[] монет", 52f)
             .apply { setPosition(LX, 1480f) })
 
         // ═══ 7. WRAP з ефектами ═══
         section("— WRAP —", RX, 2560f)
-        add(MsdfLabel(msdf, msdf.fontNunitoMedium,
+        add(AMsdfLabel(msdf, msdf.fontNunitoMedium,
             "Довгий опис що переноситься автоматично і має тінь з обводкою на кожному рядку",
             48f, Color.WHITE)
             .addEffect(msdf.dropShadow(0f, 3f, 2f, Color(0f, 0f, 0f, 0.45f)))
@@ -256,13 +251,13 @@ class TestScreen : AdvancedScreen() {
     // Add Actors
     // ------------------------------------------------------------------------
 
-    private fun add(lbl: MsdfLabel) {
+    private fun add(lbl: AMsdfLabel) {
         stageUI.root.addActor(lbl)
     }
 
     // Заголовок секції через MsdfLabel (fpsFont має лише цифри+FPS)
     private fun section(title: String, x: Float, y: Float) {
-        val l = MsdfLabel(msdf, msdf.fontNunitoBlack, title, 45f, Color.valueOf("222222"))
+        val l = AMsdfLabel(msdf, msdf.fontNunitoBlack, title, 45f, Color.valueOf("222222"))
         l.setPosition(x, y)
         stageUI.root.addActor(l)
     }

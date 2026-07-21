@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>6</int>
         <key>texturePackerVersion</key>
-        <string>7.12.0</string>
+        <string>8.1.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -64,7 +64,7 @@
             </struct>
         </struct>
         <key>shapePadding</key>
-        <uint>2</uint>
+        <uint>1</uint>
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
@@ -76,13 +76,13 @@
         <key>textureFormat</key>
         <enum type="SettingsBase::TextureFormat">png</enum>
         <key>borderPadding</key>
-        <uint>2</uint>
+        <uint>1</uint>
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>4096</int>
             <key>height</key>
-            <int>2048</int>
+            <int>4096</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -124,7 +124,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../../Idle Merge Cubes/app/src/main/assets/particle/particle.atlas</filename>
+                <filename>../../Idle Merge Cubes/app/src/main/assets/atlas/particles.atlas</filename>
             </struct>
         </map>
         <key>multiPackMode</key>
@@ -143,6 +143,8 @@
         <key>autoAliasEnabled</key>
         <false/>
         <key>trimSpriteNames</key>
+        <false/>
+        <key>enableCacheBusting</key>
         <false/>
         <key>prependSmartFolderName</key>
         <false/>
@@ -173,8 +175,11 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">circle.png</key>
-            <key type="filename">star_def.png</key>
+            <key type="filename">circle_buy.png</key>
+            <key type="filename">circle_shared.png</key>
+            <key type="filename">star_def_buy.png</key>
+            <key type="filename">star_def_shared.png</key>
+            <key type="filename">star_yellow.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -189,11 +194,47 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">circle_cube.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>159,159,318,318</rect>
+                <key>scale9Paddings</key>
+                <rect>159,159,318,318</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">circle_idle.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>56,56,113,113</rect>
+                <key>scale9Paddings</key>
+                <rect>56,56,113,113</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">coin_buy.png</key>
+            <key type="filename">coin_collect.png</key>
             <key type="filename">confetti_1.png</key>
+            <key type="filename">confetti_10.png</key>
             <key type="filename">confetti_2.png</key>
             <key type="filename">confetti_3.png</key>
             <key type="filename">confetti_4.png</key>
             <key type="filename">confetti_5.png</key>
+            <key type="filename">confetti_6.png</key>
+            <key type="filename">confetti_7.png</key>
+            <key type="filename">confetti_9.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -205,6 +246,21 @@
                 <rect>16,16,32,32</rect>
                 <key>scale9Paddings</key>
                 <rect>16,16,32,32</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">wave_upgrade.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>163,163,325,325</rect>
+                <key>scale9Paddings</key>
+                <rect>163,163,325,325</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -224,7 +280,9 @@
         <key>replaceList</key>
         <array/>
         <key>ignoredWarnings</key>
-        <array/>
+        <array>
+            <string>large-max-texture-size</string>
+        </array>
         <key>commonDivisorX</key>
         <uint>1</uint>
         <key>commonDivisorY</key>

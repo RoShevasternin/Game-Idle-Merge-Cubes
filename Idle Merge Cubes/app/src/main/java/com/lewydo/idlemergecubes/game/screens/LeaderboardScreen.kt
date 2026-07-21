@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
@@ -11,8 +12,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.actor.animShow
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class LeaderboardScreen: AdvancedScreen() {
@@ -22,16 +22,16 @@ class LeaderboardScreen: AdvancedScreen() {
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameterTitle = FontParameter().setCharacters(textTitle).setSize(160)
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val lsTitle by lazy { FontFactory.create(this, parameterTitle, fontGenerator_Nunito_SemiBold) }
+    private val styleTitle = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 160f)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
 
     private val aBackBtn      by lazy { AButtonTexture(this, AButtonStyles.Texture.BACK) }
-    private val aTitleLbl     by lazy { Label(textTitle, lsTitle) }
+    private val aTitleLbl     by lazy { AMsdfLabel(textTitle, styleTitle) }
 
     // ------------------------------------------------------------------------
     // Lifecycle

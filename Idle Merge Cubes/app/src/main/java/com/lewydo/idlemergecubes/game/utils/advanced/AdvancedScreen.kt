@@ -20,11 +20,8 @@ import com.lewydo.idlemergecubes.game.utils.ShapeDrawerUtil
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
-import com.lewydo.idlemergecubes.game.utils.actor.setSize
 import com.lewydo.idlemergecubes.game.utils.addProcessors
 import com.lewydo.idlemergecubes.game.utils.disposeAll
-import com.lewydo.idlemergecubes.game.utils.font.FontGenerator
-import com.lewydo.idlemergecubes.game.utils.font.FontGenerator.Companion.FontPath
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.vfx.RenderPipeline
@@ -69,13 +66,6 @@ abstract class AdvancedScreen(
     private val scalerVector = Vector2()
     val scalerUItoScreen     = SizeScaler(SizeScaler.Axis.X, WIDTH_UI)
 
-    val fontGenerator_Nunito_Black     = FontGenerator(FontPath.Nunito_Black)
-    val fontGenerator_Nunito_Bold      = FontGenerator(FontPath.Nunito_Bold)
-    val fontGenerator_Nunito_ExtraBold = FontGenerator(FontPath.Nunito_ExtraBold)
-    val fontGenerator_Nunito_Regular   = FontGenerator(FontPath.Nunito_Regular)
-    val fontGenerator_Nunito_SemiBold  = FontGenerator(FontPath.Nunito_SemiBold)
-    val fontGenerator_Nunito_Medium    = FontGenerator(FontPath.Nunito_Medium)
-
     // ─── RenderPipeline ───────────────────────────────────────────────────────
     // Shared VfxPool для всіх VfxGroup на цьому екрані.
     // VfxGroup звертається до нього через screen.renderPipeline.vfxPool.
@@ -114,13 +104,6 @@ abstract class AdvancedScreen(
         disposeAll(
             stageUI, drawerUtil,
             renderPipeline,
-
-            fontGenerator_Nunito_Black,
-            fontGenerator_Nunito_Bold,
-            fontGenerator_Nunito_ExtraBold,
-            fontGenerator_Nunito_Regular,
-            fontGenerator_Nunito_SemiBold,
-            fontGenerator_Nunito_Medium,
         )
         disposableSet.disposeAll()
         inputMultiplexer.clear()

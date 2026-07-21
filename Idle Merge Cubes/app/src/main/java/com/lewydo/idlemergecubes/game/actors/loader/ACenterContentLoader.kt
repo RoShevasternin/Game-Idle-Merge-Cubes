@@ -4,20 +4,10 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.BuildConfig
-import com.lewydo.idlemergecubes.game.actors.loader.ALoading
-import com.lewydo.idlemergecubes.game.actors.layout.AlignH
-import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
-import com.lewydo.idlemergecubes.game.actors.loader.ALightLoader
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectActor
 import com.lewydo.idlemergecubes.game.screens.LoaderScreen
-import com.lewydo.idlemergecubes.game.utils.GameColor
-import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ACenterContentLoader(override val screen: LoaderScreen): AdvancedGroup() {

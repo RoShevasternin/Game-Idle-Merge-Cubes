@@ -1,13 +1,12 @@
 package com.lewydo.idlemergecubes.game.actors.panel.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 open class ALeaderboardButton(override val screen: AdvancedScreen) : AButtonTexture(screen, AButtonStyles.Texture.MENU_ITEM) {
@@ -17,13 +16,15 @@ open class ALeaderboardButton(override val screen: AdvancedScreen) : AButtonText
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters(textLeaderboard).setSize(80)
+    private val msdf by lazy { gdxGame.msdfManager }
+
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 80f)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
     private val aIconImg  = Image(gdxGame.assetsAll.menu_icon_leaderboard)
-    private val aTitleLbl = Label(textLeaderboard, FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_SemiBold))
+    private val aTitleLbl = AMsdfLabel(textLeaderboard, styleDef)
 
     // ------------------------------------------------------------------------
     // Lifecycle

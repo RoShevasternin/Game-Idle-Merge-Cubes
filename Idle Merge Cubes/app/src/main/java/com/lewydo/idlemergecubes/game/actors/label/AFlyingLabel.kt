@@ -1,21 +1,28 @@
 package com.lewydo.idlemergecubes.game.actors.label
 
-import com.badlogic.gdx.graphics.g2d.GlyphLayout
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.utils.Block
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AFlyingLabel (MSDF) — летюча нагорода: монета+сума або XP. Логіка польоту
+// незмінна; текст тепер MsdfLabel зі MsdfStyle (можна stroke/тінь на числах).
+//
+//   Розміри беруться з MsdfLabel напряму (prefWidth), висота — capHeight
+//   (візуальна висота цифр), щоб іконка масштабувалась по самих цифрах, а не
+//   по рамці з Figma-резервами.
+// ─────────────────────────────────────────────────────────────────────────────
 
 class AFlyingLabel(
     override val screen: AdvancedScreen,
     text      : String,
-    val style : Label.LabelStyle,
+    val style : MsdfStyle,
     val to    : Vector2,
     val type  : Type,
     val onEnd : Block,
@@ -24,14 +31,16 @@ class AFlyingLabel(
     // ------------------------------------------------------------------------
     // Type
     // ------------------------------------------------------------------------
-
     enum class Type { COIN, XP }
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
 
-    private val label   = Label(text, style)
+    private val label = AMsdfLabel(text, style).apply {
+        autoSize    = false       // розмір/позицію задаємо вручну (setBounds)
+        useFigmaBox = false       // компонуємо по видимих цифрах, без резервів
+    }
     private val coinImg = if (type == Type.COIN) Image(gdxGame.assetsAll.coin) else null
 
     // ------------------------------------------------------------------------
@@ -39,9 +48,9 @@ class AFlyingLabel(
     // ------------------------------------------------------------------------
 
     override fun addActorsOnGroup() {
-        val layout      = GlyphLayout(style.font, label.text)
-        val labelWidth  = layout.width
-        val labelHeight = layout.height
+        val labelWidth  = label.prefWidth
+        // висота = ВИДИМА висота цифр (capHeight × масштаб) — як давав GlyphLayout
+        val labelHeight = label.font.bitmapFont.data.capHeight * label.fontScaleY
         val iconSize    = labelHeight * 1.2f
         val gap         = 8f
 
@@ -49,7 +58,7 @@ class AFlyingLabel(
             Type.COIN -> {
                 coinImg?.let {
                     addActor(it)
-                    // іконка по центру висоти labelHeight
+                    // іконка вирівняна по верху тексту (як у оригіналі)
                     val iconY = (labelHeight - iconSize)
                     it.setBounds(0f, iconY, iconSize, iconSize)
                 }

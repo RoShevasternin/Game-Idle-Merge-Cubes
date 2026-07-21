@@ -1,18 +1,14 @@
 package com.lewydo.idlemergecubes.game.actors.panel
 
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
@@ -31,7 +27,7 @@ class APanelBalanceCoin(override val screen: AdvancedScreen) : AdvancedGroup() {
     // Actors
     // ------------------------------------------------------------------------
     private val aPanelCoinImg = Image(gdxGame.assetsAll.panel_coin)
-    private val aCoinLbl      = MsdfLabel(msdf, msdf.fontNunitoBold, "", 83f, GameColor.yellow_FFF858).addEffect(msdf.dropShadow(7f, 7f, 4f, GameColor.purple_350080))
+    private val aCoinLbl      = AMsdfLabel(msdf, msdf.fontNunitoBold, "", 83f, GameColor.yellow_FFF858).addEffect(msdf.dropShadow(7f, 7f, 4f, GameColor.purple_350080))
     private val aCoinImg      = Image(gdxGame.assetsAll.coin)
 
     // ------------------------------------------------------------------------
@@ -59,7 +55,6 @@ class APanelBalanceCoin(override val screen: AdvancedScreen) : AdvancedGroup() {
     }
 
     private fun addCoinLbl() {
-        aCoinLbl.debug()
         addActor(aCoinLbl)
         aCoinLbl.setPosition(236f, 37f)
         aCoinLbl.setSize(1f, 114f)

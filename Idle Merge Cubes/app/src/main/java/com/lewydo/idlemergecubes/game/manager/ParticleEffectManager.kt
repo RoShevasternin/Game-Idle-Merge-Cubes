@@ -1,10 +1,8 @@
 package com.lewydo.idlemergecubes.game.manager
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
-import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 
 class ParticleEffectManager(var assetManager: AssetManager) {
@@ -17,6 +15,9 @@ class ParticleEffectManager(var assetManager: AssetManager) {
 
     var loadableParticleEffectList = mutableListOf<ParticleEffectData>()
 
+    /** Атлас за замовчуванням для всіх партиклів. */
+    private val defaultAtlas = "atlas/particles.atlas"
+
     // ------------------------------------------------------------------------
     // Lifecycle
     // ------------------------------------------------------------------------
@@ -25,7 +26,15 @@ class ParticleEffectManager(var assetManager: AssetManager) {
         assetManager.setLoader(ParticleEffect::class.java, ".p", particleLoader)
         loadableParticleEffectList.onEach { data ->
             val params = ParticleEffectLoader.ParticleEffectParameter().apply {
-                imagesDir = MultiDirFileHandle(data.dirPaths)
+                // Картинки беруться з АТЛАСУ: регіон шукається за іменем файлу
+                // БЕЗ розширення ("circle_cube.png" у .p → регіон "circle_cube").
+                // Один атлас = емітери батчаться між собою і зі сценою.
+                //
+                // КІЛЬКА АТЛАСІВ: кожен ефект може мати свій — просто вкажи
+                // atlas = "atlas/xxx.atlas" у його ParticleEffectData.
+                // (Загальне правило: ефекти, що грають ОДНОЧАСНО, тримай в
+                //  ОДНОМУ атласі — інакше повертаються зайві bind-и.)
+                atlasFile = data.atlas ?: defaultAtlas
             }
             assetManager.load(data.path, ParticleEffect::class.java, params)
         }
@@ -41,21 +50,23 @@ class ParticleEffectManager(var assetManager: AssetManager) {
     // ------------------------------------------------------------------------
 
     enum class EnumParticleEffect(val data: ParticleEffectData) {
-        LOADER(ParticleEffectData("particle/loader/loader.p", "particle/loader", "particle/SHARED")),
+        LOADER(ParticleEffectData("particle/loader/loader.p")),
 
-        CONFETTI(ParticleEffectData("particle/confetti/confetti.p","particle/SHARED")),
+        CONFETTI(ParticleEffectData("particle/confetti/confetti.p")),
 
-        BUY         (ParticleEffectData("particle/buy/buy.p",  "particle/buy")),
-        STAR        (ParticleEffectData("particle/buy/star.p", "particle/buy")),
-        WAVE_UPGRADE(ParticleEffectData("particle/buy/wave_upgrade.p", "particle/buy")),
+        BUY         (ParticleEffectData("particle/buy/buy.p")),
+        STAR        (ParticleEffectData("particle/buy/star.p")),
+        WAVE_UPGRADE(ParticleEffectData("particle/buy/wave_upgrade.p")),
 
-        IDLE_CONFETTI(ParticleEffectData("particle/idleIncome/confetti.p", "particle/SHARED")),
-        IDLE_WAVE    (ParticleEffectData("particle/idleIncome/wave.p", "particle/idleIncome")),
+        IDLE_CONFETTI(ParticleEffectData("particle/mergeBonus/confetti.p")),
+        IDLE_WAVE    (ParticleEffectData("particle/mergeBonus/wave.p")),
 
-        CUBE(ParticleEffectData("particle/cube/cube.p", "particle/cube", "particle/SHARED")),
+        CUBE(ParticleEffectData("particle/cube/cube.p")),
 
-        COLLECT(ParticleEffectData("particle/collect/collect.p", "particle/collect")),
+        COLLECT(ParticleEffectData("particle/collect/collect.p")),
 
+        // Приклад окремого атласу для важкого ефекту:
+        // BOSS(ParticleEffectData("particle/boss/boss.p", atlas = "atlas/particles_boss.atlas")),
     }
 
     // ------------------------------------------------------------------------
@@ -63,24 +74,11 @@ class ParticleEffectManager(var assetManager: AssetManager) {
     // ------------------------------------------------------------------------
 
     data class ParticleEffectData(
-        val path    : String,
-        val dirPaths: List<String>,
+        val path : String,
+        /** null = defaultAtlas. Вкажи, якщо цей ефект в іншому атласі. */
+        val atlas: String? = null,
     ) {
-        constructor(path: String, vararg dirs: String) : this(path, dirs.toList())
-
         lateinit var effect: ParticleEffect
-    }
-
-    class MultiDirFileHandle(
-        private val dirs: List<String>
-    ) : FileHandle() {
-        override fun child(name: String): FileHandle {
-            for (dir in dirs) {
-                val handle = Gdx.files.internal("$dir/$name")
-                if (handle.exists()) return handle
-            }
-            return Gdx.files.internal("${dirs.first()}/$name")
-        }
     }
 
 }

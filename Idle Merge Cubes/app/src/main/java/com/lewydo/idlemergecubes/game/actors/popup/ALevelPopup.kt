@@ -1,13 +1,12 @@
 package com.lewydo.idlemergecubes.game.actors.popup
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.progress.AProgressPopupXP
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.launch
@@ -17,17 +16,16 @@ class ALevelPopup(override val screen: AdvancedScreen) : AdvancedGroup() {
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val parameter = FontParameter()
-        .setCharacters(FontParameter.CharType.NUMBERS.chars + "XP:/,")
-        .setSize(72)
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 72f)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
 
     private val aPopupImg = Image(gdxGame.assetsAll.dialog_lvl)
-    private val aXPLbl    = Label("XP: 0/0", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_SemiBold))
+    private val aXPLbl    = AMsdfLabel("XP: 0/0", styleDef)
     private val aProgress = AProgressPopupXP(screen)
 
     // ------------------------------------------------------------------------

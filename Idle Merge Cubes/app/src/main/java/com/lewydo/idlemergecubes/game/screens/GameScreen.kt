@@ -1,19 +1,15 @@
 package com.lewydo.idlemergecubes.game.screens
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.profiling.GLProfiler
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.BuildConfig
 import com.lewydo.idlemergecubes.game.actors.button.ABuyButton
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogClearGrid
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogLevelUp
 import com.lewydo.idlemergecubes.game.actors.dialog.ADialogOfflineReward
 import com.lewydo.idlemergecubes.game.actors.hint.ABuyHint
-import com.lewydo.idlemergecubes.game.actors.layout.AlignH
-import com.lewydo.idlemergecubes.game.actors.layout.AlignV
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.panel.APanelMergeBonusWithGoals
 import com.lewydo.idlemergecubes.game.actors.panel.APanelTop
@@ -25,7 +21,6 @@ import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
-import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animDelay
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
@@ -35,8 +30,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.overlay.OverlayManager
@@ -95,7 +89,7 @@ class GameScreen : AdvancedScreen() {
     // ------------------------------------------------------------------------
     // Debug
     // ------------------------------------------------------------------------
-    private val fpsLabel = MsdfLabel(msdf, msdf.fontNunitoBlack, "FPS", 100f)
+    private val fpsLabel = AMsdfLabel(msdf, msdf.fontNunitoBlack, "FPS", 100f)
 
     // PERF_DIAG: вимір навантаження рендеру ЩОКАДРУ (тимчасово, прибрати потім)
     private val perfProfiler by lazy { GLProfiler(Gdx.graphics).apply { enable() } }
@@ -234,21 +228,9 @@ class GameScreen : AdvancedScreen() {
             bottomToBottom(margin = 200f)
         }
 
-        //var t = true
-
         aBuyBtn.onClick = {
             aPanelGrid.buyCube()
             gdxGame.tutorialManager.onBuyDone()
-
-            //TikTokManager.sendTestEvent()
-
-//            if (t) {
-//                t = false
-//                gdxGame.activity.adManager.banner.show()
-//            } else {
-//                t = true
-//                gdxGame.activity.adManager.banner.hide()
-//            }
         }
     }
 
@@ -345,7 +327,8 @@ class GameScreen : AdvancedScreen() {
     private fun Group.addTutorial() {
         if (gdxGame.tutorialManager.isDone) return
         addAndFillActor(aTutorial)
-        animDelay(0.5f) {
+
+        aTutorial.animDelay(0.5f) {
             GlobalStagePositions.register(
                 key      = GlobalStagePositions.Key.BUY_BTN,
                 actor    = aBuyBtn,

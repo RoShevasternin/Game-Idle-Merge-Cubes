@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
@@ -14,12 +13,9 @@ import com.lewydo.idlemergecubes.game.actors.panel.goals.util.AGoalsReward
 import com.lewydo.idlemergecubes.game.actors.panel.goals.util.AGoalsTimer
 import com.lewydo.idlemergecubes.game.systems.goals.Goal
 import com.lewydo.idlemergecubes.game.systems.goals.GoalProgress
-import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -75,7 +71,7 @@ abstract class AGoalPanelBase(screen: AdvancedScreen) : AConstraintLayout(screen
     // ------------------------------------------------------------------------
     private val aBg          = Image()
     private val aGoalsBadge  = AGoalsBadge(screen, styleBadge)
-    private val aIndexLbl    = MsdfLabel("#1", styleIndex)
+    private val aIndexLbl    = AMsdfLabel("#1", styleIndex)
     private val aGoalsReward = AGoalsReward(screen, styleReward)
     private val aGoalsTimer  = AGoalsTimer(screen, styleTimer)
 

@@ -3,6 +3,7 @@ package com.lewydo.idlemergecubes.game.actors.loader
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.BuildConfig
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.screens.LoaderScreen
@@ -10,8 +11,8 @@ import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.HEIGHT_UI
 import com.lewydo.idlemergecubes.game.utils.WIDTH_UI
 import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class AMainLoader(override val screen: LoaderScreen): AConstraintLayout(screen) {
 
@@ -24,13 +25,15 @@ class AMainLoader(override val screen: LoaderScreen): AConstraintLayout(screen) 
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters(textBranding).setSize(40)
+    private val msdf by lazy { gdxGame.msdfManager }
+
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 40f, GameColor.white_55)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
     val aCenterContentLoader = ACenterContentLoader(screen)
-    val aBrandingLbl         = Label(textBranding, FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_SemiBold, GameColor.white_55))
+    val aBrandingLbl         = AMsdfLabel(textBranding, styleDef)
 
     // ------------------------------------------------------------------------
     // Lifecycle

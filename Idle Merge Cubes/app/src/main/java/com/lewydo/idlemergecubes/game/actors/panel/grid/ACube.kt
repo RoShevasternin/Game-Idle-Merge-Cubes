@@ -5,36 +5,29 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener
 import com.badlogic.gdx.utils.Align
-import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoSize
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabelAutoSize
 import com.lewydo.idlemergecubes.game.actors.vfx.AHslImage
 import com.lewydo.idlemergecubes.game.utils.CubeColorSystem
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ACube(
     override val screen: AdvancedScreen,
     var index : Int,
     var lvl   : Int,
-    labelStyle: Label.LabelStyle,
+    style     : MsdfStyle,
 ): AdvancedGroup() {
 
 
     // ------------------------------------------------------------------------
-    // VISUAL LAYERS
+    // Actors
     // ------------------------------------------------------------------------
-    // 1 — Frame
-    // 2 — Fill (Tinted)
-    // 3 — Highlight / Shine
-
-    //private val aCube3Img = AHslImage(screen, gdxGame.assetsAll.listCube[2])
-    //private val aCube1Img = AHslImage(screen, gdxGame.assetsAll.listCube[0])
-
     private val aCubeImg      = AHslImage(screen, gdxGame.assetsAll.cube)
-    private val aCubeLevelLbl = ALabelAutoSize(screen, lvl.toString(), labelStyle, fitMode = ALabelAutoSize.FitMode.MIN)
+    private val aCubeLevelLbl = AMsdfLabelAutoSize(screen, lvl.toString(), style, fitMode = AMsdfLabelAutoSize.FitMode.MIN)
 
     // ------------------------------------------------------------------------
     // STATE
@@ -77,11 +70,7 @@ class ACube(
     // ------------------------------------------------------------------------
 
     private fun addCubeImg() {
-        addAndFillActors(
-            //aCube1Img,
-            aCubeImg,
-            //aCube3Img
-        )
+        addAndFillActors(aCubeImg)
         updateColor()
     }
 
@@ -166,6 +155,22 @@ class ACube(
     // ------------------------------------------------------------------------
     // VISUAL STATES
     // ------------------------------------------------------------------------
+
+    // ── Пул: скидання стану для повторного використання (замість new ACube) ──
+    fun resetForPool(newIndex: Int, newLvl: Int) {
+        index = newIndex
+        lvl   = newLvl
+        currentState = State.DEFAULT
+        clearActions()
+        setScale(1f, 1f)
+        rotation = 0f
+        color.a = 1f
+        isDragEnabled = true
+        isVisible = true
+        aCubeLevelLbl.setText(lvl.toString())
+        updateLblBounds()
+        updateColor()
+    }
 
     fun setState(state: State) {
 

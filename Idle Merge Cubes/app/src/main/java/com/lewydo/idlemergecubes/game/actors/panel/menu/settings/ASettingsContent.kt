@@ -4,13 +4,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.BuildConfig
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.layout.autoLayout.AAutoLayout
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ASettingsContent(override val screen: AdvancedScreen) : AdvancedGroup() {
@@ -18,9 +18,9 @@ class ASettingsContent(override val screen: AdvancedScreen) : AdvancedGroup() {
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter   = FontParameter().setCharacters(FontParameter.CharType.ALL).setSize(72)
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val labelStyleItem = FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_SemiBold)
+    private val styleItem = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 72f)
 
     // ------------------------------------------------------------------------
     // Actors
@@ -29,13 +29,13 @@ class ASettingsContent(override val screen: AdvancedScreen) : AdvancedGroup() {
     private val aSeparatorImg = Image(gdxGame.assetsAll.settings_separator)
 
     private val aVerticalGroup = AAutoLayout(screen, direction = AAutoLayout.Direction.VERTICAL, gapMain = 24f)
-    private val aSettItemSound = ASettingsItem(screen, labelStyleItem, ASettingsItem.Type.SOUND)
-    private val aSettItemMusic = ASettingsItem(screen, labelStyleItem, ASettingsItem.Type.MUSIC)
-    private val aSettItemVibro = ASettingsItem(screen, labelStyleItem, ASettingsItem.Type.VIBRO)
-    private val aSettItemAlarm = ASettingsItem(screen, labelStyleItem, ASettingsItem.Type.ALARM)
-    private val aSettItemInfo  = ASettingsItem(screen, labelStyleItem, ASettingsItem.Type.INFO)
+    private val aSettItemSound = ASettingsItem(screen, styleItem, ASettingsItem.Type.SOUND)
+    private val aSettItemMusic = ASettingsItem(screen, styleItem, ASettingsItem.Type.MUSIC)
+    private val aSettItemVibro = ASettingsItem(screen, styleItem, ASettingsItem.Type.VIBRO)
+    private val aSettItemAlarm = ASettingsItem(screen, styleItem, ASettingsItem.Type.ALARM)
+    private val aSettItemInfo  = ASettingsItem(screen, styleItem, ASettingsItem.Type.INFO)
 
-    private val aVersionLbl = Label("Game Version: ${BuildConfig.VERSION_NAME}", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_SemiBold, GameColor.white_55))
+    private val aVersionLbl = AMsdfLabel("Game Version: ${BuildConfig.VERSION_NAME}", styleItem, color = GameColor.white_55)
 
     // ------------------------------------------------------------------------
     // Callback

@@ -3,12 +3,10 @@ package com.lewydo.idlemergecubes.game.actors.panel.goals.util
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.NinePatch
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
-import com.lewydo.idlemergecubes.game.utils.actor.setFontColor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
 import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -22,7 +20,7 @@ class AGoalsTimer(
     // ------------------------------------------------------------------------
     private val aBgImg    = Image()
     private val aTimerImg = Image(gdxGame.assetsAll.icon_timer)
-    private val aLbl      = MsdfLabel("", style)
+    private val aLbl      = AMsdfLabel("", style)
 
     // ------------------------------------------------------------------------
     // Lifecycle
@@ -65,7 +63,7 @@ class AGoalsTimer(
     }
 
     fun setTextColor(color: Color) {
-        aLbl.setFontColor(color)
+        aLbl.setTextColor(color)
     }
 
 }

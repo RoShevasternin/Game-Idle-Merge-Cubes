@@ -6,15 +6,6 @@ plugins {
 }
 
 android {
-//    signingConfigs {
-//        create("release") {
-//            storeFile = file("D:\\Game-Idle-Merge-Cubes\\release\\keyReleaseIdles")
-//            storePassword = "ujsad7hASgdtegbqe"
-//            keyPassword = "ujsad7hASgdtegbqe"
-//            keyAlias = "passengerToren7sj"
-//        }
-//    }
-
     namespace  = "com.lewydo.idlemergecubes"
     compileSdk = 37
 
@@ -22,16 +13,13 @@ android {
         applicationId = "com.lewydo.idlemergecubes"
         minSdk        = 24
         targetSdk     = 37
-        versionCode   = 19
-        versionName   = "3.1.3-test-msdf"
+        versionCode   = 20
+        versionName   = "3.1.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Field ------------------------------------------------------------------------
         //buildConfigField("String", "TIKTOK_APP_SECRET", "\"aaa\"")
-
-//        signingConfig = signingConfigs.getByName("release")
-
     }
 
     buildTypes {
@@ -113,7 +101,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.15.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.16.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-crashlytics")
 

@@ -5,12 +5,11 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
-import com.lewydo.idlemergecubes.game.actors.label.ALabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
 import com.lewydo.idlemergecubes.game.actors.vfx.AHslImage
 import com.lewydo.idlemergecubes.game.utils.Block
@@ -21,8 +20,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.addActors
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 import com.lewydo.idlemergecubes.game.utils.runGDX
@@ -37,24 +35,18 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "BUY")
-        .setShadow(7, 7, GameColor.brown_8D3800)
-        .setBorder(3f, GameColor.brown_8D3800)
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val parameterBuy   = parameter.copy().setSize(126)
-    private val parameterPrice = parameter.copy().setSize(113)
+    private val styleBuy = MsdfStyle(msdf, msdf.fontNunitoBlack, 126f)
+        .stroke(3f, GameColor.brown_8D3800)
+        .dropShadow(7f, 7f, 4f, GameColor.purple_350080)
 
-    private val parameterCube = FontParameter().setCharacters(FontParameter.CharType.NUMBERS)
-        .setBorder(1.5f, GameColor.brown_8D3800)
-        .setSize(67)
+    private val styleCube = MsdfStyle(msdf, msdf.fontNunitoBlack, 67f)
+        .stroke(1.5f, GameColor.brown_8D3800)
 
-    private val parameterUpgrade = FontParameter()
-        .setCharacters(FontParameter.CharType.NUMBERS.chars + "BUYupgraded!Lv.")
-        .setSize(90)
-        .setBorder(3f, GameColor.brown_8D3800)
-        .setShadow(6, 6, GameColor.brown_8D3800)
-
-    private val fontUpgrade = screen.fontGenerator_Nunito_Black.generateFont(parameterUpgrade)
+    private val styleUpgrade = MsdfStyle(msdf, msdf.fontNunitoBlack, 90f, Color.GOLD)
+        .stroke(3f, GameColor.brown_8D3800)
+        .dropShadow(6f, 6f, 4f, GameColor.brown_8D3800)
 
     // ------------------------------------------------------------------------
     // Field
@@ -74,15 +66,18 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     private val aCubeGroup = ATmpGroup(screen)
     private val aCubeImg   = AHslImage(screen, gdxGame.assetsAll.cube_buy)
-    private val aCubeLbl   = Label(cubeLvl.toString(), FontFactory.create(screen, parameterCube, screen.fontGenerator_Nunito_Black))
+    private val aCubeLbl   = AMsdfLabel(cubeLvl.toString(), styleCube)
 
-    private val aBuyLbl   = Label("BUY", FontFactory.create(screen, parameterBuy, screen.fontGenerator_Nunito_Black))
+    private val aBuyLbl   = AMsdfLabel("BUY", styleBuy)
     private val aCoinImg  = Image(gdxGame.assetsAll.coin_with_border)
-    private val aPriceLbl = Label("0", FontFactory.create(screen, parameterPrice, screen.fontGenerator_Nunito_Black))
+    private val aPriceLbl = AMsdfLabel("0", styleBuy, 113f)
 
-    private val aCoinEffectPool        = AParticleEffectPool(gdxGame.particleEffectAll.BUY)
-    private val aStarEffectPool        = AParticleEffectPool(gdxGame.particleEffectAll.STAR)
-    private val aWaveUpgradeEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.WAVE_UPGRADE)
+    // Бюджети губернатора (заміряно бісекцією: спам ефектів = fps 61→34):
+    //   монетки — дрібні, можна більше; ЗІРКИ (на всю ширину!) — найдорожчі,
+    //   стеля 2 і рідше; wave — великий одноразовий, стеля 1.
+    private val aCoinEffectPool        = AParticleEffectPool(gdxGame.particleEffectAll.BUY, maxActive = 3, minSpawnIntervalMs = 80L)
+    private val aStarEffectPool        = AParticleEffectPool(gdxGame.particleEffectAll.STAR, maxActive = 2, minSpawnIntervalMs = 150L)
+    private val aWaveUpgradeEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.WAVE_UPGRADE, maxActive = 1, minSpawnIntervalMs = 300L)
 
     // ------------------------------------------------------------------------
     // Callback
@@ -270,7 +265,7 @@ open class ABuyButton(override val screen: AdvancedScreen) : AdvancedGroup() {
     }
 
     private fun animBuyUpgrade(newLevel: Int) {
-        val lbl = ALabel(screen, "BUY upgraded! Lv.$newLevel", Label.LabelStyle(fontUpgrade, Color.GOLD))
+        val lbl = AMsdfLabel("BUY upgraded! Lv.$newLevel", styleUpgrade)
         lbl.pack()
         lbl.setOrigin(Align.center)
         lbl.setPosition((width - lbl.width) / 2f, height)

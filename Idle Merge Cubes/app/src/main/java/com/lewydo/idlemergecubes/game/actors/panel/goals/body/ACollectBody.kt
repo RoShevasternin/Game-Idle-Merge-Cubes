@@ -2,14 +2,15 @@ package com.lewydo.idlemergecubes.game.actors.panel.goals.body
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.layout.autoLayout.AAutoLayout
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.panel.goals.util.AGoalRequirementItem
 import com.lewydo.idlemergecubes.game.systems.goals.GoalObjective
 import com.lewydo.idlemergecubes.game.systems.goals.GoalProgress
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 // ═════════════════════════════════════════════════════════════════════════════
 //  ACollectBody — контент для GoalObjective.Collect
@@ -33,14 +34,14 @@ class ACollectBody(override val screen: AdvancedScreen) : AConstraintLayout(scre
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameterDesc = FontParameter().setCharacters(FontParameter.CharType.ALL).setSize(48)
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val lsDesc = FontFactory.create(screen, parameterDesc, screen.fontGenerator_Nunito_Regular, Color.WHITE)
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoRegular, 48f)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aDescLbl  = Label("Place on the board:", lsDesc)
+    private val aDescLbl  = AMsdfLabel("Place on the board:", styleDef)
     private val aReqItems = List(MAX_REQ) { AGoalRequirementItem(screen) }
 
     private val aHorizontal = AAutoLayout(

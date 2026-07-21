@@ -2,6 +2,7 @@ package com.lewydo.idlemergecubes.game.utils.font.msdf
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.Disposable
+import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.disposeAll
 import com.lewydo.idlemergecubes.game.utils.font.msdf.effects.MsdfEffectShader
 import com.lewydo.idlemergecubes.game.utils.font.msdf.effects.StrokeEffect
@@ -69,4 +70,13 @@ class MsdfManager : Disposable {
             fontNunitoMedium,
         )
     }
+
+    // ------------------------------------------------------------------------
+    // Type
+    // ------------------------------------------------------------------------
+    val FLYING_COIN by lazy { MsdfStyle(this, fontNunitoBlack, 90f)
+        .stroke(5f, GameColor.purple_350080)
+        .dropShadow(6f, 6f, 4f, GameColor.purple_350080)
+    }
+
 }

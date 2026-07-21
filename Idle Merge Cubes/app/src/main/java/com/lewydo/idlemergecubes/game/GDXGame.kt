@@ -167,7 +167,7 @@ class GDXGame(val activity: MainActivity) : AdvancedGame() {
         try {
             coroutine.cancel()
             disposableSet.disposeAll()
-            disposeAll(assetManager, musicUtil, VfxShaderCache, Blit, msdfManager)
+            disposeAll(assetManager, musicUtil, soundUtil, VfxShaderCache, Blit, msdfManager)
             modelOfflineReward.saveLoginTime()
             log("dispose $currentClassName")
             super.dispose()

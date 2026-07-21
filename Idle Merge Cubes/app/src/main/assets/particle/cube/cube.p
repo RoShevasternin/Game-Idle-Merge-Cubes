@@ -276,7 +276,7 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-circle.png
+circle_cube.png
 
 
 wave2
@@ -394,7 +394,7 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-circle.png
+circle_cube.png
 
 
 wave3
@@ -514,5 +514,5 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-circle.png
+circle_cube.png
 

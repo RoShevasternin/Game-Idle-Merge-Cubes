@@ -1,17 +1,14 @@
 package com.lewydo.idlemergecubes.game.actors.hint
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.progress.AProgressBuyHint
 import com.lewydo.idlemergecubes.game.model.BuyLevelModel
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 import com.lewydo.idlemergecubes.game.utils.runGDX
@@ -25,9 +22,12 @@ class ABuyHint(override val screen: AdvancedScreen) : AdvancedGroup() {
     // Font
     // ------------------------------------------------------------------------
 
-    private val parameter = FontParameter()
-        .setCharacters(FontParameter.CharType.NUMBERS.chars + "Reach cube -> BUY lv. /")
-        .setSize(45)
+    // ------------------------------------------------------------------------
+    // Font
+    // ------------------------------------------------------------------------
+    private val msdf by lazy { gdxGame.msdfManager }
+
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoMedium, 45f)
 
     // ------------------------------------------------------------------------
     // Actors
@@ -35,11 +35,11 @@ class ABuyHint(override val screen: AdvancedScreen) : AdvancedGroup() {
 
     // Ліва частина — іконка замка + текст
     private val aLockImg  = Image(gdxGame.assetsAll.lock)
-    private val aTextLbl  = Label("Reach cube 0 -> BUY lv.0 ", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Medium, Color.WHITE))
+    private val aTextLbl  = AMsdfLabel("Reach cube 0 -> BUY lv.0 ", styleDef)
 
     // Права частина — progress bar + лічильник
     private val aProgress = AProgressBuyHint(screen)
-    private val aCountLbl = Label("0/2", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Medium, Color.WHITE))
+    private val aCountLbl = AMsdfLabel("0/2", styleDef)
 
     // ------------------------------------------------------------------------
     // Lifecycle

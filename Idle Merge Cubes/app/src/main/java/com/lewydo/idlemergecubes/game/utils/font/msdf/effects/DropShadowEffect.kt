@@ -49,7 +49,7 @@ class DropShadowEffect(
         val b  = (blur * ctx.pxToGlyph).coerceIn(0f, (pad - 0.7f).coerceAtLeast(0f))
 
         val prog = shader.program
-        ctx.batch.shader = prog
+        if (ctx.batch.shader !== prog) ctx.batch.shader = prog
         prog.setUniformf("u_distanceRange", ctx.font.distanceRange)
         prog.setUniformf("u_fontScale", ctx.screenScale)
         prog.setUniformf("u_hasSdf", if (ctx.font.hasTrueSdf) 1f else 0f)

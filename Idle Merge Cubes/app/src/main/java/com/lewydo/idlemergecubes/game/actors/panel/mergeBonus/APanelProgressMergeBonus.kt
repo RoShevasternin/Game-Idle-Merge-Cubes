@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -22,7 +22,7 @@ class APanelProgressMergeBonus(override val screen: AdvancedScreen) : AConstrain
     // ------------------------------------------------------------------------
     private val aProgressMergeBonus = AProgressMergeBonus(screen)
     private val aBagCoins           = ABagCoins(screen)
-    private val aCounterLbl         = MsdfLabel("0 / 10 merges", styleCounter)
+    private val aCounterLbl         = AMsdfLabel("0 / 10 merges", styleCounter)
 
     // ------------------------------------------------------------------------
     // Callback

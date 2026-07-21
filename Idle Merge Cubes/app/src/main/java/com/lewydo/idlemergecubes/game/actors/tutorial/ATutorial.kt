@@ -9,6 +9,7 @@ import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
 import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.launch
+import com.lewydo.idlemergecubes.util.log
 
 class ATutorial(override val screen: AdvancedScreen) : AdvancedGroup() {
 

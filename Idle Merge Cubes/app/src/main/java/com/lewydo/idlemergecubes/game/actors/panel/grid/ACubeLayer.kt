@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.lewydo.idlemergecubes.game.actors.label.AFlyingLabel
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
 import com.lewydo.idlemergecubes.game.utils.GameColor
@@ -14,8 +13,7 @@ import com.lewydo.idlemergecubes.game.utils.global.GlobalStagePositions
 import com.lewydo.idlemergecubes.game.utils.actor.setBounds
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
@@ -25,22 +23,11 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val parameterCube = FontParameter()
-        .setCharacters(FontParameter.CharType.NUMBERS.chars)
-        .setSize(264)
-        .setBorder(3f, GameColor.brown_8D3800)
-        .setShadow(10, 10, GameColor.purple_350080)
-
-    private val parameterFlyingLabel = FontParameter()
-        .setCharacters(FontParameter.CharType.NUMBERS.chars + "+XP")
-        .setSize(90)
-        .setBorder(5f, GameColor.purple_350080)
-        .setShadow(6, 6, GameColor.purple_350080)
-
-    private val fontFlyingLabel = screen.fontGenerator_Nunito_Black.generateFont(parameterFlyingLabel)
-
-    private val labelStyleCube = FontFactory.create(screen, parameterCube, screen.fontGenerator_Nunito_Bold)
+    private val styleCube = MsdfStyle(msdf, msdf.fontNunitoBold, 264f)
+        .stroke(3f, GameColor.brown_8D3800)
+        .dropShadow(10f, 10f, 4f, GameColor.purple_350080)
 
     // ------------------------------------------------------------------------
     // Storage
@@ -62,7 +49,8 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
     // Particle pool
     // ------------------------------------------------------------------------
 
-    private val mergeEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.CUBE)
+    // Мердж-ефект: до 4 одночасних (ланцюжки мерджів), не частіше 50мс.
+    private val mergeEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.CUBE, maxActive = 4, minSpawnIntervalMs = 50L)
 
     // ------------------------------------------------------------------------
     // Lifecycle
@@ -75,7 +63,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
     // ------------------------------------------------------------------------
 
     fun spawnCube(index: Int, level: Int, cellBounds: Rectangle): ACube {
-        val cube = ACube(screen, index, level, labelStyleCube)
+        val cube = ACube(screen, index, level, styleCube)
 
         cube.setBounds(
             cellBounds.x + offsetX,
@@ -269,13 +257,13 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
         )
         val size = Vector2(1f, 1f)
 
-        val style = Label.LabelStyle(fontFlyingLabel, color)
+        msdf.FLYING_COIN.color = color
 
         screen.stageUI.root.addActor(
             AFlyingLabel(
                 screen = screen,
                 text   = "+$coins",
-                style  = style,
+                style  = msdf.FLYING_COIN,
                 to     = GlobalStagePositions.get(GlobalStagePositions.Key.COIN),
                 type   = AFlyingLabel.Type.COIN,
                 onEnd  = { GlobalEvents.emit(GlobalEvents.EventType.END_FLY_COIN) }
@@ -286,7 +274,7 @@ class ACubeLayer(override val screen: AdvancedScreen): AdvancedGroup() {
             AFlyingLabel(
                 screen = screen,
                 text   = "+$xp XP",
-                style  = style,
+                style  = msdf.FLYING_COIN,
                 to     = GlobalStagePositions.get(GlobalStagePositions.Key.XP),
                 type   = AFlyingLabel.Type.XP,
                 onEnd  = { GlobalEvents.emit(GlobalEvents.EventType.END_FLY_XP) }

@@ -11,7 +11,7 @@ import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.global.GlobalEvents
@@ -37,8 +37,8 @@ class APanelLvL(override val screen: AdvancedScreen) : AConstraintLayout(screen)
     // ------------------------------------------------------------------------
 
     private val aPanelLvLImg    = Image(gdxGame.assetsAll.panel_lvl)
-    private val aLvLLbl         = MsdfLabel("1", styleLvL)
-    private val aLevelLbl       = MsdfLabel("Level", styleLevel)
+    private val aLvLLbl         = AMsdfLabel("1", styleLvL)
+    private val aLevelLbl       = AMsdfLabel("Level", styleLevel)
     private val aCircleProgress = ACircleProgress(screen, 0f, 0f, 90f)
     private val aLvLPopup       = ALevelPopup(screen)
 

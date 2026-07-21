@@ -7,15 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
-import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
-import com.lewydo.idlemergecubes.game.utils.actor.enable
-import com.lewydo.idlemergecubes.game.utils.actor.setOrigin
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -39,20 +36,18 @@ class AGoalResultOverlay(override val screen: AdvancedScreen) : AConstraintLayou
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameterResult = FontParameter()
-        .setCharacters(FontParameter.CharType.ALL)
-        .setSize(72)
-        .setBorder(2f, Color.BLACK)
-        .setShadow(2, 0, Color.BLACK)
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val lsResult = FontFactory.create(screen, parameterResult, screen.fontGenerator_Nunito_Bold, Color.WHITE)
+    private val styleResult = MsdfStyle(msdf, msdf.fontNunitoBold, 72f)
+        .stroke(2f, Color.BLACK)
+        .dropShadow(2f, 0f, 4f, Color.BLACK)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
     private val aBgImg     = Image()
     private val aIconImg   = Image()
-    private val aResultLbl = Label("", lsResult)
+    private val aResultLbl = AMsdfLabel("", styleResult)
 
     // ------------------------------------------------------------------------
     // Lifecycle

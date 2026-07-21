@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.ParticleEffect
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.layout.AlignH
 import com.lewydo.idlemergecubes.game.actors.layout.AlignV
@@ -12,17 +11,13 @@ import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraint
 import com.lewydo.idlemergecubes.game.actors.panel.mergeBonus.state.FillingState
 import com.lewydo.idlemergecubes.game.actors.panel.mergeBonus.state.ReadyState
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectActor
-import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.actor.addActorAligned
 import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
 import com.lewydo.idlemergecubes.game.utils.actor.setPosition
-import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
@@ -57,9 +52,9 @@ class APanelMergeBonus(override val screen: AdvancedScreen): AConstraintLayout(s
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aTitleLbl = MsdfLabel(textTitle, styleTitle)
+    private val aTitleLbl = AMsdfLabel(textTitle, styleTitle)
     private val aCoinImg  = Image(gdxGame.assetsAll.coin)
-    private val aCoinLbl  = MsdfLabel("0", styleCoins)
+    private val aCoinLbl  = AMsdfLabel("0", styleCoins)
 
     private val aPanelProgressMergeBonus = APanelProgressMergeBonus(screen)
     private val aPanelCollectMergeBonus  = APanelCollectMergeBonus(screen)
@@ -74,7 +69,10 @@ class APanelMergeBonus(override val screen: AdvancedScreen): AConstraintLayout(s
     private val stateMachine = StateMachine()
     private val stateFilling = FillingState(stateMachine, aPanelProgressMergeBonus)
     private val stateReady   = ReadyState(stateMachine, aPanelCollectMergeBonus) {
-        listConfettiEffect.forEach { it.start() }
+        // Залп 4 з 8 (парні позиції — рівномірно по ширині): 8 одночасних
+        // конфеті + wave = overdraw-пік і просадка fps у момент заповнення.
+        // Візуально щільність трохи менша, навантаження — вдвічі.
+        listConfettiEffect.forEachIndexed { i, fx -> if (i % 2 == 0) fx.start() }
         aWaveEffect.start()
 
         gdxGame.soundUtil.apply { play(SHOW_COLLECT) }

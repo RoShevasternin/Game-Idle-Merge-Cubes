@@ -6,15 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfTextRow
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.panel.grid.ACube
-import com.lewydo.idlemergecubes.game.actors.vfx.AHslImage
-import com.lewydo.idlemergecubes.game.utils.CubeColorSystem
 import com.lewydo.idlemergecubes.game.utils.GameColor
-import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -32,20 +30,23 @@ class AGoalRequirementItem(override val screen: AdvancedScreen) : AConstraintLay
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameterCube  = FontParameter().setCharacters(FontParameter.CharType.NUMBERS).setSize(70).setBorder(1f, GameColor.brown_8D3800).setShadow(3, 3, GameColor.purple_350080)
-    private val parameterCount = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "/").setSize(56)
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val lsCube  = FontFactory.create(screen, parameterCube, screen.fontGenerator_Nunito_Black, Color.WHITE)
-    private val lsCount = FontFactory.create(screen, parameterCount, screen.fontGenerator_Nunito_Medium, Color.WHITE)
+    private val styleCube = MsdfStyle(msdf, msdf.fontNunitoBold, 70f)
+        .stroke(1f, GameColor.brown_8D3800)
+        .dropShadow(3f, 3f, 4f, GameColor.purple_350080)
+
+    private val styleCount = MsdfStyle(msdf, msdf.fontNunitoMedium, 56f)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
     private val aBgDoneImg      = Image(gdxGame.assetsAll.goals_bg_item_done)
     private val aBgDefImg       = Image(gdxGame.assetsAll.goals_bg_item_def)
-    private val aCube           = ACube(screen, 0, 0, lsCube)
-    private val aCountLbl       = Label("0", lsCount)
-    private val aCountTargetLbl = Label("/5", lsCount).apply { color.a = 0.5f }
+    private val aCube           = ACube(screen, 0, 0, styleCube)
+    private val aCountLbl       = AMsdfLabel("0", styleCount)
+    private val aCountTargetLbl = AMsdfLabel("/5", styleCount).apply { color.a = 0.5f }
+    private val aCountRow       = AMsdfTextRow(5f).add(aCountLbl).add(aCountTargetLbl)
     private val aDoneImg        = Image(gdxGame.assetsAll.goals_item_done)
 
     // ------------------------------------------------------------------------
@@ -81,11 +82,13 @@ class AGoalRequirementItem(override val screen: AdvancedScreen) : AConstraintLay
     }
 
     private fun addCountLbl() {
-        aCountTargetLbl.setSize(50f, 76f)
-        add(aCountTargetLbl) { endToEnd(margin = 20f); centerY() }
+        add(aCountRow) { endToEnd(margin = 20f); centerY() }
 
-        aCountLbl.setSize(34f, 76f)
-        add(aCountLbl) { endToStart(aCountTargetLbl, 3f); topToTop(aCountTargetLbl) }
+//        aCountTargetLbl.setSize(50f, 76f)
+//        add(aCountTargetLbl) { endToEnd(margin = 20f); centerY() }
+//
+//        aCountLbl.setSize(34f, 76f)
+//        add(aCountLbl) { endToStart(aCountTargetLbl, 3f); topToTop(aCountTargetLbl) }
     }
 
     private fun addDoneImg() {
@@ -107,8 +110,8 @@ class AGoalRequirementItem(override val screen: AdvancedScreen) : AConstraintLay
         aCountTargetLbl.setText("/$count")
         aCountLbl.setText("0")
 
-        aCountTargetLbl.pack()
-        aCountLbl.pack()
+        //aCountTargetLbl.pack()
+        //aCountLbl.pack()
 
         clearActions()
         setScale(1f)
@@ -123,15 +126,15 @@ class AGoalRequirementItem(override val screen: AdvancedScreen) : AConstraintLay
         aCountTargetLbl.setText("/$required")
         aCountLbl.setText("$current")
 
-        aCountTargetLbl.pack()
-        aCountLbl.pack()
+        //aCountTargetLbl.pack()
+        //aCountLbl.pack()
 
         if (done) {
             aBgDoneImg.color.a = 1f
             aDoneImg.color.a   = 1f
 
-            width = (18f + aCube.width + 32f + aCountLbl.width + 3f + aCountTargetLbl.width + 20f + aDoneImg.width + 18f)
-            this.update(aCountTargetLbl) {
+            width = (18f + aCube.width + 32f + aCountRow.width + 20f + aDoneImg.width + 18f)
+            this.update(aCountRow) {
                 endToEndActor = null
                 endToStart(aDoneImg, 20f)
             }
@@ -148,8 +151,8 @@ class AGoalRequirementItem(override val screen: AdvancedScreen) : AConstraintLay
             aBgDoneImg.color.a = 0f
             aDoneImg.color.a   = 0f
 
-            width = (18f + aCube.width + 32f + aCountLbl.width + 3f + aCountTargetLbl.width + 20f)
-            this.update(aCountTargetLbl) {
+            width = (18f + aCube.width + 32f + aCountRow.width + 20f)
+            this.update(aCountRow) {
                 endToStartActor = null
                 endToEnd(margin = 20f)
             }

@@ -152,5 +152,5 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-coin.png
+coin_buy.png
 

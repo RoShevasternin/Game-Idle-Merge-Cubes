@@ -1,6 +1,5 @@
 package com.lewydo.idlemergecubes.game.actors.button
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonAnim
@@ -8,12 +7,10 @@ import com.lewydo.idlemergecubes.game.actors.button.base.AButtonAnimTexture
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonBase
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
-import com.lewydo.idlemergecubes.game.actors.label.ALabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontGenerator
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 
 // ------------------------------------------------------------------------
 // WithLabel
@@ -33,12 +30,12 @@ interface WithLabel {
 // ------------------------------------------------------------------------
 open class ATextButtonTexture(
     override val screen: AdvancedScreen,
-    text: String, color: Color,
-    parameter: FontParameter, generator: FontGenerator,
-    style: Style = AButtonStyles.Texture.NONE,
+    text     : String,
+    styleMsdf: MsdfStyle,
+    style    : Style = AButtonStyles.Texture.NONE,
 ) : AButtonTexture(screen, style), WithLabel {
 
-    override val label = Label(text, FontFactory.create(screen, parameter, generator, color))
+    override val label = AMsdfLabel(text, styleMsdf)
 
     override fun addActorsOnGroup() {
         super.addActorsOnGroup()
@@ -51,12 +48,12 @@ open class ATextButtonTexture(
 // ------------------------------------------------------------------------
 open class ATextButtonAnim(
     override val screen: AdvancedScreen,
-    text: String, color: Color,
-    parameter: FontParameter, generator: FontGenerator,
-    style: Style = AButtonStyles.Anim.NONE,
+    text     : String,
+    styleMsdf: MsdfStyle,
+    style    : Style = AButtonStyles.Anim.NONE,
 ) : AButtonAnim(screen, style), WithLabel {
 
-    override val label = Label(text, FontFactory.create(screen, parameter, generator, color))
+    override val label = AMsdfLabel(text, styleMsdf)
 
     override fun addActorsOnGroup() {
         super.addActorsOnGroup()
@@ -69,12 +66,12 @@ open class ATextButtonAnim(
 // ------------------------------------------------------------------------
 open class ATextButtonAnimTexture(
     override val screen: AdvancedScreen,
-    text: String, color: Color,
-    parameter: FontParameter, generator: FontGenerator,
-    style: Style = AButtonStyles.AnimTexture.NONE,
+    text     : String,
+    styleMsdf: MsdfStyle,
+    style    : Style = AButtonStyles.AnimTexture.NONE,
 ) : AButtonAnimTexture(screen, style), WithLabel {
 
-    override val label = Label(text, FontFactory.create(screen, parameter, generator, color))
+    override val label = AMsdfLabel(text, styleMsdf)
 
     override fun addActorsOnGroup() {
         super.addActorsOnGroup()

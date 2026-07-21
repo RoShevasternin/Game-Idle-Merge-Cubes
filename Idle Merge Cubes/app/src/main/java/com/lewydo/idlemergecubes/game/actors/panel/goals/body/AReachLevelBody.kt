@@ -1,8 +1,7 @@
 package com.lewydo.idlemergecubes.game.actors.panel.goals.body
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.panel.goals.util.AGoalsProgress
 import com.lewydo.idlemergecubes.game.actors.panel.grid.ACube
@@ -10,9 +9,6 @@ import com.lewydo.idlemergecubes.game.systems.goals.GoalObjective
 import com.lewydo.idlemergecubes.game.systems.goals.GoalProgress
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
 import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -38,21 +34,18 @@ class AReachLevelBody(override val screen: AdvancedScreen) : AConstraintLayout(s
     // ------------------------------------------------------------------------
     private val msdf by lazy { gdxGame.msdfManager }
 
-    private val styleCube = MsdfStyle(msdf, msdf.fontNunitoBlack, 85f)
+    private val styleCube = MsdfStyle(msdf, msdf.fontNunitoBold, 85f)
         .stroke(1f, GameColor.brown_8D3800)
         .dropShadow(3f, 3f, 4f, GameColor.purple_350080)
     private val styleDescCount = MsdfStyle(msdf, msdf.fontNunitoMedium, 56f)
 
-    private val parameterCount = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "/").setSize(56)
-    private val lsCount = FontFactory.create(screen, parameterCount, screen.fontGenerator_Nunito_Medium, Color.WHITE)
-
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aCube           = ACube(screen, 0, 0, lsCount) styleCube)
-    private val aDescLbl        = MsdfLabel("Reach this cube level", styleDescCount)
-    private val aCountLbl       = MsdfLabel("0", styleDescCount)
-    private val aCountTargetLbl = MsdfLabel("/5", styleDescCount).apply { color.a = 0.5f }
+    private val aCube           = ACube(screen, 0, 0, styleCube)
+    private val aDescLbl        = AMsdfLabel("Reach this cube level", styleDescCount)
+    private val aCountLbl       = AMsdfLabel("0", styleDescCount)
+    private val aCountTargetLbl = AMsdfLabel("/5", styleDescCount).apply { color.a = 0.5f }
     private val aProgress       = AGoalsProgress(screen)
 
     // ------------------------------------------------------------------------

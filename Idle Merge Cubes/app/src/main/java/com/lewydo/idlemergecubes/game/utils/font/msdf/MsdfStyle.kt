@@ -30,9 +30,8 @@ class MsdfStyle internal constructor(
     val manager: MsdfManager,
     var font   : MsdfFont,
     var size   : Float,
-    color      : Color = Color.WHITE,
+    var color  : Color = Color.WHITE,
 ) {
-    val color = Color(color)
 
     /** Letter-spacing у % (Figma). */
     var letterSpacing = 0f

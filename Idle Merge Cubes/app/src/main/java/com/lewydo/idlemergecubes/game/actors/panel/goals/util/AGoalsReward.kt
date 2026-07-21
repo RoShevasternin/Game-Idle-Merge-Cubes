@@ -3,7 +3,7 @@ package com.lewydo.idlemergecubes.game.actors.panel.goals.util
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfLabel
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
@@ -17,7 +17,7 @@ class AGoalsReward(
     // ------------------------------------------------------------------------
     private val aBgImg   = Image(gdxGame.assetsAll.goals_pill_reward)
     private val aCoinImg = Image(gdxGame.assetsAll.coin)
-    private val aLbl     = MsdfLabel("", style)
+    private val aLbl     = AMsdfLabel("", style)
 
     // ------------------------------------------------------------------------
     // Lifecycle

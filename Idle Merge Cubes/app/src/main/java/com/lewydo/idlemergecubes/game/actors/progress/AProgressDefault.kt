@@ -7,22 +7,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.vfx.AMask
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
+import com.lewydo.idlemergecubes.game.utils.gdxGame
 import com.lewydo.idlemergecubes.game.utils.runGDX
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class AProgressDefault(override val screen: AdvancedScreen): AdvancedGroup() {
 
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "%")
-    private val font80    = screen.fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(260))
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val labelStyle80 = LabelStyle(font80, Color.valueOf("A82800"))
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 260f, Color.valueOf("A82800"))
 
     private val LENGTH = 1743f
 
@@ -30,7 +30,7 @@ class AProgressDefault(override val screen: AdvancedScreen): AdvancedGroup() {
     private val progressImage   = Image(screen.drawerUtil.getRegion(Color.BLACK))
     private val mask            = AMask(screen)
 
-    private val label = Label("", labelStyle80)
+    private val label = AMsdfLabel("", styleDef)
 
     private val onePercentX = LENGTH / 100f
 

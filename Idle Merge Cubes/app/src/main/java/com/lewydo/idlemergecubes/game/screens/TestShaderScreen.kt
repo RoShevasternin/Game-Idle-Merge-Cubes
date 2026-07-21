@@ -6,32 +6,30 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
-import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.progress.AProgressDefault
 import com.lewydo.idlemergecubes.game.actors.vfx.ABlur
 import com.lewydo.idlemergecubes.game.utils.Block
 import com.lewydo.idlemergecubes.game.utils.TIME_ANIM_SCREEN
 import com.lewydo.idlemergecubes.game.utils.actor.addActorWithConstraints
-import com.lewydo.idlemergecubes.game.utils.actor.addAndFillActor
 import com.lewydo.idlemergecubes.game.utils.actor.animHide
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import kotlinx.coroutines.launch
 
 class TestShaderScreen: AdvancedScreen() {
 
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.ALL)
-    private val font60    = fontGenerator_Nunito_SemiBold.generateFont(parameter.setSize(260))
+    private val msdf by lazy { gdxGame.msdfManager }
+
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 260f)
 
     private val progress = AProgressDefault(this)
-    private val lblFPS   = Label("", LabelStyle(font60, Color.BLACK))
+    private val lblFPS   = AMsdfLabel("", styleDef, color = Color.BLACK)
 
     private var movableActor: AdvancedGroup? = null
 

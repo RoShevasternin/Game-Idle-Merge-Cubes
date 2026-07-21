@@ -143,7 +143,7 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-circle.png
+circle_shared.png
 
 
 Loader_stars_def
@@ -302,7 +302,7 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-star_def.png
+star_def_shared.png
 
 
 Loader_stars_yellow

@@ -168,6 +168,6 @@ behind: false
 premultipliedAlpha: false
 spriteMode: random
 - Image Paths -
-circle.png
-star_def.png
+circle_buy.png
+star_def_buy.png
 

@@ -6,9 +6,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
-import com.lewydo.idlemergecubes.game.actors.label.ALabelAutoSize
-import com.lewydo.idlemergecubes.game.actors.layout.AlignH
-import com.lewydo.idlemergecubes.game.actors.layout.AlignV
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabelAutoSize
 import com.lewydo.idlemergecubes.game.actors.layout.autoLayout.AAutoLayout
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.actors.particleEffect.AParticleEffectPool
@@ -17,8 +15,7 @@ import com.lewydo.idlemergecubes.game.utils.NumberFormatter
 import com.lewydo.idlemergecubes.game.utils.SizeScaler
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ACollectButton(
@@ -37,12 +34,11 @@ class ACollectButton(
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + "COLLECT X()")
-        .setBorder(2f, currentDataType.colorBorder)
-        .setShadow(7, 5, currentDataType.colorShadow)
+    private val msdf by lazy { gdxGame.msdfManager }
 
-    private val parameterTitle  = parameter.copy().setSize(90)
-    private val parameterReward = parameter.copy().setSize(80)
+    private val styleTitle = MsdfStyle(msdf, msdf.fontNunitoBlack, 90f)
+        .stroke(2f, currentDataType.colorBorder)
+        .dropShadow(7f, 5f, 4f, currentDataType.colorShadow)
 
     // ------------------------------------------------------------------------
     // Actors
@@ -61,21 +57,21 @@ class ACollectButton(
     )
 
     private val aIconImg   = Image(currentDataType.icon)
-    private val aTitleLbl  = ALabelAutoSize(
+    private val aTitleLbl  = AMsdfLabelAutoSize(
         screen       = screen,
         text         = currentDataType.title,
-        labelStyle   = FontFactory.create(screen, parameterTitle, screen.fontGenerator_Nunito_Black),
-        fitMode      = ALabelAutoSize.FitMode.HEIGHT,
+        style        = styleTitle,
+        fitMode      = AMsdfLabelAutoSize.FitMode.HEIGHT,
         isWrapWidth  = true
     )
-    private val aRewardLbl = ALabelAutoSize(
+    private val aRewardLbl = AMsdfLabelAutoSize(
         screen       = screen,
-        labelStyle   = FontFactory.create(screen, parameterReward, screen.fontGenerator_Nunito_Black),
-        fitMode      = ALabelAutoSize.FitMode.HEIGHT,
+        style        = styleTitle.apply { size = 80f },
+        fitMode      = AMsdfLabelAutoSize.FitMode.HEIGHT,
         isWrapWidth  = true
     )
 
-    private val collectEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.COLLECT)
+    private val collectEffectPool = AParticleEffectPool(gdxGame.particleEffectAll.COLLECT, maxActive = 2, minSpawnIntervalMs = 120L)
 
     // ------------------------------------------------------------------------
     // Collect

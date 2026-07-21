@@ -220,6 +220,29 @@ class MsdfFont(
         pad: Float,           // R/2
     ) {
         basePx = base
+
+        // ── ГОРИЗОНТАЛЬНА компенсація SDF-padding + Figma side bearing ──
+        // Квад гліфа ширший за літеру на pad з кожного боку; GlyphLayout
+        // віднімає padLeft/padRight на краях рядка (вбудований механізм для
+        // distance-field шрифтів). АЛЕ віднімаємо не весь pad, а pad МІНУС
+        // природний бічний відступ шрифта (side bearing) — той самий
+        // «малюсінький пробіл» по боках, що видно у Figma. Bearing береться
+        // З ДАНИХ атласу (еталонний гліф 'H' з рівними боками): у Nunito це
+        // ~3px гліфа → на тексті 90px ~5px з боку. Масштабується з fontScale
+        // і однаковий на всіх екранах (world-координати).
+        // padTop/padBottom не чіпаємо — вертикаль скомпенсована через
+        // capHeight/descent.
+        val bearingRef = data.getGlyph('H') ?: data.getGlyph('N')
+        ?: data.getGlyph('n') ?: data.getGlyph('0')
+        val lsb = if (bearingRef != null)
+            (bearingRef.xoffset + pad).coerceAtLeast(0f)
+        else glyphSize * 0.05f
+        val rsb = if (bearingRef != null)
+            (bearingRef.xadvance - (bearingRef.xoffset + bearingRef.width) + pad)
+                .coerceAtLeast(0f)
+        else lsb
+        data.padLeft  = pad - lsb
+        data.padRight = pad - rsb
         // Пробіл-fallback
         var space = data.getGlyph(' ')
         if (space == null) {

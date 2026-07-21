@@ -1,16 +1,15 @@
 package com.lewydo.idlemergecubes.game.actors.panel.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonStyles
 import com.lewydo.idlemergecubes.game.actors.button.base.AButtonTexture
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.REMOVE_ADS_PRICE
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 open class ARemoveAdsButton(override val screen: AdvancedScreen) : AButtonTexture(screen, AButtonStyles.Texture.MENU_ITEM) {
@@ -20,13 +19,15 @@ open class ARemoveAdsButton(override val screen: AdvancedScreen) : AButtonTextur
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters("$textRemoveAds $REMOVE_ADS_PRICE $").setSize(80)
+    private val msdf by lazy { gdxGame.msdfManager }
+
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoBold, 80f)
 
     // ------------------------------------------------------------------------
     // Actors
     // ------------------------------------------------------------------------
-    private val aTitleLbl = Label(textRemoveAds, FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Bold))
-    private val aPriceLbl = Label("$$REMOVE_ADS_PRICE", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_Bold, GameColor.green_98FF68))
+    private val aTitleLbl = AMsdfLabel(textRemoveAds, styleDef)
+    private val aPriceLbl = AMsdfLabel("$$REMOVE_ADS_PRICE", styleDef, color = GameColor.green_98FF68)
 
     // ------------------------------------------------------------------------
     // Lifecycle

@@ -6,8 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
 import com.lewydo.idlemergecubes.game.actors.ATmpGroup
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.layout.constraintLayout.AConstraintLayout
 import com.lewydo.idlemergecubes.game.screens.WhoScreen
+import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.actor.addActors
 import com.lewydo.idlemergecubes.game.utils.actor.animHideAndDisable
 import com.lewydo.idlemergecubes.game.utils.actor.animRotateTo
@@ -15,8 +17,7 @@ import com.lewydo.idlemergecubes.game.utils.actor.animShowAndEnable
 import com.lewydo.idlemergecubes.game.utils.actor.disable
 import com.lewydo.idlemergecubes.game.utils.actor.setOnClickListener
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 
 class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(screen) {
@@ -24,7 +25,9 @@ class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(
     // ------------------------------------------------------------------------
     // Font
     // ------------------------------------------------------------------------
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.ALL).setSize(80)
+    private val msdf by lazy { gdxGame.msdfManager }
+
+    private val styleCube = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 80f)
 
     // ------------------------------------------------------------------------
     // Actors
@@ -32,7 +35,7 @@ class ASettingsSection(override val screen: AdvancedScreen) : AConstraintLayout(
     private val aBgImg     = Image(gdxGame.assetsAll.panel_settings)
     private val aTopGroup  = ATmpGroup(screen)
     private val aIconImg   = Image(gdxGame.assetsAll.menu_icon_settings)
-    private val aTitleLbl  = Label("Settings", FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_SemiBold))
+    private val aTitleLbl  = AMsdfLabel("Settings", styleCube)
     private val aExpandImg = Image(gdxGame.assetsAll.expand)
 
     private val aSettingsContent = ASettingsContent(screen)

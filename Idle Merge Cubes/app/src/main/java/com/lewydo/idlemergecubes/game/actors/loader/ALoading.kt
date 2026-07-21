@@ -3,11 +3,12 @@ package com.lewydo.idlemergecubes.game.actors.loader
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.Align
+import com.lewydo.idlemergecubes.game.actors.label.AMsdfLabel
 import com.lewydo.idlemergecubes.game.actors.progress.AProgressLoader
+import com.lewydo.idlemergecubes.game.utils.GameColor
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedGroup
 import com.lewydo.idlemergecubes.game.utils.advanced.AdvancedScreen
-import com.lewydo.idlemergecubes.game.utils.font.FontFactory
-import com.lewydo.idlemergecubes.game.utils.font.FontParameter
+import com.lewydo.idlemergecubes.game.utils.font.msdf.MsdfStyle
 import com.lewydo.idlemergecubes.game.utils.gdxGame
 import kotlin.math.roundToInt
 
@@ -15,13 +16,15 @@ class ALoading(override val screen: AdvancedScreen): AdvancedGroup() {
 
     private val textLoading = "Loading"
 
-    private val parameter = FontParameter().setCharacters(FontParameter.CharType.NUMBERS.chars + textLoading + ".%").setSize(100)
+    // ------------------------------------------------------------------------
+    // Font
+    // ------------------------------------------------------------------------
+    private val msdf by lazy { gdxGame.msdfManager }
+
+    private val styleDef = MsdfStyle(msdf, msdf.fontNunitoSemiBold, 100f)
 
     private val aLightProgressImg    = Image(gdxGame.assetsLoader.light_progress)
-    private val aLoadingLbl          = Label(
-        "$textLoading...",
-        FontFactory.create(screen, parameter, screen.fontGenerator_Nunito_SemiBold)
-    )
+    private val aLoadingLbl          = AMsdfLabel("$textLoading...", styleDef)
     private val aProgressFrameImg    = Image(gdxGame.assetsLoader.progress_frame)
     private val aProgressLoader      = AProgressLoader(screen)
 

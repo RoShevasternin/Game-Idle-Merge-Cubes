@@ -27,7 +27,7 @@ class StrokeEffect(
         val outer = (-wg).coerceAtLeast(-maxReach)   // назовні, в межах поля
 
         val prog = shader.program
-        ctx.batch.shader = prog
+        if (ctx.batch.shader !== prog) ctx.batch.shader = prog
         prog.setUniformf("u_distanceRange", ctx.font.distanceRange)
         prog.setUniformf("u_fontScale", ctx.screenScale)
         prog.setUniformf("u_hasSdf", if (ctx.font.hasTrueSdf) 1f else 0f)
