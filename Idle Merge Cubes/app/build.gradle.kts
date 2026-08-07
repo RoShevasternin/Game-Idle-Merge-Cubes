@@ -14,7 +14,7 @@ android {
         minSdk        = 24
         targetSdk     = 37
         versionCode   = 20
-        versionName   = "3.1.6"
+        versionName   = "3.1.6-test"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -70,12 +70,12 @@ kotlin {
 val natives: Configuration by configurations.creating
 
 dependencies {
-    // Test ------------------------------------------------------------------------
+    // Test Core ------------------------------------------------------------------------
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
-    // AndroidX ------------------------------------------------------------------------
+    // AndroidX Core ------------------------------------------------------------------------
     implementation("androidx.core:core-ktx:1.19.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.activity:activity-ktx:1.13.0")
@@ -83,7 +83,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.9.8")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
 
-    // LibGDX ------------------------------------------------------------------------
+    // LibGDX Core ------------------------------------------------------------------------
     val gdxVersion = "1.14.2"
     implementation("com.badlogicgames.gdx:gdx-backend-android:$gdxVersion")
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a")
@@ -96,9 +96,11 @@ dependencies {
     natives("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86")
     natives("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64")
 
-    // Other ------------------------------------------------------------------------
+    // Other Core ------------------------------------------------------------------------
     implementation("space.earlygrey:shapedrawer:2.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+
+    // Other ------------------------------------------------------------------------
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.16.0"))

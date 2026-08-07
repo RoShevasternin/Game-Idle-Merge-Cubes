@@ -57,7 +57,7 @@ class AMsdfLabel(
     private var ready = false
 
     private val effects = ArrayList<MsdfEffect>(4)
-    var autoSize = true
+    var autoSize = false
     private var wrapOn = false
 
     /** Letter-spacing у % розміру гліфа (per-label). */

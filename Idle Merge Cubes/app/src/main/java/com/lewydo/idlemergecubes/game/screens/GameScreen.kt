@@ -225,7 +225,7 @@ class GameScreen : AdvancedScreen() {
         aBuyBtn.setSize(1905f, 386f)
         add(aBuyBtn) {
             centerX()
-            bottomToBottom(margin = 200f)
+            bottomToBottom(margin = 700f)
         }
 
         aBuyBtn.onClick = {

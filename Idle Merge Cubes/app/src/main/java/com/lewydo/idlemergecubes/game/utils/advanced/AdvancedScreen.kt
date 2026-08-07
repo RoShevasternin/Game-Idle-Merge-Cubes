@@ -49,9 +49,10 @@ abstract class AdvancedScreen(
     val worldHeight get() = viewportUI.worldHeight
 
     private val scaleScreenToUiY: Float get() = (viewportUI.worldHeight / screenHeightPX)
+    private fun Int.toUI() = this * scaleScreenToUiY
 
-    val safeStatusBarUI get() = safeStatusBarPX * scaleScreenToUiY
-    val safeNavBarUI    get() = safeNavBarPX * scaleScreenToUiY
+    val safeStatusBarUI get() = safeStatusBarPX.toUI()
+    val safeNavBarUI    get() = safeNavBarPX.toUI()
 
     val inputMultiplexer = InputMultiplexer()
 
